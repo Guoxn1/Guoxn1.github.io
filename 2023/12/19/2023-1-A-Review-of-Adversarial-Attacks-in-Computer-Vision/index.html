@@ -1,0 +1,756 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Guoxin">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="A Review of Adversarial Attacks in Computer Vision 综述一般都比较长，打算分几次来写，这部分打算写白盒攻击场景下的攻击方法。 这篇文章系列以A Review of Adversarial Attacks in Computer Vision为主，以其它参考文献和网上资料为辅写的内容，这里是第一部分。 1 介绍深度神经网络已经被广泛的使用到各种下游任">
+<meta property="og:type" content="article">
+<meta property="og:title" content="2023-1-A Review of Adversarial Attacks in Computer Vision">
+<meta property="og:url" content="http://example.com/2023/12/19/2023-1-A-Review-of-Adversarial-Attacks-in-Computer-Vision/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="A Review of Adversarial Attacks in Computer Vision 综述一般都比较长，打算分几次来写，这部分打算写白盒攻击场景下的攻击方法。 这篇文章系列以A Review of Adversarial Attacks in Computer Vision为主，以其它参考文献和网上资料为辅写的内容，这里是第一部分。 1 介绍深度神经网络已经被广泛的使用到各种下游任">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2023/12/19/2023-1-A-Review-of-Adversarial-Attacks-in-Computer-Vision/image-20231220205736946.png">
+<meta property="og:image" content="http://example.com/2023/12/19/2023-1-A-Review-of-Adversarial-Attacks-in-Computer-Vision/image-20231220212817970.png">
+<meta property="og:image" content="http://example.com/2023/12/19/2023-1-A-Review-of-Adversarial-Attacks-in-Computer-Vision/image-20231220222334061.png">
+<meta property="og:image" content="http://example.com/2023/12/19/2023-1-A-Review-of-Adversarial-Attacks-in-Computer-Vision/image-20231220222425521.png">
+<meta property="article:published_time" content="2023-12-19T12:02:10.000Z">
+<meta property="article:modified_time" content="2023-12-20T14:53:14.482Z">
+<meta property="article:author" content="Guoxin">
+<meta property="article:tag" content="论文读后总结">
+<meta property="article:tag" content="对抗样本">
+<meta property="article:tag" content="综述系列">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/2023/12/19/2023-1-A-Review-of-Adversarial-Attacks-in-Computer-Vision/image-20231220205736946.png">
+  
+  
+  
+  <title>2023-1-A Review of Adversarial Attacks in Computer Vision - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.5","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Guoxin</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="2023-1-A Review of Adversarial Attacks in Computer Vision"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-12-19 20:02" pubdate>
+          2023年12月19日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          8k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          67 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">2023-1-A Review of Adversarial Attacks in Computer Vision</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>A Review of Adversarial Attacks in Computer Vision</p>
+<p>综述一般都比较长，打算分几次来写，这部分打算写白盒攻击场景下的攻击方法。</p>
+<p>这篇文章系列以A Review of Adversarial Attacks in Computer Vision为主，以其它参考文献和网上资料为辅写的内容，这里是第一部分。</p>
+<h1 id="1-介绍"><a href="#1-介绍" class="headerlink" title="1 介绍"></a>1 介绍</h1><p>深度神经网络已经被广泛的使用到各种下游任务当中，尤其是在像自动驾驶这种和安全高度相关的领域，但是却一直被对抗样本所威胁。对抗样本就是人眼不可见，但是可以被DNN（深度神经网络）错误分类的一个东西。</p>
+<p>对抗攻击可以被分为白盒攻击：攻击者知道模型参数以及梯度；黑盒攻击：攻击者只能获得模型的输入和输出。</p>
+<p>就攻击者的目标而言，还可以将其分类为有目标和无目标攻击，有目标就是把原始输入分类成指定目标，而无目标则是把原始输入错误分类就可以。</p>
+<p>黑盒攻击更接近实际场合，黑盒又可以分为基于查询的攻击和基于迁移的攻击，前者需要大量查询去修改扰动来制造对抗样本，后者不需要，因此基于迁移的攻击在实践中更契合。基于迁移的攻击需要在本地有一个代理白盒，它最好的情况就是和要攻击的模型一样，这样对代理白盒生成的对抗样本也可以对目标模型生效。</p>
+<p>从对抗扰动生成的方式来看，就有基于优化的方法、基于生成的方法。基于优化的方法是使用模型的梯度来迭代更新指定样本来获得扰动，这是最常用的方式。为了提高可移植性，之后的工作将基于优化的方法和很多方法联系起来，比如假如在迭代的时候加入动量，输入的时候进行变化，替代损失函数或者建造辅助分类器。</p>
+<p>在有目标攻击的场景中，基于优化的方法差一些，需要为每一个样本都创建扰动。生成方法可以推广到更多样本上，这将有助于创建通用对抗扰动。</p>
+<p>三种常见的攻击场景：图像分类、物体检测和语义分割。物体检测似乎是更脆弱的，因为它不仅需要预测还需要回归。语义分割也脆弱，因为它也是一个回归问题。这是因为，回归问题不像分类问题，分类的预测结果不会发生连续变化，而是有一个阈值，但是在回归问题中，预测结果会随着输入的变化而连续变化，这使得回归问题中的模型鲁棒性较差，抵抗对抗性攻击的能力较差。回归模型通常对输入数据的微小变化更加敏感，即使是很小的扰动也可能导致模型输出发生显著变化。</p>
+<h1 id="2-基于优化的白盒攻击"><a href="#2-基于优化的白盒攻击" class="headerlink" title="2 基于优化的白盒攻击"></a>2 基于优化的白盒攻击</h1><h2 id="2-1-盒约束-L-BFGS（定向）"><a href="#2-1-盒约束-L-BFGS（定向）" class="headerlink" title="2.1 盒约束 L-BFGS（定向）"></a>2.1 盒约束 L-BFGS（定向）</h2><p>因为对最小化扰动来使得神经网络错误分类的方程的复杂度太高，所以将其简化为一个凸优化版本。找到最小损失函数的加性项，这个加性项使神经网络错误分类。<br>$$<br>Minimize_r\quad     c||r||_\infty+loss_f(x+r,y^t)\\s.t.\quad x+r\in[0,1]^m<br>$$<br>损失函数是交叉熵损失函数，表达的意思是将模型分类对抗样本到目标类$y^t$。首先固定超参数c，解决优化问题以找到当前c下的最优解，找到最优对抗扰动r。通过在c上进行线性搜索，找到满足条件的最优对抗扰动r，从而得到最终的对抗样本x + r。</p>
+<h2 id="2-2-C-W（重点、定向）"><a href="#2-2-C-W（重点、定向）" class="headerlink" title="2.2 C&amp;W（重点、定向）"></a>2.2 C&amp;W（重点、定向）</h2><p>cw攻击使用了$L_0,L_2,L_\infty$范数来生成有限制的扰动。它是最强大的基于目标的攻击，是L-BFGS的改进版本。它把找到一个图片的对抗样本作为优化问题。<br>$$<br>minimize_\varepsilon \quad D(x,x+\delta)\\s.t.\quad C(x+\varepsilon)&#x3D;t\\x+\varepsilon\in[0,1]^n<br>$$<br>目标就是找到一个a，使得D函数值最小，D就是各种范数。由于上面的函数时非线性的，所以很难优化。所以我们定义一个目标函数f，当且仅当$f(x+\varepsilon)&lt;&#x3D;0时，C(x+\varepsilon)&#x3D;t$，其中f是定义的目标函数，C是模型的输出结果。</p>
+<p>f有很多函数可选，上个式子可以改写为：<br>$$<br>minimize_\varepsilon \quad D(x,x+\varepsilon)\\s.t.\quad f(x+\varepsilon)&lt;&#x3D;0\\x+\varepsilon \in[0,1]^n<br>$$<br>其中f(x)可以是如下形式：<br>$$<br>f(x)&#x3D;max(max\left{Z(x’)_i:i\not&#x3D;t\right}-Z(x’)_t,-\sigma)<br>$$<br>Z(x’)是指最后一个隐藏层的输出,t是目标标签。</p>
+<p>如此，就把约束条件改为了目标函数。再把D改为p范数，就可以把式子改写成：<br>$$<br>min\quad ||\delta||_p+cf(x+\varepsilon)\\s.t.\quad x+\varepsilon\in[0,1]<br>$$</p>
+<h1 id="3-基于梯度的白盒攻击"><a href="#3-基于梯度的白盒攻击" class="headerlink" title="3 基于梯度的白盒攻击"></a>3 基于梯度的白盒攻击</h1><h2 id="3-1-FGSM（非定向）"><a href="#3-1-FGSM（非定向）" class="headerlink" title="3.1 FGSM（非定向）"></a>3.1 FGSM（非定向）</h2><p>虽然生成对抗样本的方法有很多种，但最广泛采用 的方法是在输入空间沿着梯度的方向或者反方向执行梯度上升策略添加扰动。以后很多基于梯度的攻击大多都是FGSM的变体，因为梯度只计算一次，所以攻击能力是受限的。成功的前提条件是损失函数的梯度方向在局部区间内是线性的。</p>
+<p>目标就是<br>$$<br>maxmize\quad \mathcal L(f(x’),y),\\such\quad that\quad ||x’-x||&lt;&#x3D;\epsilon<br>$$<br>最大化差距，并且生成过程为：<br>$$<br>x’&#x3D;x+\epsilon·sign(\nabla_xJ(\theta;x,y))<br>$$<br>模型参数是$\theta$,sign函数里面是梯度值。sign函数的输出范围是{1,0,-1},只有这三个值。</p>
+<h2 id="3-2-I-FGSM-BIM（非定向）"><a href="#3-2-I-FGSM-BIM（非定向）" class="headerlink" title="3.2 I-FGSM&#x2F;BIM（非定向）"></a>3.2 I-FGSM&#x2F;BIM（非定向）</h2><p>它是FGSM的迭代形式。<br>$$<br>\widetilde x_0&#x3D;x,\widetilde x_{N+1}&#x3D;Clip_{x,\alpha}\left{\widetilde x_N+\alpha sign(\nabla_xJ(\theta;\widetilde x_N,y))\right}<br>$$<br>Clip就是剪裁操作，表示把其中的值限制在x的阿尔法范围内。</p>
+<p>在很多类别的情况下，攻击成功率会变低，主要是因为可能把一种雪橇犬识别为另一种雪橇犬。所以这时候可以使得目标y为最低置信度的y，也就是要达到一个目标，攻击目标必须是最低的置信度。</p>
+<p>那么迭代形式转变为：<br>$$<br>\widetilde x_0&#x3D;x,\widetilde x_{N+1}&#x3D;Clip_{x,\alpha}\left{\widetilde x_N+\alpha sign(\nabla_xJ(\theta;\widetilde x_N,y_{L}))\right}<br>$$<br>其中yL是指最不可能的类别。通常情况下这种攻击又被称为ILCM。</p>
+<h2 id="3-3-PGD-非定向，重要"><a href="#3-3-PGD-非定向，重要" class="headerlink" title="3.3 PGD(非定向，重要)"></a>3.3 PGD(非定向，重要)</h2><p>PGD比前两者都好，已经称为评价的基准。</p>
+<p>PGD在I-FGSM攻击的起点中加入了随机化噪声，使得初始化更加多样化。PGD通常需要执行多次随即重启，这样就可以保证攻击成功率的最大化。</p>
+<p>可表示为：<br>$$<br>x’_0&#x3D;x+uniform(-\epsilon,\epsilon)\<br>x’_k&#x3D;\underset{B\epsilon}{\Pi}(x+\alpha sign(\nabla_xJ(\theta; x’_k,y)))<br>$$<br>uniform函数表示初始化均匀分布，里面的值是范围。</p>
+<h1 id="4-其他方法的白盒攻击"><a href="#4-其他方法的白盒攻击" class="headerlink" title="4 其他方法的白盒攻击"></a>4 其他方法的白盒攻击</h1><h2 id="4-1-DeepFool（非定向）"><a href="#4-1-DeepFool（非定向）" class="headerlink" title="4.1 DeepFool（非定向）"></a>4.1 DeepFool（非定向）</h2><p>deepfool也是一种最小化扰动的攻击方法，从几何角度出发，来找距离分类决策超平面最近的扰动。在二分类场景下，给定分类器$f(x)&#x3D;w^Tx+b$,输入x0，最小扰动对应于x0到分类边界的投影为：<br>$$<br>r(x_0)&#x3D;-\frac{f(x_0)}{||w||_2^2}w<br>$$<br>其中$\frac{w}{||w||_2^2}$是法向量的单位向量，将x0沿着垂直于决策边界的法向量更新，自然可以得到最小扰动的对抗样本。</p>
+<p>还可以扩展到多分类的情况：</p>
+<img src="image-20231220205736946.png" srcset="/img/loading.gif" lazyload alt="image-20231220205736946" style="zoom:67%;">
+
+<h2 id="4-2-UAPs（非定向）"><a href="#4-2-UAPs（非定向）" class="headerlink" title="4.2 UAPs（非定向）"></a>4.2 UAPs（非定向）</h2><p>它使用的方法和deepfool类似，也是将其推出决策边界。uaps生成一小段扰动，可以添加到不同的输入样本中，使得这些样本被错误分类。UAPs方法通过在训练数据集上进行迭代优化来生成通用的扰动。它的关键思想是找到一个扰动，能够在多个样本上产生最大的影响，使得这些样本被错误地分类。UAPs方法的优势在于生成的扰动可以适用于不同的输入样本，而不需要为每个输入样本单独生成对抗样本。</p>
+<h2 id="4-3-ATNS（定向-非定向，甚至黑盒）"><a href="#4-3-ATNS（定向-非定向，甚至黑盒）" class="headerlink" title="4.3 ATNS（定向&#x2F;非定向，甚至黑盒）"></a>4.3 ATNS（定向&#x2F;非定向，甚至黑盒）</h2><p>通过最小化联合损失函数生成对抗样本，联合损失函数由两部分组成，第一部分是保持样本和原图像的相似性，第二部分是导致对抗样本误分类性。</p>
+<h2 id="4-4-JSMA（定向）"><a href="#4-4-JSMA（定向）" class="headerlink" title="4.4 JSMA（定向）"></a>4.4 JSMA（定向）</h2><p>JSMA 方法的基本思想是使用梯度值来构造显著图，基于每个像素点对梯度的影响然后进行建模。由于梯度的变化值与决策模型对目标类别判定的概率具有正比关系，因此改变一个较大的梯度值将极大的增加决策模型将目标样本标记为预设目标类别的可能性。JSMA 方法通过显著图挑选出最重要的像素，也即梯度最大值所对应的像素点，然后对针对该像素点进行干扰，从而增加目标样本被模型分类为目标类别的可能性。原文中采用的是基于雅可比显著图的方法进行对抗样本的生成，因此，该方法也被称为基于雅可比显著图的攻击方法（Jacobian-based Saliency MapAttack），即 JSMA 方法。</p>
+<p>相比其它攻击方法，虽然 JSMA 方法的计算效率较低，但是该方法的攻击性能却具有较强的隐蔽性。同时，通过该方法所构建的对抗样本也具有较高的成功率与较好的转移率。</p>
+<img src="image-20231220212817970.png" srcset="/img/loading.gif" lazyload alt="image-20231220212817970" style="zoom:67%;">
+
+<h1 id="5-算法实现和演示"><a href="#5-算法实现和演示" class="headerlink" title="5 算法实现和演示"></a>5 算法实现和演示</h1><p>FGSM的非定向攻击，网络模型是Lenet，使用数据集是手写数据集。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> torch<br><span class="hljs-keyword">import</span> torch.nn <span class="hljs-keyword">as</span> nn<br><span class="hljs-keyword">import</span> torch.nn.functional <span class="hljs-keyword">as</span> F <br><span class="hljs-keyword">import</span> torch.optim <span class="hljs-keyword">as</span> optim<br><span class="hljs-keyword">from</span> torchvision <span class="hljs-keyword">import</span> datasets,transforms<br><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np <br><span class="hljs-keyword">import</span> matplotlib.pyplot <span class="hljs-keyword">as</span> plt <br><br><br><br><span class="hljs-comment"># 定义lenet</span><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Net</span>(nn.Module):<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self</span>):<br>        <span class="hljs-built_in">super</span>(Net, self).__init__()<br>        self.conv1 = nn.Conv2d(<span class="hljs-number">1</span>, <span class="hljs-number">10</span>, kernel_size=<span class="hljs-number">5</span>)<br>        self.conv2 = nn.Conv2d(<span class="hljs-number">10</span>, <span class="hljs-number">20</span>, kernel_size=<span class="hljs-number">5</span>)<br>        self.conv2_drop = nn.Dropout2d()<br>        self.fc1 = nn.Linear(<span class="hljs-number">320</span>, <span class="hljs-number">50</span>)<br>        self.fc2 = nn.Linear(<span class="hljs-number">50</span>, <span class="hljs-number">10</span>)<br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">forward</span>(<span class="hljs-params">self, x</span>):<br>        x = F.relu(F.max_pool2d(self.conv1(x), <span class="hljs-number">2</span>))<br>        x = F.relu(F.max_pool2d(self.conv2_drop(self.conv2(x)), <span class="hljs-number">2</span>))<br>        x = x.view(-<span class="hljs-number">1</span>, <span class="hljs-number">320</span>)<br>        x = F.relu(self.fc1(x))<br>        x = F.dropout(x, training=self.training)<br>        x = self.fc2(x)<br>        <span class="hljs-keyword">return</span> F.log_softmax(x, dim=<span class="hljs-number">1</span>)<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">fgsm_attack</span>(<span class="hljs-params">image,epsilon,data_grad</span>):<br>    sign_data_grad = data_grad.sign()<br>    <br>    <span class="hljs-comment"># 构造图像</span><br>    perturbed_image = image+epsilon*sign_data_grad<br><br>    <span class="hljs-comment"># 去除超过范围的值</span><br>    perturbed_image = torch.clamp(perturbed_image,<span class="hljs-number">0</span>,<span class="hljs-number">1</span>)<br><br>    <span class="hljs-keyword">return</span> perturbed_image<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">test</span>(<span class="hljs-params">model,device,test_loader,epsilon</span>):<br>    correct = <span class="hljs-number">0</span><br>    adv_examples = []<br><br>    <span class="hljs-keyword">for</span> data,target <span class="hljs-keyword">in</span> test_loader:<br>        data,target = data.to(device),target.to(device)<br><br>        <span class="hljs-comment"># 设置数据是需要梯度的.</span><br>        data.requires_grad = <span class="hljs-literal">True</span><br>        output = model(data)<br>        <span class="hljs-comment">#这个是真实的输出，一般是正确的   这里面的output是10个值  还没有传入softmax</span><br><br>        init_pred = output.<span class="hljs-built_in">max</span>(<span class="hljs-number">1</span>,keepdim=<span class="hljs-literal">True</span>)[<span class="hljs-number">1</span>]<br>        <span class="hljs-comment"># 如果这种最大值输出和目标不一样那就不需要攻击了</span><br>        <span class="hljs-keyword">if</span> init_pred.item() != target.item():<br>            <span class="hljs-keyword">continue</span><br>        <span class="hljs-comment"># 否则 就需要计算损失函数对数据的梯度 来生成对抗样本</span><br>        loss = F.nll_loss(output,target)<br>        model.zero_grad()<br>        loss.backward()<br><br>        data_grad = data.grad.data<br><br>        perturbed_image = fgsm_attack(data,epsilon,data_grad)<br>        output = model(perturbed_image)<br>        <span class="hljs-comment"># 这里计算出对抗样本的预测情况</span><br>        final_pred = output.<span class="hljs-built_in">max</span>(<span class="hljs-number">1</span>, keepdim=<span class="hljs-literal">True</span>)[<span class="hljs-number">1</span>]<br><br>        <span class="hljs-keyword">if</span> final_pred.item() == target.item():<br>            correct += <span class="hljs-number">1</span><br>            <span class="hljs-comment"># Special case for saving 0 epsilon examples</span><br>            <span class="hljs-keyword">if</span> (epsilon == <span class="hljs-number">0</span>) <span class="hljs-keyword">and</span> (<span class="hljs-built_in">len</span>(adv_examples) &lt; <span class="hljs-number">5</span>):<br>                adv_ex = perturbed_image.squeeze().detach().cpu().numpy()<br>                adv_examples.append( (init_pred.item(), final_pred.item(), adv_ex) )<br>        <span class="hljs-keyword">else</span>:<br>            <span class="hljs-comment"># Save some adv examples for visualization later</span><br>            <span class="hljs-keyword">if</span> <span class="hljs-built_in">len</span>(adv_examples) &lt; <span class="hljs-number">5</span>:<br>                adv_ex = perturbed_image.squeeze().detach().cpu().numpy()<br>                adv_examples.append( (init_pred.item(), final_pred.item(), adv_ex) )<br>    final_acc = correct/<span class="hljs-built_in">float</span>(<span class="hljs-built_in">len</span>(test_loader))<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Epsilon: &#123;&#125;\tTest Accuracy = &#123;&#125; / &#123;&#125; = &#123;&#125;&quot;</span>.<span class="hljs-built_in">format</span>(epsilon, correct, <span class="hljs-built_in">len</span>(test_loader), final_acc))<br><br>    <span class="hljs-comment"># Return the accuracy and an adversarial example</span><br>    <span class="hljs-keyword">return</span> final_acc, adv_examples<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">draw_acc</span>(<span class="hljs-params">epsilons,accuracies</span>):<br>    plt.figure(figsize=(<span class="hljs-number">5</span>,<span class="hljs-number">5</span>))<br>    plt.plot(epsilons, accuracies, <span class="hljs-string">&quot;*-&quot;</span>)<br>    plt.yticks(np.arange(<span class="hljs-number">0</span>, <span class="hljs-number">1.1</span>, step=<span class="hljs-number">0.1</span>))<br>    plt.xticks(np.arange(<span class="hljs-number">0</span>, <span class="hljs-number">.35</span>, step=<span class="hljs-number">0.05</span>))<br>    plt.title(<span class="hljs-string">&quot;Accuracy vs Epsilon&quot;</span>)<br>    plt.xlabel(<span class="hljs-string">&quot;Epsilon&quot;</span>)<br>    plt.ylabel(<span class="hljs-string">&quot;Accuracy&quot;</span>)<br>    plt.show()<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">draw_picture</span>(<span class="hljs-params">epsilons,examples</span>):<br>    cnt = <span class="hljs-number">0</span><br>    plt.figure(figsize=(<span class="hljs-number">8</span>,<span class="hljs-number">10</span>))<br>    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(epsilons)):<br>        <span class="hljs-keyword">for</span> j <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(examples[i])):<br>            cnt += <span class="hljs-number">1</span><br>            plt.subplot(<span class="hljs-built_in">len</span>(epsilons),<span class="hljs-built_in">len</span>(examples[<span class="hljs-number">0</span>]),cnt)<br>            plt.xticks([], [])<br>            plt.yticks([], [])<br>            <span class="hljs-keyword">if</span> j == <span class="hljs-number">0</span>:<br>                plt.ylabel(<span class="hljs-string">&quot;Eps: &#123;&#125;&quot;</span>.<span class="hljs-built_in">format</span>(epsilons[i]), fontsize=<span class="hljs-number">14</span>)<br>            orig,adv,ex = examples[i][j]<br>            plt.title(<span class="hljs-string">&quot;&#123;&#125; -&gt; &#123;&#125;&quot;</span>.<span class="hljs-built_in">format</span>(orig, adv))<br>            plt.imshow(ex, cmap=<span class="hljs-string">&quot;gray&quot;</span>)<br>    plt.tight_layout()<br>    plt.show()<br><br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">main</span>():<br>    epsilons = [<span class="hljs-number">0</span>,<span class="hljs-number">0.05</span>,<span class="hljs-number">0.10</span>,<span class="hljs-number">0.15</span>,<span class="hljs-number">0.20</span>,<span class="hljs-number">0.25</span>,<span class="hljs-number">0.30</span>,<span class="hljs-number">0.35</span>,<span class="hljs-number">0.40</span>]<br>    pretrained_model = <span class="hljs-string">&quot;data/lenet_mnist_model.pth&quot;</span><br>    use_cuda=<span class="hljs-literal">True</span><br><br>    test_loader = torch.utils.data.DataLoader(datasets.MNIST(<span class="hljs-string">&quot;./data&quot;</span>,train=<span class="hljs-literal">False</span>,download=<span class="hljs-literal">True</span>,transform=transforms.Compose([<br>        transforms.ToTensor(),<br>    ])),batch_size=<span class="hljs-number">1</span>,shuffle=<span class="hljs-literal">True</span>)<br><br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;CUDA Available: &quot;</span>,torch.cuda.is_available())<br>    device = torch.device(<span class="hljs-string">&quot;cuda&quot;</span> <span class="hljs-keyword">if</span> (use_cuda <span class="hljs-keyword">and</span> torch.cuda.is_available()) <span class="hljs-keyword">else</span> <span class="hljs-string">&quot;cpu&quot;</span>)<br><br>    model = Net().to(device)<br>    model.load_state_dict(torch.load(pretrained_model,map_location=<span class="hljs-string">&quot;cpu&quot;</span>))<br>    model.<span class="hljs-built_in">eval</span>()<br><br>    accuracies = []<br>    examples = []<br>    <span class="hljs-keyword">for</span> eps <span class="hljs-keyword">in</span> epsilons:<br>        acc,ex = test(model,device,test_loader,eps)<br>        accuracies.append(acc)<br>        examples.append(ex)<br>    draw_acc(epsilons,accuracies)<br>    draw_picture(epsilons,examples)<br><br><br>main()<br></code></pre></td></tr></table></figure>
+
+<p>结果如下，可以看到，随着扰动的增大，test的成功率迅速减小。</p>
+<img src="image-20231220222334061.png" srcset="/img/loading.gif" lazyload alt="image-20231220222334061" style="zoom:67%;">
+
+<p>在扰动达到0.25的时候，准确率只有20%左右了。但是对于的第6列，人眼还是可以分辨的出来的。</p>
+<img src="image-20231220222425521.png" srcset="/img/loading.gif" lazyload alt="image-20231220222425521" style="zoom:50%;">
+
+<p>其中用到的预训练模型和完整代码在我的仓库中。</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/Guoxn1/adversarial-example">https://github.com/Guoxn1/adversarial-example</a></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E8%AE%BA%E6%96%87%E8%AF%BB%E5%90%8E%E6%80%BB%E7%BB%93/" class="category-chain-item">论文读后总结</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E8%AE%BA%E6%96%87%E8%AF%BB%E5%90%8E%E6%80%BB%E7%BB%93/%E5%AF%B9%E6%8A%97%E6%A0%B7%E6%9C%AC/" class="category-chain-item">对抗样本</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E8%AE%BA%E6%96%87%E8%AF%BB%E5%90%8E%E6%80%BB%E7%BB%93/%E5%AF%B9%E6%8A%97%E6%A0%B7%E6%9C%AC/%E7%BB%BC%E8%BF%B0%E7%B3%BB%E5%88%97/" class="category-chain-item">综述系列</a>
+  
+  
+
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E8%AE%BA%E6%96%87%E8%AF%BB%E5%90%8E%E6%80%BB%E7%BB%93/" class="print-no-link">#论文读后总结</a>
+      
+        <a href="/tags/%E5%AF%B9%E6%8A%97%E6%A0%B7%E6%9C%AC/" class="print-no-link">#对抗样本</a>
+      
+        <a href="/tags/%E7%BB%BC%E8%BF%B0%E7%B3%BB%E5%88%97/" class="print-no-link">#综述系列</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>2023-1-A Review of Adversarial Attacks in Computer Vision</div>
+      <div>http://example.com/2023/12/19/2023-1-A-Review-of-Adversarial-Attacks-in-Computer-Vision/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Guoxin</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年12月19日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/12/17/Attenion-is-all-you-need/" title="Attenion is all you need">
+                        <span class="hidden-mobile">Attenion is all you need</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
