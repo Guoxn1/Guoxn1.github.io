@@ -1,0 +1,807 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Guoxin">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="1 自编码器简介自编码器最初提出的目的是为了学习到数据的主要规律，进行数据压缩，或特征提取，是一类无监督学习的算法。后续各种改进的算法，使得自编码器具有生成能力，例如变分自编码器（VAE）的图像生成能力。 本次放的代码都是线性版本，在我的仓库中还有cnn版本，毕竟线性版本只能处理一下这种mnist小数据集。地址：https:&#x2F;&#x2F;github.com&#x2F;Guoxn1&#x2F;ai。 2 线性自编码器自动编码器">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用自编码器进行图片检索">
+<meta property="og:url" content="http://example.com/2023/12/08/%E4%BD%BF%E7%94%A8%E8%87%AA%E7%BC%96%E7%A0%81%E5%99%A8%E8%BF%9B%E8%A1%8C%E5%9B%BE%E7%89%87%E6%A3%80%E7%B4%A2/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="1 自编码器简介自编码器最初提出的目的是为了学习到数据的主要规律，进行数据压缩，或特征提取，是一类无监督学习的算法。后续各种改进的算法，使得自编码器具有生成能力，例如变分自编码器（VAE）的图像生成能力。 本次放的代码都是线性版本，在我的仓库中还有cnn版本，毕竟线性版本只能处理一下这种mnist小数据集。地址：https:&#x2F;&#x2F;github.com&#x2F;Guoxn1&#x2F;ai。 2 线性自编码器自动编码器">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2023/12/08/%E4%BD%BF%E7%94%A8%E8%87%AA%E7%BC%96%E7%A0%81%E5%99%A8%E8%BF%9B%E8%A1%8C%E5%9B%BE%E7%89%87%E6%A3%80%E7%B4%A2/v2-f0252095abc6b14b38cf184f65d5e0b0_r.jpg">
+<meta property="og:image" content="http://example.com/2023/12/08/%E4%BD%BF%E7%94%A8%E8%87%AA%E7%BC%96%E7%A0%81%E5%99%A8%E8%BF%9B%E8%A1%8C%E5%9B%BE%E7%89%87%E6%A3%80%E7%B4%A2/image-20231207111433820.png">
+<meta property="og:image" content="http://example.com/2023/12/08/%E4%BD%BF%E7%94%A8%E8%87%AA%E7%BC%96%E7%A0%81%E5%99%A8%E8%BF%9B%E8%A1%8C%E5%9B%BE%E7%89%87%E6%A3%80%E7%B4%A2/image-20231207134937945.png">
+<meta property="og:image" content="http://example.com/2023/12/08/%E4%BD%BF%E7%94%A8%E8%87%AA%E7%BC%96%E7%A0%81%E5%99%A8%E8%BF%9B%E8%A1%8C%E5%9B%BE%E7%89%87%E6%A3%80%E7%B4%A2/v2-013c50b91e58841f9427bacf4cc8c469_1440w.webp">
+<meta property="og:image" content="http://example.com/2023/12/08/%E4%BD%BF%E7%94%A8%E8%87%AA%E7%BC%96%E7%A0%81%E5%99%A8%E8%BF%9B%E8%A1%8C%E5%9B%BE%E7%89%87%E6%A3%80%E7%B4%A2/v2-69f760af1ae9e9bc6550e784349dd574_1440w.webp">
+<meta property="og:image" content="http://example.com/2023/12/08/%E4%BD%BF%E7%94%A8%E8%87%AA%E7%BC%96%E7%A0%81%E5%99%A8%E8%BF%9B%E8%A1%8C%E5%9B%BE%E7%89%87%E6%A3%80%E7%B4%A2/v2-3fdc71cb7b0a82a345f9f654ae52c355_1440w.webp">
+<meta property="og:image" content="http://example.com/2023/12/08/%E4%BD%BF%E7%94%A8%E8%87%AA%E7%BC%96%E7%A0%81%E5%99%A8%E8%BF%9B%E8%A1%8C%E5%9B%BE%E7%89%87%E6%A3%80%E7%B4%A2/v2-1958de252393ac710ca4b03e3675b571_1440w.webp">
+<meta property="og:image" content="http://example.com/2023/12/08/%E4%BD%BF%E7%94%A8%E8%87%AA%E7%BC%96%E7%A0%81%E5%99%A8%E8%BF%9B%E8%A1%8C%E5%9B%BE%E7%89%87%E6%A3%80%E7%B4%A2/v2-2a27d52ac20ccc17c1c8904588698697_r.jpg">
+<meta property="og:image" content="http://example.com/2023/12/08/%E4%BD%BF%E7%94%A8%E8%87%AA%E7%BC%96%E7%A0%81%E5%99%A8%E8%BF%9B%E8%A1%8C%E5%9B%BE%E7%89%87%E6%A3%80%E7%B4%A2/v2-a7dab1fd9ecb9e77e58ea90a577c659a_1440w.webp">
+<meta property="og:image" content="http://example.com/2023/12/08/%E4%BD%BF%E7%94%A8%E8%87%AA%E7%BC%96%E7%A0%81%E5%99%A8%E8%BF%9B%E8%A1%8C%E5%9B%BE%E7%89%87%E6%A3%80%E7%B4%A2/image-20231207213052683.png">
+<meta property="og:image" content="http://example.com/2023/12/08/%E4%BD%BF%E7%94%A8%E8%87%AA%E7%BC%96%E7%A0%81%E5%99%A8%E8%BF%9B%E8%A1%8C%E5%9B%BE%E7%89%87%E6%A3%80%E7%B4%A2/image-20231207214351902.png">
+<meta property="og:image" content="http://example.com/2023/12/08/%E4%BD%BF%E7%94%A8%E8%87%AA%E7%BC%96%E7%A0%81%E5%99%A8%E8%BF%9B%E8%A1%8C%E5%9B%BE%E7%89%87%E6%A3%80%E7%B4%A2/image-20231207222459181.png">
+<meta property="og:image" content="http://example.com/2023/12/08/%E4%BD%BF%E7%94%A8%E8%87%AA%E7%BC%96%E7%A0%81%E5%99%A8%E8%BF%9B%E8%A1%8C%E5%9B%BE%E7%89%87%E6%A3%80%E7%B4%A2/v2-19f167d5649deeba94dbe1806bf743cf_720w.webp">
+<meta property="og:image" content="http://example.com/2023/12/08/%E4%BD%BF%E7%94%A8%E8%87%AA%E7%BC%96%E7%A0%81%E5%99%A8%E8%BF%9B%E8%A1%8C%E5%9B%BE%E7%89%87%E6%A3%80%E7%B4%A2/image-20231208210525790.png">
+<meta property="og:image" content="http://example.com/2023/12/08/%E4%BD%BF%E7%94%A8%E8%87%AA%E7%BC%96%E7%A0%81%E5%99%A8%E8%BF%9B%E8%A1%8C%E5%9B%BE%E7%89%87%E6%A3%80%E7%B4%A2/image-20231208215549456.png">
+<meta property="article:published_time" content="2023-12-08T01:39:00.000Z">
+<meta property="article:modified_time" content="2023-12-08T14:37:49.061Z">
+<meta property="article:author" content="Guoxin">
+<meta property="article:tag" content="计算机视觉">
+<meta property="article:tag" content="transformer">
+<meta property="article:tag" content="生成模型">
+<meta property="article:tag" content="cvae">
+<meta property="article:tag" content="KL散度">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/2023/12/08/%E4%BD%BF%E7%94%A8%E8%87%AA%E7%BC%96%E7%A0%81%E5%99%A8%E8%BF%9B%E8%A1%8C%E5%9B%BE%E7%89%87%E6%A3%80%E7%B4%A2/v2-f0252095abc6b14b38cf184f65d5e0b0_r.jpg">
+  
+  
+  
+  <title>使用自编码器进行图片检索 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.5","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Guoxin</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="使用自编码器进行图片检索"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-12-08 09:39" pubdate>
+          2023年12月8日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          17k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          146 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">使用自编码器进行图片检索</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="1-自编码器简介"><a href="#1-自编码器简介" class="headerlink" title="1 自编码器简介"></a>1 自编码器简介</h1><p>自编码器最初提出的目的是为了学习到数据的主要规律，进行数据压缩，或特征提取，是一类无监督学习的算法。后续各种改进的算法，使得自编码器具有生成能力，例如变分自编码器（VAE）的图像生成能力。</p>
+<p>本次放的代码都是线性版本，在我的仓库中还有cnn版本，毕竟线性版本只能处理一下这种mnist小数据集。地址：<a target="_blank" rel="noopener" href="https://github.com/Guoxn1/ai%E3%80%82">https://github.com/Guoxn1/ai。</a></p>
+<h1 id="2-线性自编码器"><a href="#2-线性自编码器" class="headerlink" title="2 线性自编码器"></a>2 线性自编码器</h1><p>自动编码器是由线性层构成的，它看起来就像是一个普通的深度神经网络DNN。</p>
+<p>特点如下：输出层的神经元数量往往与输入层的神经元数量一致、网络架构往往呈对称性，且中间结构简单、两边结构复杂。</p>
+<img src="v2-f0252095abc6b14b38cf184f65d5e0b0_r.jpg" srcset="/img/loading.gif" lazyload alt="v2-f0252095abc6b14b38cf184f65d5e0b0_r" style="zoom:80%;">
+
+<p>从输入层开始压缩数据、直至架构中心的部分被称为编码器Encoder，编码器的职责是从原始数据中提取必要的信息，从原始数据中提纯出的信息被称之为编码Code或隐式表示。从编码开始拓展数据、直至输出层的部分被称为解码器Decoder，解码器的输出一般被称为重构数据，解码器的职责是将提取出的信息还原为原来的结构。</p>
+<p>结合minst数据集，写一个用线性自编码器进行图片检索的demo。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> torch<br><span class="hljs-keyword">from</span> torchvision <span class="hljs-keyword">import</span> datasets,transforms<br><span class="hljs-keyword">import</span> torch.nn <span class="hljs-keyword">as</span> nn<br><span class="hljs-keyword">import</span> torch.nn.functional <span class="hljs-keyword">as</span> F<br><span class="hljs-keyword">import</span> matplotlib.pyplot <span class="hljs-keyword">as</span> plt<br><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np<br><br><br><span class="hljs-comment"># 定义线性自编码器</span><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Line_coder</span>(nn.Module):<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self</span>):<br>        <span class="hljs-built_in">super</span>(Line_coder,self).__init__()<br><br>        self.encoder = nn.Sequential(<br>            nn.Linear(<span class="hljs-number">28</span>*<span class="hljs-number">28</span>,<span class="hljs-number">256</span>),<br>            nn.ReLU(<span class="hljs-literal">True</span>),<br>            nn.Linear(<span class="hljs-number">256</span>,<span class="hljs-number">64</span>),<br>            nn.ReLU(<span class="hljs-literal">True</span>),<br>            nn.Linear(<span class="hljs-number">64</span>,<span class="hljs-number">16</span>),<br>            nn.ReLU(<span class="hljs-literal">True</span>),<br>            nn.Linear(<span class="hljs-number">16</span>,<span class="hljs-number">3</span>)<br>        )<br><br>        self.decoder = nn.Sequential(<br>            nn.Linear(<span class="hljs-number">3</span>,<span class="hljs-number">16</span>),<br>            nn.ReLU(<span class="hljs-literal">True</span>),<br>            nn.Linear(<span class="hljs-number">16</span>,<span class="hljs-number">64</span>),<br>            nn.ReLU(<span class="hljs-literal">True</span>),<br>            nn.Linear(<span class="hljs-number">64</span>,<span class="hljs-number">256</span>),<br>            nn.ReLU(),<br>            nn.Linear(<span class="hljs-number">256</span>,<span class="hljs-number">28</span>*<span class="hljs-number">28</span>),<br>            nn.Tanh()<br>        )<br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">forward</span>(<span class="hljs-params">self,X</span>):<br>        X = self.encoder(X)<br>        X = self.decoder(X)<br><br>        <span class="hljs-keyword">return</span> X<br>    <br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">data_load</span>():<br>    transform = transforms.Compose([<br>        transforms.ToTensor(),<br>        transforms.Normalize((<span class="hljs-number">0.5</span>,),(<span class="hljs-number">0.5</span>,))<br>    ])<br><br>    train_dataset = datasets.MNIST(root=<span class="hljs-string">&quot;../data&quot;</span>,train=<span class="hljs-literal">True</span>,download=<span class="hljs-literal">True</span>,transform=transform)<br>    test_dataset = datasets.MNIST(root=<span class="hljs-string">&quot;../data&quot;</span>,download=<span class="hljs-literal">True</span>,train=<span class="hljs-literal">False</span>,transform=transform)<br><br>    train_loader = torch.utils.data.DataLoader(dataset=train_dataset,batch_size=<span class="hljs-number">64</span>,shuffle=<span class="hljs-literal">True</span>)<br>    test_loader = torch.utils.data.DataLoader(dataset=test_dataset,batch_size=<span class="hljs-number">1</span>,shuffle=<span class="hljs-literal">True</span>)<br><br>    <span class="hljs-keyword">return</span> train_loader,test_loader<br><br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">train</span>(<span class="hljs-params">model,loss_fn,optim,epochs,train_loader,device</span>):<br>    model.train()<br>    model.to(device)<br>    <span class="hljs-keyword">for</span> epoch <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(epochs):<br>        <span class="hljs-keyword">for</span> img,_ <span class="hljs-keyword">in</span> train_loader:<br>            <span class="hljs-comment"># 扁平化 成为一维向量 以便输入到线性网络中</span><br>            img = img.view(img.size(<span class="hljs-number">0</span>),-<span class="hljs-number">1</span>)<br>            img = img.to(device)<br>            <br>            output = model(img)<br>            loss = loss_fn(output,img)<br><br>            <span class="hljs-comment"># 反向传播</span><br>            optim.zero_grad()<br>            loss.backward()<br>            optim.step()<br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">f&#x27;Epoch [<span class="hljs-subst">&#123;epoch+<span class="hljs-number">1</span>&#125;</span>/<span class="hljs-subst">&#123;epochs&#125;</span>], Loss: <span class="hljs-subst">&#123;loss.item():<span class="hljs-number">.4</span>f&#125;</span>&#x27;</span>)<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">retriveed_images</span>(<span class="hljs-params">query_image,train_loader,model,n,device</span>):<br>    <br>    query_image = query_image.view(query_image.size(<span class="hljs-number">0</span>),-<span class="hljs-number">1</span>).to(device)<br>    query_feature = model.encoder(query_image)<br>    distances = []<br>    <span class="hljs-keyword">for</span> img,_ <span class="hljs-keyword">in</span> train_loader:<br>        img = img.view(img.size(<span class="hljs-number">0</span>),-<span class="hljs-number">1</span>).to(device)<br>        features = model.encoder(img)<br>        dist = torch.norm(features-query_feature,dim=<span class="hljs-number">1</span>)<br>        distances.extend(<span class="hljs-built_in">list</span>(<span class="hljs-built_in">zip</span>(dist.cpu().detach().numpy(),img.cpu().detach().numpy())))<br><br>    distances.sort(key=<span class="hljs-keyword">lambda</span> x:x[<span class="hljs-number">0</span>])<br>    <span class="hljs-keyword">return</span> [x[<span class="hljs-number">1</span>] <span class="hljs-keyword">for</span> x <span class="hljs-keyword">in</span> distances[:n]]<br><br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">visualize_retrieval</span>(<span class="hljs-params">query_image, retrieved_images</span>):<br>    plt.figure(figsize=(<span class="hljs-number">10</span>, <span class="hljs-number">2</span>))<br><br>    <span class="hljs-comment"># 显示查询图片</span><br>    plt.subplot(<span class="hljs-number">1</span>, <span class="hljs-built_in">len</span>(retrieved_images) + <span class="hljs-number">1</span>, <span class="hljs-number">1</span>)<br>    plt.imshow(query_image.reshape(<span class="hljs-number">28</span>, <span class="hljs-number">28</span>), cmap=<span class="hljs-string">&#x27;gray&#x27;</span>)<br>    plt.title(<span class="hljs-string">&#x27;Query Image&#x27;</span>)<br>    plt.axis(<span class="hljs-string">&#x27;off&#x27;</span>)<br><br>    <span class="hljs-comment"># 显示检索到的图片</span><br>    <span class="hljs-keyword">for</span> i, img <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(retrieved_images, <span class="hljs-number">2</span>):<br>        plt.subplot(<span class="hljs-number">1</span>, <span class="hljs-built_in">len</span>(retrieved_images) + <span class="hljs-number">1</span>, i)<br>        plt.imshow(img.reshape(<span class="hljs-number">28</span>, <span class="hljs-number">28</span>), cmap=<span class="hljs-string">&#x27;gray&#x27;</span>)<br>        plt.title(<span class="hljs-string">f&#x27;Retrieved <span class="hljs-subst">&#123;i-<span class="hljs-number">1</span>&#125;</span>&#x27;</span>)<br>        plt.axis(<span class="hljs-string">&#x27;off&#x27;</span>)<br><br>    plt.show()<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">test</span>(<span class="hljs-params">model,test_loader,train_loader,device</span>):<br>    model.<span class="hljs-built_in">eval</span>()<br>    model.to(device)<br>    <span class="hljs-keyword">for</span> img,_ <span class="hljs-keyword">in</span> test_loader:<br>        query_image = img.view(img.size(<span class="hljs-number">0</span>),-<span class="hljs-number">1</span>).to(device)<br>        <span class="hljs-keyword">break</span><br>    retriveed_image = retriveed_images(query_image,train_loader,model,<span class="hljs-number">5</span>,device)<br>    visualize_retrieval(query_image.cpu().squeeze(), [img.squeeze() <span class="hljs-keyword">for</span> img <span class="hljs-keyword">in</span> retriveed_image])<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">main</span>():<br>    device = <span class="hljs-string">&quot;cuda&quot;</span><br>    model = Line_coder()<br>    loss_fn = nn.MSELoss()<br>    optim = torch.optim.Adam(model.parameters(),lr=<span class="hljs-number">1e-3</span>)<br>    epochs = <span class="hljs-number">5</span><br>    train_loader,test_loader = data_load()<br>    train(model,loss_fn,optim,epochs,train_loader,device)<br>    torch.save(model,<span class="hljs-string">&quot;model.pth&quot;</span>)<br><br>    test(model,test_loader,train_loader,device)<br><br>main()<br></code></pre></td></tr></table></figure>
+
+<p>这段代码可以选出test_loader中的相似图片。</p>
+<p><img src="image-20231207111433820.png" srcset="/img/loading.gif" lazyload alt="image-20231207111433820"></p>
+<h1 id="3-卷积自编码器"><a href="#3-卷积自编码器" class="headerlink" title="3 卷积自编码器"></a>3 卷积自编码器</h1><p>将线性层替换为卷积层就是卷积自编码器。</p>
+<p>代码部分有一点需要注意，在解码器中式中转置卷积进行维度扩张。</p>
+<p>线性编码器会损失很多信息，所以改为卷积自编码器，对图像处理效果可能会更好。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> torch<br><span class="hljs-keyword">from</span> torchvision <span class="hljs-keyword">import</span> datasets,transforms<br><span class="hljs-keyword">import</span> torch.nn <span class="hljs-keyword">as</span> nn<br><span class="hljs-keyword">import</span> torch.nn.functional <span class="hljs-keyword">as</span> F<br><span class="hljs-keyword">import</span> matplotlib.pyplot <span class="hljs-keyword">as</span> plt<br><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np<br><br><br><span class="hljs-comment"># 定义线性自编码器</span><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">conv_coder</span>(nn.Module):<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self</span>):<br>        <span class="hljs-built_in">super</span>(conv_coder,self).__init__()<br><br>        self.encoder = nn.Sequential(<br>            nn.Conv2d(<span class="hljs-number">1</span>,<span class="hljs-number">8</span>,kernel_size=<span class="hljs-number">3</span>,padding=<span class="hljs-number">1</span>),  <span class="hljs-comment"># [1,28,28] -&gt; [8,28,28] </span><br>            nn.MaxPool2d(kernel_size=<span class="hljs-number">2</span>,stride=<span class="hljs-number">2</span>),    <span class="hljs-comment"># [8,28,28] -&gt; [8,14,14]</span><br>            nn.ReLU(),<br>            nn.Conv2d(<span class="hljs-number">8</span>,<span class="hljs-number">16</span>,kernel_size=<span class="hljs-number">3</span>,padding=<span class="hljs-number">1</span>), <span class="hljs-comment">#[8,14,14] -&gt; [16,14,14]</span><br>            nn.MaxPool2d(kernel_size=<span class="hljs-number">2</span>,stride=<span class="hljs-number">2</span>),     <span class="hljs-comment">#[16,14,14] -&gt; [16,7,7]</span><br>            nn.ReLU(),<br>            nn.Conv2d(<span class="hljs-number">16</span>,<span class="hljs-number">4</span>,kernel_size=<span class="hljs-number">3</span>,padding=<span class="hljs-number">1</span>),  <span class="hljs-comment">#[16,7,7]  -&gt; [4,7,7]</span><br>            nn.ReLU(),<br>            nn.Flatten(),<br>            nn.Linear(<span class="hljs-number">4</span>*<span class="hljs-number">7</span>*<span class="hljs-number">7</span>,<span class="hljs-number">32</span>),<br>            nn.ReLU(),<br>            nn.Linear(<span class="hljs-number">32</span>,<span class="hljs-number">3</span>)<br>        )<br><br>        self.decoder = nn.Sequential(<br>            nn.Linear(<span class="hljs-number">3</span>,<span class="hljs-number">32</span>),<br>            nn.ReLU(),<br>            nn.Linear(<span class="hljs-number">32</span>,<span class="hljs-number">4</span>*<span class="hljs-number">7</span>*<span class="hljs-number">7</span>),<br>            nn.ReLU(),<br>            nn.Unflatten(<span class="hljs-number">1</span>,(<span class="hljs-number">4</span>,<span class="hljs-number">7</span>,<span class="hljs-number">7</span>)),<br>            nn.ReLU(),<br>            nn.ConvTranspose2d(<span class="hljs-number">4</span>,<span class="hljs-number">16</span>,kernel_size=<span class="hljs-number">3</span>,padding=<span class="hljs-number">1</span>),<br>            nn.ReLU(),<br>            <span class="hljs-comment"># 最大池化</span><br>            nn.ConvTranspose2d(<span class="hljs-number">16</span>,<span class="hljs-number">8</span>,kernel_size=<span class="hljs-number">3</span>,padding=<span class="hljs-number">1</span>,stride=<span class="hljs-number">2</span>,output_padding=<span class="hljs-number">1</span>),<br>            nn.ReLU(),<br>            <span class="hljs-comment"># 最大池化</span><br>            nn.ConvTranspose2d(<span class="hljs-number">8</span>,<span class="hljs-number">1</span>,kernel_size=<span class="hljs-number">3</span>,padding=<span class="hljs-number">1</span>,stride=<span class="hljs-number">2</span>,output_padding=<span class="hljs-number">1</span>),<br>            nn.Tanh()<br>        )<br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">forward</span>(<span class="hljs-params">self,X</span>):<br>        X = self.encoder(X)<br>        X = self.decoder(X)<br><br>        <span class="hljs-keyword">return</span> X<br>    <br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">data_load</span>():<br>    transform = transforms.Compose([<br>        transforms.ToTensor(),<br>        transforms.Normalize((<span class="hljs-number">0.5</span>,),(<span class="hljs-number">0.5</span>,))<br>    ])<br><br>    train_dataset = datasets.MNIST(root=<span class="hljs-string">&quot;../data&quot;</span>,train=<span class="hljs-literal">True</span>,download=<span class="hljs-literal">True</span>,transform=transform)<br>    test_dataset = datasets.MNIST(root=<span class="hljs-string">&quot;../data&quot;</span>,download=<span class="hljs-literal">True</span>,train=<span class="hljs-literal">False</span>,transform=transform)<br><br>    train_loader = torch.utils.data.DataLoader(dataset=train_dataset,batch_size=<span class="hljs-number">64</span>,shuffle=<span class="hljs-literal">True</span>)<br>    test_loader = torch.utils.data.DataLoader(dataset=test_dataset,batch_size=<span class="hljs-number">1</span>,shuffle=<span class="hljs-literal">True</span>)<br><br>    <span class="hljs-keyword">return</span> train_loader,test_loader<br><br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">train</span>(<span class="hljs-params">model,loss_fn,optim,epochs,train_loader,device</span>):<br>    model.train()<br>    model.to(device)<br>    <span class="hljs-keyword">for</span> epoch <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(epochs):<br>        <span class="hljs-keyword">for</span> img,_ <span class="hljs-keyword">in</span> train_loader:<br>            img = img.to(device)<br>            <br>            output = model(img)<br>            <br>            loss = loss_fn(output,img)<br><br>            <span class="hljs-comment"># 反向传播</span><br>            optim.zero_grad()<br>            loss.backward()<br>            optim.step()<br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">f&#x27;Epoch [<span class="hljs-subst">&#123;epoch+<span class="hljs-number">1</span>&#125;</span>/<span class="hljs-subst">&#123;epochs&#125;</span>], Loss: <span class="hljs-subst">&#123;loss.item():<span class="hljs-number">.4</span>f&#125;</span>&#x27;</span>)<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">retriveed_images</span>(<span class="hljs-params">query_image,train_loader,model,n,device</span>):<br>    <br>    query_image = query_image.to(device)<br>    query_feature = model.encoder(query_image)<br>    distances = []<br>    <span class="hljs-keyword">for</span> img,_ <span class="hljs-keyword">in</span> train_loader:<br>        img = img.to(device)<br>        features = model.encoder(img)<br>        dist = torch.norm(features-query_feature,dim=<span class="hljs-number">1</span>)<br>        distances.extend(<span class="hljs-built_in">list</span>(<span class="hljs-built_in">zip</span>(dist.cpu().detach().numpy(),img.cpu().detach().numpy())))<br><br>    distances.sort(key=<span class="hljs-keyword">lambda</span> x:x[<span class="hljs-number">0</span>])<br>    <span class="hljs-keyword">return</span> [x[<span class="hljs-number">1</span>] <span class="hljs-keyword">for</span> x <span class="hljs-keyword">in</span> distances[:n]]<br><br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">visualize_retrieval</span>(<span class="hljs-params">query_image, retrieved_images</span>):<br>    plt.figure(figsize=(<span class="hljs-number">10</span>, <span class="hljs-number">2</span>))<br><br>    <span class="hljs-comment"># 显示查询图片</span><br>    plt.subplot(<span class="hljs-number">1</span>, <span class="hljs-built_in">len</span>(retrieved_images) + <span class="hljs-number">1</span>, <span class="hljs-number">1</span>)<br>    plt.imshow(query_image.reshape(<span class="hljs-number">28</span>, <span class="hljs-number">28</span>), cmap=<span class="hljs-string">&#x27;gray&#x27;</span>)<br>    plt.title(<span class="hljs-string">&#x27;Query Image&#x27;</span>)<br>    plt.axis(<span class="hljs-string">&#x27;off&#x27;</span>)<br><br>    <span class="hljs-comment"># 显示检索到的图片</span><br>    <span class="hljs-keyword">for</span> i, img <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(retrieved_images, <span class="hljs-number">2</span>):<br>        plt.subplot(<span class="hljs-number">1</span>, <span class="hljs-built_in">len</span>(retrieved_images) + <span class="hljs-number">1</span>, i)<br>        plt.imshow(img.reshape(<span class="hljs-number">28</span>, <span class="hljs-number">28</span>), cmap=<span class="hljs-string">&#x27;gray&#x27;</span>)<br>        plt.title(<span class="hljs-string">f&#x27;Retrieved <span class="hljs-subst">&#123;i-<span class="hljs-number">1</span>&#125;</span>&#x27;</span>)<br>        plt.axis(<span class="hljs-string">&#x27;off&#x27;</span>)<br><br>    plt.show()<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">test</span>(<span class="hljs-params">model,test_loader,train_loader,device</span>):<br>    model.<span class="hljs-built_in">eval</span>()<br>    model.to(device)<br>    <span class="hljs-keyword">for</span> img,_ <span class="hljs-keyword">in</span> test_loader:<br>        query_image = img.to(device)<br>        <span class="hljs-keyword">break</span><br>    retriveed_image = retriveed_images(query_image,train_loader,model,<span class="hljs-number">5</span>,device)<br>    visualize_retrieval(query_image.cpu().squeeze(), [img.squeeze() <span class="hljs-keyword">for</span> img <span class="hljs-keyword">in</span> retriveed_image])<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">main</span>():<br>    device = <span class="hljs-string">&quot;cuda&quot;</span><br>    model = conv_coder()<br>    loss_fn = nn.MSELoss()<br>    optim = torch.optim.Adam(model.parameters(),lr=<span class="hljs-number">1e-3</span>)<br>    epochs = <span class="hljs-number">5</span><br>    train_loader,test_loader = data_load()<br>    train(model,loss_fn,optim,epochs,train_loader,device)<br>    torch.save(model,<span class="hljs-string">&quot;model_cnn.pth&quot;</span>)<br><br>    test(model,test_loader,train_loader,device)<br><br>main()<br></code></pre></td></tr></table></figure>
+
+<p>输出如下：</p>
+<p><img src="image-20231207134937945.png" srcset="/img/loading.gif" lazyload alt="image-20231207134937945"></p>
+<p>还是出现了一定的误判，但是整体还是可以的。可能是数据集太简单，过拟合了。</p>
+<h1 id="4-变分自动编码器"><a href="#4-变分自动编码器" class="headerlink" title="4 变分自动编码器"></a>4 变分自动编码器</h1><p>对于<strong>基本自编码器</strong>来说，只能够对原始数据进行压缩，不具备生成能力，也就是我们给解码器任意数据作为输入，解码器能够给我们生成我们想要的东西。主要原因是，基本自编码器给定一张图片生成原始图片，从输入到输出都是确定的，没有任何随机的成分，为了使模型表现很好，在不断的迭代训练中，编码器的输出也就是解码器的输入会趋于确定，这样才能让解码器能生成与输入数据更接近的数据，以使损失变得更小。但是这就与生成器的初衷有悖了。</p>
+<p>对于<strong>VAE</strong>来说，编码器的输入是原始数据X，但解码器的输入不是编码器的输出了，而是从满足一定分布中随机抽样出的Z。因此当变分自动编码器被训练好之后，我们可以只取架构中的解码器来使用：只要对解码器输入满足特定分布的随机数Z，解码器就可以生成像从原始数据X中抽样出来的数据，如此就能够实现图像生成。许多论文已经证明，变分自动编码器的生成能力足以与一些生成对抗网络分庭抗礼，但这一架构在生成领域的局限也很明显：与GAN一样，变分自动编码器能够获得的信息只有随机数Z，因此在面临复杂数据时架构会显得有些弱小。</p>
+<h2 id="4-1-基本架构"><a href="#4-1-基本架构" class="headerlink" title="4.1 基本架构"></a>4.1 基本架构</h2><p>与普通自动编码器一样，变分自动编码器有编码器Encoder与解码器Decoder两大部分组成，原始图像从编码器输入，经编码器后形成隐式表示（Latent Representation），之后隐式表示被输入到解码器、再复原回原始输入的结构。然而，与普通Autoencoders不同的是，<strong>变分自用编码器的Encoder与Decoder在数据流上并不是相连的，我们不会直接将Encoder编码后的结果传递给Decoder，而是要使得隐式表示满足既定分布。</strong></p>
+<p>①首先，变分自动编码器中的编码器会尽量将样本 X 所携带的所有特征信息的分布转码成<strong>类高斯分布。</strong><br>②编码器需要输出该类高斯分布的均值 u 与标准差 a 作为编码器的输出。<br>③以编码器生成的均值u 与标准差 a 为基础构建高斯分布。<br>④从构建的高斯分布中随机采样出<strong>一个数值</strong> Z ，将该数值输入解码器。<br>⑤解码器基于 Z进行解码，并最终输出与样本的原始特征结构一致的数据，作为VAE的输出X1 。</p>
+<img src="v2-013c50b91e58841f9427bacf4cc8c469_1440w.webp" srcset="/img/loading.gif" lazyload alt="img" style="zoom:50%;">
+
+<p>根据以上流程，变分自动编码器的Encoder在输出时，并不会直接输出原始数据的隐式表示，而是会输出从原始数据提炼出的均值 u 和标准差 a 。之后，我们需要建立均值为 u 、标准差为 a 的正态分布，并从该正态分布中抽样出隐式表示z，再将隐式表示z输入到Decoder中进行解码。对隐式表示z而言，它传递给Decoder的就不是原始数据的信息，而只是与原始数据同均值、同标准差的分布中的信息了。</p>
+<h2 id="4-2-正向传播、损失函数、重参数化"><a href="#4-2-正向传播、损失函数、重参数化" class="headerlink" title="4.2 正向传播、损失函数、重参数化"></a>4.2 正向传播、损失函数、重参数化</h2><p>m个样本，每个样本有5个特征。</p>
+<p>正向传播：</p>
+<img src="v2-69f760af1ae9e9bc6550e784349dd574_1440w.webp" srcset="/img/loading.gif" lazyload alt="img" style="zoom:50%;">
+
+<img src="v2-3fdc71cb7b0a82a345f9f654ae52c355_1440w.webp" srcset="/img/loading.gif" lazyload alt="img" style="zoom:50%;">
+
+<p><strong>当前的均值和标准差不是真实数据的统计量，而是通过Encoder推断出的、当前样本数据可能服从的任意分布中的属性</strong>。我们可以令Encoder的输出层存在3个神经元，这样Encoder就会对每一个样本推断出三对不同的均值和标准差。这个行为相当于对样本数据所属的原始分布进行估计，但给出了三个可能的答案。因此现在，在每个样本下，我们就可以基于三个均值和标准差的组合生成三个不同的正态分布了。</p>
+<p>每个样本对应了3个正态分布，而3个正态分布中可以分别抽取出三个数字z，此时每个隐式表示z就是一个形如(m,3)的矩阵。将这一矩阵放入Decoder，则Decoder的输入层也需要有三个神经元。此时，我们的隐式空间就是(m,3)。</p>
+<p>对任意的自动编码器而言，隐式空间越大，隐式表示z所携带的信息自然也会越多，自动编码器的表现就可能变得更好，因此在实际使用变分自动编码器的过程中，一个样本上至少都会生成10~100组均值和标准差，隐式表示z的结构一般也是较高维的矩阵。</p>
+<p>损失函数：</p>
+<img src="v2-1958de252393ac710ca4b03e3675b571_1440w.webp" srcset="/img/loading.gif" lazyload alt="img" style="zoom:50%;">
+
+<p>那么现在我们<strong>让编码器输出的概率分布和我们的先验的概率分布一样，这样就能够完成我们的生成任务</strong>。当然<strong>为了保证输出的精度，还需要让模型的输出</strong> X1<strong>与模型的输入</strong> X <strong>存在一定的制约关系。</strong></p>
+<p>常用KL散度来表示两个分布之间的差异，KL散度越小，分布越接近。</p>
+<p><img src="v2-2a27d52ac20ccc17c1c8904588698697_r.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p><strong>由于这个抽样流程的存在，架构中的数据流是断裂的，因此反向传播无法进行</strong>。反向传播要求每一层数据之间必有函数关系，而抽样流程不是一个函数关系，因此无法被反向传播。为了解决这一问题，变分自动编码器的原始论文提出了<strong>重参数化技巧，这一技巧可以帮助我们在抽样的同时建立</strong>Z <strong>与</strong> u <strong>和</strong> a <strong>之间的函数关系</strong>，这样就可以令反向传播顺利进行了。</p>
+<p>也就是不对mu，sigma的正态分布进行采样，而是对0,1的标准正态分布进行采样，再由 采样值*sigma+mu 来获取z，此时z显然满足mu，sigma的正态分布，且z并非由于采样得到，可由上述公式进行求导和梯度反向传播。</p>
+<img src="v2-a7dab1fd9ecb9e77e58ea90a577c659a_1440w.webp" srcset="/img/loading.gif" lazyload alt="img" style="zoom:50%;">
+
+<h2 id="4-3-代码实现"><a href="#4-3-代码实现" class="headerlink" title="4.3 代码实现"></a>4.3 代码实现</h2><p>以mnist手写数据集为例。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> torch<br><br>torch.manual_seed(<span class="hljs-number">0</span>)<br><span class="hljs-keyword">import</span> torch.nn <span class="hljs-keyword">as</span> nn<br><span class="hljs-keyword">import</span> torch.nn.functional <span class="hljs-keyword">as</span> F<br><span class="hljs-keyword">import</span> torch.utils<br><span class="hljs-keyword">import</span> torch.distributions<br><span class="hljs-keyword">import</span> torchvision<br><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np<br><span class="hljs-keyword">import</span> matplotlib.pyplot <span class="hljs-keyword">as</span> plt<br><br>plt.rcParams[<span class="hljs-string">&#x27;figure.dpi&#x27;</span>] = <span class="hljs-number">200</span><br><br>device=<span class="hljs-string">&quot;cuda&quot;</span><br><br><br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">VariationalEncoder</span>(nn.Module):<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self, latent_dims</span>):<br>        <span class="hljs-built_in">super</span>(VariationalEncoder, self).__init__()<br>        self.linear1 = nn.Linear(<span class="hljs-number">784</span>, <span class="hljs-number">512</span>)<br>        self.linear2 = nn.Linear(<span class="hljs-number">512</span>, latent_dims)<br>        self.linear3 = nn.Linear(<span class="hljs-number">512</span>, latent_dims)<br><br>        self.N = torch.distributions.Normal(<span class="hljs-number">0</span>, <span class="hljs-number">1</span>)<br>        self.N.loc = self.N.loc  <span class="hljs-comment"># hack to get sampling on the GPU</span><br>        self.N.scale = self.N.scale<br>        self.kl = <span class="hljs-number">0</span><br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">forward</span>(<span class="hljs-params">self, x</span>):<br>        x = torch.flatten(x, start_dim=<span class="hljs-number">1</span>)<br>        x = F.relu(self.linear1(x))<br>        mu = self.linear2(x).to(device)<br>        sigma = torch.exp(self.linear3(x)).to(device)<br>        sam = self.N.sample(mu.shape).to(device)<br>        z = mu + sigma * sam<br>        self.kl = (sigma ** <span class="hljs-number">2</span> + mu ** <span class="hljs-number">2</span> - torch.log(sigma) - <span class="hljs-number">1</span> / <span class="hljs-number">2</span>).<span class="hljs-built_in">sum</span>()<br>        <span class="hljs-keyword">return</span> z<br><br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Decoder</span>(nn.Module):<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self, latent_dims</span>):<br>        <span class="hljs-built_in">super</span>(Decoder, self).__init__()<br>        self.linear1 = nn.Linear(latent_dims, <span class="hljs-number">512</span>)<br>        self.linear2 = nn.Linear(<span class="hljs-number">512</span>, <span class="hljs-number">784</span>)<br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">forward</span>(<span class="hljs-params">self, z</span>):<br>        z = F.relu(self.linear1(z))<br>        z = torch.sigmoid(self.linear2(z))<br>        <span class="hljs-keyword">return</span> z.reshape((-<span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">28</span>, <span class="hljs-number">28</span>))<br><br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">VariationalAutoencoder</span>(nn.Module):<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self, latent_dims</span>):<br>        <span class="hljs-built_in">super</span>(VariationalAutoencoder, self).__init__()<br>        self.encoder = VariationalEncoder(latent_dims).to(device)<br>        self.decoder = Decoder(latent_dims).to(device)<br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">forward</span>(<span class="hljs-params">self, x</span>):<br>        z = self.encoder(x)<br>        <span class="hljs-keyword">return</span> self.decoder(z)<br><br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">train</span>(<span class="hljs-params">autoencoder, data, epochs=<span class="hljs-number">20</span></span>):<br>    device=<span class="hljs-string">&quot;cuda&quot;</span><br>    autoencoder = autoencoder.to(device)<br>    opt = torch.optim.Adam(autoencoder.parameters())<br>    <span class="hljs-keyword">for</span> epoch <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(epochs):<br>        <span class="hljs-keyword">for</span> x, _ <span class="hljs-keyword">in</span> data:<br>            x = x.to(device)  <span class="hljs-comment"># GPU</span><br>            <br>            x_hat = autoencoder(x)<br>            loss = ((x - x_hat) ** <span class="hljs-number">2</span>).<span class="hljs-built_in">sum</span>() + autoencoder.encoder.kl<br>            opt.zero_grad()<br>            loss.backward()<br>            opt.step()<br>        <span class="hljs-built_in">print</span>(epoch)<br>    <span class="hljs-keyword">return</span> autoencoder<br><br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">plot_latent</span>(<span class="hljs-params">variational_autoencoder, data, num_batches=<span class="hljs-number">100</span></span>):<br>    <span class="hljs-keyword">for</span> i, (x, y) <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(data):<br>        z = variational_autoencoder.encoder(x.to(device))<br>        z = z.to(<span class="hljs-string">&#x27;cpu&#x27;</span>).detach().numpy()<br>        plt.scatter(z[:, <span class="hljs-number">0</span>], z[:, <span class="hljs-number">1</span>], c=y, cmap=<span class="hljs-string">&#x27;tab10&#x27;</span>)<br>        <span class="hljs-keyword">if</span> i &gt; num_batches:<br>            plt.colorbar()<br>            <span class="hljs-keyword">break</span><br><br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">plot_reconstructed</span>(<span class="hljs-params">autoencoder, r0=(<span class="hljs-params">-<span class="hljs-number">5</span>, <span class="hljs-number">10</span></span>), r1=(<span class="hljs-params">-<span class="hljs-number">10</span>, <span class="hljs-number">5</span></span>), n=<span class="hljs-number">12</span></span>):<br>    w = <span class="hljs-number">28</span><br>    img = np.zeros((n * w, n * w))<br>    <span class="hljs-keyword">for</span> i, y <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(np.linspace(*r1, n)):<br>        <span class="hljs-keyword">for</span> j, x <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(np.linspace(*r0, n)):<br>            z = torch.Tensor([[x, y]]).to(device)<br>            x_hat = autoencoder.decoder(z)<br>            x_hat = x_hat.reshape(<span class="hljs-number">28</span>, <span class="hljs-number">28</span>).to(<span class="hljs-string">&#x27;cpu&#x27;</span>).detach().numpy()<br>            img[(n - <span class="hljs-number">1</span> - i) * w:(n - <span class="hljs-number">1</span> - i + <span class="hljs-number">1</span>) * w, j * w:(j + <span class="hljs-number">1</span>) * w] = x_hat<br>    plt.imshow(img, extent=[*r0, *r1])<br><br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">interpolate</span>(<span class="hljs-params">autoencoder, x_1, x_2, n=<span class="hljs-number">12</span></span>):<br>    z_1 = autoencoder.encoder(x_1)<br>    z_2 = autoencoder.encoder(x_2)<br>    z = torch.stack([z_1 + (z_2 - z_1) * t <span class="hljs-keyword">for</span> t <span class="hljs-keyword">in</span> np.linspace(<span class="hljs-number">0</span>, <span class="hljs-number">1</span>, n)])<br>    interpolate_list = autoencoder.decoder(z)<br>    interpolate_list = interpolate_list.to(<span class="hljs-string">&#x27;cpu&#x27;</span>).detach().numpy()<br><br>    w = <span class="hljs-number">28</span><br>    img = np.zeros((w, n * w))<br>    <span class="hljs-keyword">for</span> i, x_hat <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(interpolate_list):<br>        img[:, i * w:(i + <span class="hljs-number">1</span>) * w] = x_hat.reshape(<span class="hljs-number">28</span>, <span class="hljs-number">28</span>)<br>    plt.imshow(img)<br>    plt.xticks([])<br>    plt.yticks([])<br><br><br><span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&quot;__main__&quot;</span>:<br>    <span class="hljs-comment"># device=&quot;cpu&quot;</span><br>    latent_dims = <span class="hljs-number">2</span><br>    vae = VariationalAutoencoder(latent_dims)  <span class="hljs-comment"># GPU</span><br>    data = torch.utils.data.DataLoader(<br>        torchvision.datasets.MNIST(<span class="hljs-string">&#x27;./data&#x27;</span>,<br>                                   transform=torchvision.transforms.ToTensor(),<br>                                   download=<span class="hljs-literal">True</span>),<br>        batch_size=<span class="hljs-number">128</span>,<br>        shuffle=<span class="hljs-literal">True</span>)<br><br>    vae = train(vae, data,epochs=<span class="hljs-number">10</span>)<br>    <span class="hljs-comment">#plot_latent(vae, data)</span><br>    <span class="hljs-comment">#plt.show()</span><br>    plot_reconstructed(vae, r0=(-<span class="hljs-number">3</span>, <span class="hljs-number">3</span>), r1=(-<span class="hljs-number">3</span>, <span class="hljs-number">3</span>))<br>    plt.show()<br>    x, y = <span class="hljs-built_in">next</span>(<span class="hljs-built_in">iter</span>(data)) <span class="hljs-comment"># hack to grab a batch</span><br>    x_1 = x[y == <span class="hljs-number">1</span>][<span class="hljs-number">1</span>].to(device)  <span class="hljs-comment"># find a 1</span><br>    x_2 = x[y == <span class="hljs-number">0</span>][<span class="hljs-number">1</span>].to(device)  <span class="hljs-comment"># find a 0</span><br><br>    interpolate(vae, x_1, x_2, n=<span class="hljs-number">20</span>)<br>    plt.show()<br></code></pre></td></tr></table></figure>
+
+<p><img src="image-20231207213052683.png" srcset="/img/loading.gif" lazyload alt="image-20231207213052683"></p>
+<p>生成出的2的图像，怎么感觉还不如上面的第一个2。</p>
+<img src="image-20231207214351902.png" srcset="/img/loading.gif" lazyload alt="image-20231207214351902" style="zoom: 25%;">
+
+<p>篇幅受限，就不展示cnn_vae了，但是效果可以展示如下，可以看到，效果要好一点。都是根据已有的图片生成的噢。</p>
+<img src="image-20231207222459181.png" srcset="/img/loading.gif" lazyload alt="image-20231207222459181" style="zoom:25%;">
+
+<h1 id="5-CVAE-条件变分自编码器"><a href="#5-CVAE-条件变分自编码器" class="headerlink" title="5 CVAE 条件变分自编码器"></a>5 CVAE 条件变分自编码器</h1><p>我们上面是可以指定生成什么数字的，主要的原理就是给一个相关的图，比如给一个2的图，生成一个2，但是这有很多不便。</p>
+<p>论文中标准结构的CVAE，encoder的输入变为原始的手写数字图像和数字类别信息的拼接，输出不变。decoder的输入变为正态分布采样z与数字类别信息的拼接，输出不变。</p>
+<p>将数字类别信息作为条件加入到encoder和decoder的输入中，由此来指定数字类别生成对应的数字图片。</p>
+<p><img src="v2-19f167d5649deeba94dbe1806bf743cf_720w.webp" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>数字类别输入encoder和decoder前需要经过onehot encoding（独热编码），将0-9这个十类别的单个数字变为10维向量，该向量仅在数字值对应的位置上取1，其他位置取0。（例如：数字0对应的向量就是[1,0,0,0,0,0,0,0,0,0]，数字1对应的向量是[0,1,0,0,0,0,0,0,0,0]，等等）。</p>
+<p>该行为的目的是把0-9这10个数字对应的数据无关化（互相垂直），独立化（平等对待，忽视其值的大小)。例如，onehot encoding前数字0到1，0与9的距离不同，但对于分类任务，所有数字是平等的，onehot后的十维向量，0到1的距离和0到9的距离相同，而且0-9这10个十维向量互相垂直，线性无关，谁也无法用剩余的来表示。</p>
+<p>另一个角度，也可将这个10维向量看作是该手写数字图像对应的0-9这十种数字的概率，由于该数字图像的事实结果是0-9的某一个，所以对应维度的概率值为1，其他的维度为0。</p>
+<p>除此之外，训练模型的目标与VAE无差别。</p>
+<p>训练完成使用时，CVAE的decoder输入为n个标准正态分布的采样值，及指定的数字类别，输出为指定数字类别对应的手写数字图像。</p>
+<p>这种加入条件的思路在wavenet，tacotron等声音模型中常使用，把人物的声音特征作为条件加入，可生成相同内容，但不同人声的语音。</p>
+<p>代码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> torch<br><br>torch.manual_seed(<span class="hljs-number">0</span>)<br><span class="hljs-keyword">import</span> torch.nn <span class="hljs-keyword">as</span> nn<br><span class="hljs-keyword">import</span> torch.nn.functional <span class="hljs-keyword">as</span> F<br><span class="hljs-keyword">import</span> torch.utils<br><span class="hljs-keyword">import</span> torch.distributions<br><span class="hljs-keyword">import</span> torchvision<br><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np<br><span class="hljs-keyword">import</span> matplotlib.pyplot <span class="hljs-keyword">as</span> plt<br><br>plt.rcParams[<span class="hljs-string">&#x27;figure.dpi&#x27;</span>] = <span class="hljs-number">200</span><br><br>device=<span class="hljs-string">&quot;cuda&quot;</span><br><br><br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">VariationalEncoder</span>(nn.Module):<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self, input_size,hidden_size,latent_dims</span>):<br>        <span class="hljs-built_in">super</span>(VariationalEncoder, self).__init__()<br>        self.linear1 = nn.Linear(input_size, hidden_size)<br>        self.linear2 = nn.Linear(hidden_size, latent_dims)<br>        self.linear3 = nn.Linear(hidden_size, latent_dims)<br><br>        self.N = torch.distributions.Normal(<span class="hljs-number">0</span>, <span class="hljs-number">1</span>)<br>        self.N.loc = self.N.loc  <span class="hljs-comment"># hack to get sampling on the GPU</span><br>        self.N.scale = self.N.scale<br>        self.kl = <span class="hljs-number">0</span><br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">forward</span>(<span class="hljs-params">self, x,c</span>):<br>        x = torch.flatten(x, start_dim=<span class="hljs-number">1</span>)<br>        x = torch.cat((x,c),dim=<span class="hljs-number">1</span>)<br>        x = F.relu(self.linear1(x))<br>        mu = self.linear2(x).to(device)<br>        sigma = torch.exp(self.linear3(x)).to(device)<br>        sam = self.N.sample(mu.shape).to(device)<br>        z = mu + sigma * sam<br>        self.kl = (sigma ** <span class="hljs-number">2</span> + mu ** <span class="hljs-number">2</span> - torch.log(sigma) - <span class="hljs-number">1</span> / <span class="hljs-number">2</span>).<span class="hljs-built_in">sum</span>()<br>        <span class="hljs-keyword">return</span> z<br><br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Decoder</span>(nn.Module):<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self, latent_dims,hidden_size,output_size</span>):<br>        <span class="hljs-built_in">super</span>(Decoder, self).__init__()<br>        self.linear1 = nn.Linear(latent_dims, hidden_size)<br>        self.linear2 = nn.Linear(hidden_size, output_size)<br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">forward</span>(<span class="hljs-params">self, z,c</span>):<br>        z = torch.cat((z,c),dim=<span class="hljs-number">1</span>)<br>        z = F.relu(self.linear1(z))<br>        z = torch.sigmoid(self.linear2(z))<br>        <span class="hljs-keyword">return</span> z.reshape((-<span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">28</span>, <span class="hljs-number">28</span>))<br><br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">VariationalAutoencoder</span>(nn.Module):<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self, input_size,output_size,hidden_size,latent_dims,condition_size</span>):<br>        <span class="hljs-built_in">super</span>(VariationalAutoencoder, self).__init__()<br>        self.encoder = VariationalEncoder(input_size+condition_size,hidden_size,latent_dims).to(device)<br>        self.decoder = Decoder(latent_dims+condition_size,hidden_size,output_size).to(device)<br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">forward</span>(<span class="hljs-params">self, x,c</span>):<br>        <br>        z = self.encoder(x,c)<br>        <br>        <span class="hljs-keyword">return</span> self.decoder(z,c)<br><br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">train</span>(<span class="hljs-params">autoencoder, data, epochs=<span class="hljs-number">10</span></span>):<br>    device=<span class="hljs-string">&quot;cuda&quot;</span><br>    autoencoder = autoencoder.to(device)<br>    opt = torch.optim.Adam(autoencoder.parameters())<br>    <span class="hljs-keyword">for</span> epoch <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(epochs):<br>        <span class="hljs-keyword">for</span> x, y <span class="hljs-keyword">in</span> data:<br>            x = x.to(device)  <span class="hljs-comment"># GPU</span><br>            y = F.one_hot(y.to(device),condition_size)<br>            x_hat = autoencoder(x,y)<br>            loss = ((x - x_hat) ** <span class="hljs-number">2</span>).<span class="hljs-built_in">sum</span>() + autoencoder.encoder.kl<br>            opt.zero_grad()<br>            loss.backward()<br>            opt.step()<br>        <span class="hljs-built_in">print</span>(epoch)<br>    <span class="hljs-keyword">return</span> autoencoder<br><br><br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">plot_pre_imgs</span>(<span class="hljs-params">cvae,latent_dims</span>):<br><br>    sample = torch.randn(<span class="hljs-number">1</span>,latent_dims).to(device)<br>    fig, ax = plt.subplots(<span class="hljs-number">2</span>, <span class="hljs-number">5</span>, figsize=(<span class="hljs-number">10</span>, <span class="hljs-number">4</span>))<br>    n = <span class="hljs-number">0</span><br>    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">2</span>):<br>        <span class="hljs-keyword">for</span> j <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">5</span>):<br>            i_number = n*torch.ones(<span class="hljs-number">1</span>).long().to(device)<br>            condit = F.one_hot(i_number,condition_size)<span class="hljs-comment">#将数字进行onehot encoding</span><br>            gen = cvae.decoder(sample,condit)[<span class="hljs-number">0</span>].view(<span class="hljs-number">28</span>,<span class="hljs-number">28</span>)<span class="hljs-comment">#生成</span><br>            n = n+<span class="hljs-number">1</span><br>            ax[i, j].imshow(gen.cpu().detach().numpy(), cmap=<span class="hljs-string">&#x27;gray&#x27;</span>)<br>            ax[i, j].axis(<span class="hljs-string">&#x27;off&#x27;</span>)<br><br>    plt.subplots_adjust(wspace=<span class="hljs-number">0.1</span>, hspace=<span class="hljs-number">0.1</span>)<br>    plt.show()<br><br><br><span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&quot;__main__&quot;</span>:<br>    <span class="hljs-comment"># device=&quot;cpu&quot;</span><br>    condition_size=<span class="hljs-number">10</span><br>    latent_dims = <span class="hljs-number">8</span><br>    input_size=<span class="hljs-number">28</span>*<span class="hljs-number">28</span><br>    output_size= <span class="hljs-number">28</span>*<span class="hljs-number">28</span><br>    hidden_size=<span class="hljs-number">512</span><br>    cvae = VariationalAutoencoder(input_size,output_size,hidden_size,latent_dims,condition_size)  <span class="hljs-comment"># GPU</span><br>    data = torch.utils.data.DataLoader(<br>        torchvision.datasets.MNIST(<span class="hljs-string">&#x27;./data&#x27;</span>,<br>                                   transform=torchvision.transforms.ToTensor(),<br>                                   download=<span class="hljs-literal">True</span>),<br>        batch_size=<span class="hljs-number">128</span>,<br>        shuffle=<span class="hljs-literal">True</span>)<br>    <br>    cvae = train(cvae, data,epochs=<span class="hljs-number">20</span>)<br>    plot_pre_imgs(cvae,latent_dims)<br>    plt.show()<br>    torch.save(cvae,<span class="hljs-string">&quot;cvae.pth&quot;</span>)<br></code></pre></td></tr></table></figure>
+
+
+
+<p><img src="image-20231208210525790.png" srcset="/img/loading.gif" lazyload alt="image-20231208210525790"></p>
+<p>以上图片全是生成的，可见效果还是不错的，但是5和7的生成略微像6和9，可能是过拟合，也可能是模型的问题，但总体还是不错的。</p>
+<p>还有一种代码是encoder不给标签，decoder给标签，感觉效果应该一般，没进行code，感觉效果会差。</p>
+<p>上面是线性的条件变分自编码器，这边改成卷积的再生成一遍，篇幅原因，代码都在我的仓库中，效果如下：</p>
+<p><img src="image-20231208215549456.png" srcset="/img/loading.gif" lazyload alt="image-20231208215549456"></p>
+<p>全是生成的噢，可见，效果还是不错的，记住了空间信息，5和7的问题明显改善。</p>
+<p>看到后面还有其他更有力的生成模型，之后会继续更新，这篇没还完噢。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89/" class="category-chain-item">计算机视觉</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89/%E7%94%9F%E6%88%90%E6%A8%A1%E5%9E%8B/" class="category-chain-item">生成模型</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89/" class="print-no-link">#计算机视觉</a>
+      
+        <a href="/tags/transformer/" class="print-no-link">#transformer</a>
+      
+        <a href="/tags/%E7%94%9F%E6%88%90%E6%A8%A1%E5%9E%8B/" class="print-no-link">#生成模型</a>
+      
+        <a href="/tags/cvae/" class="print-no-link">#cvae</a>
+      
+        <a href="/tags/KL%E6%95%A3%E5%BA%A6/" class="print-no-link">#KL散度</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>使用自编码器进行图片检索</div>
+      <div>http://example.com/2023/12/08/使用自编码器进行图片检索/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Guoxin</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年12月8日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/12/13/%E5%AF%B9%E6%8A%97%E6%A0%B7%E6%9C%AC%E6%8A%80%E6%9C%AF%E5%9C%A8%E6%81%B6%E6%84%8F%E8%BD%AF%E4%BB%B6%E6%A3%80%E6%B5%8B%E5%92%8C%E8%87%AA%E5%8A%A8%E9%A9%BE%E9%A9%B6%E5%BA%94%E7%94%A8%E4%B8%AD%E7%9A%84%E7%A0%94%E7%A9%B6-%E5%88%98%E9%91%AB%E6%B3%A2-2020/" title="对抗样本技术在恶意软件检测和自动驾驶应用中的研究_刘鑫波_2020">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">对抗样本技术在恶意软件检测和自动驾驶应用中的研究_刘鑫波_2020</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/12/04/%E7%8E%B0%E4%BB%A3%E5%BE%AA%E7%8E%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/" title="现代循环神经网络">
+                        <span class="hidden-mobile">现代循环神经网络</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

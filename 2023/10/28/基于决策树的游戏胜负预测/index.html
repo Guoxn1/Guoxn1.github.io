@@ -1,0 +1,748 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Guoxin">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="1 简介 本数据集来自Kaggle，包含了9879场钻一到大师段位的单双排对局，对局双方几乎是同一水平。每条数据是前10分钟的对局情况，每支队伍有19个特征，红蓝双方共38个特征。这些特征包括英雄击杀、死亡，金钱、经验、等级情况等等。一局游戏一般会持续30至40分钟，但是实际前10分钟的局面很大程度上影响了之后胜负的走向。 项目源地址：https:&#x2F;&#x2F;gitlab.diantouedu.cn&#x2F;QY">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基于决策树的游戏胜负预测">
+<meta property="og:url" content="http://example.com/2023/10/28/%E5%9F%BA%E4%BA%8E%E5%86%B3%E7%AD%96%E6%A0%91%E7%9A%84%E6%B8%B8%E6%88%8F%E8%83%9C%E8%B4%9F%E9%A2%84%E6%B5%8B/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="1 简介 本数据集来自Kaggle，包含了9879场钻一到大师段位的单双排对局，对局双方几乎是同一水平。每条数据是前10分钟的对局情况，每支队伍有19个特征，红蓝双方共38个特征。这些特征包括英雄击杀、死亡，金钱、经验、等级情况等等。一局游戏一般会持续30至40分钟，但是实际前10分钟的局面很大程度上影响了之后胜负的走向。 项目源地址：https:&#x2F;&#x2F;gitlab.diantouedu.cn&#x2F;QY">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2023/10/28/%E5%9F%BA%E4%BA%8E%E5%86%B3%E7%AD%96%E6%A0%91%E7%9A%84%E6%B8%B8%E6%88%8F%E8%83%9C%E8%B4%9F%E9%A2%84%E6%B5%8B/image-20231028212714943.png">
+<meta property="og:image" content="http://example.com/2023/10/28/%E5%9F%BA%E4%BA%8E%E5%86%B3%E7%AD%96%E6%A0%91%E7%9A%84%E6%B8%B8%E6%88%8F%E8%83%9C%E8%B4%9F%E9%A2%84%E6%B5%8B/image-20231028212752472.png">
+<meta property="article:published_time" content="2023-10-28T11:53:19.000Z">
+<meta property="article:modified_time" content="2023-12-03T09:03:24.570Z">
+<meta property="article:author" content="Guoxin">
+<meta property="article:tag" content="机器学习">
+<meta property="article:tag" content="分类">
+<meta property="article:tag" content="决策树">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/2023/10/28/%E5%9F%BA%E4%BA%8E%E5%86%B3%E7%AD%96%E6%A0%91%E7%9A%84%E6%B8%B8%E6%88%8F%E8%83%9C%E8%B4%9F%E9%A2%84%E6%B5%8B/image-20231028212714943.png">
+  
+  
+  
+  <title>基于决策树的游戏胜负预测 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.5","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Guoxin</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="基于决策树的游戏胜负预测"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-10-28 19:53" pubdate>
+          2023年10月28日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          7.5k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          63 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">基于决策树的游戏胜负预测</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="1-简介"><a href="#1-简介" class="headerlink" title="1 简介"></a>1 简介</h1><p> 本数据集来自Kaggle，包含了9879场钻一到大师段位的单双排对局，对局双方几乎是同一水平。每条数据是前10分钟的对局情况，每支队伍有19个特征，红蓝双方共38个特征。这些特征包括英雄击杀、死亡，金钱、经验、等级情况等等。一局游戏一般会持续30至40分钟，但是实际前10分钟的局面很大程度上影响了之后胜负的走向。</p>
+<p>项目源地址：<a target="_blank" rel="noopener" href="https://gitlab.diantouedu.cn/QY/test1/tree/master/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E7%B3%BB%E7%BB%9F%E5%AE%9E%E6%88%98%E7%AC%AC%E4%B8%89%E6%9C%9F/%E5%AE%9E%E6%88%98%E4%BB%A3%E7%A0%81/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E9%A1%B9%E7%9B%AE%E5%AE%9E%E6%88%98/%E5%9F%BA%E4%BA%8E%E5%86%B3%E7%AD%96%E6%A0%91%E7%9A%84%E8%8B%B1%E9%9B%84%E8%81%94%E7%9B%9F%E8%83%9C%E8%B4%9F%E9%A2%84%E6%B5%8B">https://gitlab.diantouedu.cn/QY/test1/tree/master/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E7%B3%BB%E7%BB%9F%E5%AE%9E%E6%88%98%E7%AC%AC%E4%B8%89%E6%9C%9F/%E5%AE%9E%E6%88%98%E4%BB%A3%E7%A0%81/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E9%A1%B9%E7%9B%AE%E5%AE%9E%E6%88%98/%E5%9F%BA%E4%BA%8E%E5%86%B3%E7%AD%96%E6%A0%91%E7%9A%84%E8%8B%B1%E9%9B%84%E8%81%94%E7%9B%9F%E8%83%9C%E8%B4%9F%E9%A2%84%E6%B5%8B</a></p>
+<p>本文在其基础上做了一定的删改和增添。</p>
+<p>本文项目地址：<a target="_blank" rel="noopener" href="https://github.com/Guoxn1/ai">https://github.com/Guoxn1/ai</a></p>
+<h1 id="2-数据预处理"><a href="#2-数据预处理" class="headerlink" title="2 数据预处理"></a>2 数据预处理</h1><ol>
+<li><p>包括删除第一列，编号实际上没什么用。</p>
+</li>
+<li><p>删除重复信息，蓝方和红方经济差就是只记录一边就行。</p>
+</li>
+<li><p>删除共线性较高的变量</p>
+</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> pandas <span class="hljs-keyword">as</span> pd  <span class="hljs-comment"># 数据处理</span><br><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np  <span class="hljs-comment"># 数学运算</span><br><span class="hljs-keyword">from</span> collections <span class="hljs-keyword">import</span> Counter, defaultdict<br><span class="hljs-keyword">from</span> sklearn.model_selection <span class="hljs-keyword">import</span> train_test_split, cross_validate  <span class="hljs-comment"># 划分数据集函数</span><br><span class="hljs-keyword">from</span> sklearn.metrics <span class="hljs-keyword">import</span> accuracy_score, precision_score, recall_score, f1_score  <span class="hljs-comment"># 准确率函数</span><br><span class="hljs-keyword">import</span> matplotlib.pyplot <span class="hljs-keyword">as</span> plt  <span class="hljs-comment"># 作图</span><br><span class="hljs-keyword">import</span> seaborn <span class="hljs-keyword">as</span> sns  <span class="hljs-comment"># 作图</span><br><span class="hljs-keyword">from</span> sklearn.tree <span class="hljs-keyword">import</span> DecisionTreeClassifier<br><span class="hljs-keyword">from</span> sklearn.decomposition <span class="hljs-keyword">import</span> PCA<br><span class="hljs-keyword">from</span> sklearn.metrics <span class="hljs-keyword">import</span> accuracy_score<br><br></code></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs python">data_df = pd.read_csv(<span class="hljs-string">&quot;1.csv&quot;</span>)<br>data_df = data_df.drop(columns=<span class="hljs-string">&quot;gameId&quot;</span>)<br>features =  data_df.columns[<span class="hljs-number">1</span>:]<br>data_df1 = data_df.copy()<br>data_df1.info()<br>data_df1 = data_df1.drop(columns=[<span class="hljs-string">&quot;redGoldDiff&quot;</span>,<span class="hljs-string">&#x27;redExperienceDiff&#x27;</span>,<span class="hljs-string">&#x27;redCSPerMin&#x27;</span>, <span class="hljs-string">&#x27;redGoldPerMin&#x27;</span>,<span class="hljs-string">&#x27;redFirstBlood&#x27;</span>,<span class="hljs-string">&quot;redDeaths&quot;</span>,<span class="hljs-string">&quot;redKills&quot;</span>])<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 绘制热力图，删除共线性较大的变量 88%</span><br>plt.figure(figsize=(<span class="hljs-number">18</span>, <span class="hljs-number">14</span>))<br>sns.heatmap(<span class="hljs-built_in">round</span>(data_df1.corr(), <span class="hljs-number">2</span>), cmap=<span class="hljs-string">&#x27;Blues&#x27;</span>, annot=<span class="hljs-literal">True</span>)<br>plt.show() <br><br></code></pre></td></tr></table></figure>
+
+<p><img src="image-20231028212714943.png" srcset="/img/loading.gif" lazyload alt="image-20231028212714943"></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs python">row_indices, col_indices = np.where(np.<span class="hljs-built_in">abs</span>(data_df1.corr()) &gt;= <span class="hljs-number">0.88</span>)<br>col_set= <span class="hljs-built_in">set</span>()<br><span class="hljs-keyword">for</span> row, col <span class="hljs-keyword">in</span> <span class="hljs-built_in">zip</span>(row_indices, col_indices):<br>    <span class="hljs-keyword">if</span> row != col:<br>        col_set.add(data_df1.columns[col])<br>        <br><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> col_set:<br>    data_df1 = data_df1.drop(i,axis=<span class="hljs-number">1</span>)<br><span class="hljs-comment"># 算出要删除的是那行</span><br><span class="hljs-comment"># 有点小问题</span><br><span class="hljs-comment">#应该这样，不然两个变量全删了 下面就不改了：</span><br>col_list = <span class="hljs-built_in">list</span>(col_set)   <br><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(col_list)):<br>    <span class="hljs-keyword">if</span> i % <span class="hljs-number">2</span>==<span class="hljs-number">0</span>:<br>        feature_df = feature_df.drop(col_list[i],axis=<span class="hljs-number">1</span>)<br><br></code></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python">plt.figure(figsize=(<span class="hljs-number">18</span>, <span class="hljs-number">14</span>))<br>sns.heatmap(<span class="hljs-built_in">round</span>(data_df1.corr(), <span class="hljs-number">2</span>), cmap=<span class="hljs-string">&#x27;Blues&#x27;</span>, annot=<span class="hljs-literal">True</span>)<br>plt.show() <br></code></pre></td></tr></table></figure>
+
+<p><img src="image-20231028212752472.png" srcset="/img/loading.gif" lazyload alt="image-20231028212752472"></p>
+<h1 id="3-数据处理和优化参数"><a href="#3-数据处理和优化参数" class="headerlink" title="3 数据处理和优化参数"></a>3 数据处理和优化参数</h1><p>使用的10折交叉验证优化参数。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment">#  根据共线性图删除目标后  直接寻找最佳参数</span><br><span class="hljs-keyword">from</span> sklearn.preprocessing <span class="hljs-keyword">import</span> StandardScaler<br>feature_names = data_df1.columns[<span class="hljs-number">1</span>:]<br>all_x = data_df1[feature_names].values<br><br>all_y = data_df[<span class="hljs-string">&#x27;blueWins&#x27;</span>].values<br>scaler1 = StandardScaler()<br>scaler2 = StandardScaler()<br>x_train, x_test, y_train, y_test = train_test_split(all_x, all_y, test_size=<span class="hljs-number">0.2</span>, random_state=<span class="hljs-number">42</span>)<br>x_train = scaler1.fit_transform(x_train)<br>x_test =  scaler2.fit_transform(x_test)<br><span class="hljs-built_in">print</span>(x_train.shape)<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> sklearn.model_selection <span class="hljs-keyword">import</span> train_test_split, GridSearchCV<br><span class="hljs-keyword">from</span> sklearn.metrics <span class="hljs-keyword">import</span> confusion_matrix, classification_report<br><span class="hljs-comment">#  1 根据共线性图删除目标后  直接寻找最佳参数</span><br><br>parameters = &#123;<br>    <span class="hljs-string">&#x27;splitter&#x27;</span>: (<span class="hljs-string">&#x27;best&#x27;</span>, <span class="hljs-string">&#x27;random&#x27;</span>),<br>    <span class="hljs-string">&#x27;criterion&#x27;</span>: (<span class="hljs-string">&#x27;gini&#x27;</span>, <span class="hljs-string">&#x27;entropy&#x27;</span>),<br>    <span class="hljs-string">&#x27;max_depth&#x27;</span>: [*<span class="hljs-built_in">range</span>(<span class="hljs-number">1</span>, <span class="hljs-number">10</span>, <span class="hljs-number">1</span>)],<br>&#125;<br><br>clf = DecisionTreeClassifier(random_state=<span class="hljs-number">0</span>)<br>GS = GridSearchCV(clf, parameters, cv=<span class="hljs-number">10</span>)<br>GS.fit(x_train, y_train)<br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;best score: &quot;</span>, GS.best_score_)<br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;best param: &quot;</span>, GS.best_params_)<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs python">best_clf = DecisionTreeClassifier(<br>    criterion=<span class="hljs-string">&quot;entropy&quot;</span>, max_depth=<span class="hljs-number">7</span>, splitter=<span class="hljs-string">&quot;random&quot;</span>)<br>best_clf.fit(x_train, y_train)<br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;score:&quot;</span>, best_clf.score(x_test, y_test))<br><span class="hljs-comment"># 输出分类报告</span><br>y_pred = best_clf.predict(x_test)<br>cm = confusion_matrix(y_test, y_pred)<br>cr = classification_report(y_test, y_pred)<br><span class="hljs-built_in">print</span>(<span class="hljs-string">&#x27;Classification report : \n&#x27;</span>, cr)<br></code></pre></td></tr></table></figure>
+
+<h1 id="4-手撕决策树算法"><a href="#4-手撕决策树算法" class="headerlink" title="4 手撕决策树算法"></a>4 手撕决策树算法</h1><p>我直接copy了，以后用得着再回来看。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 定义决策树类</span><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">DecisionTree</span>(<span class="hljs-title class_ inherited__">object</span>):<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self, classes, features,</span><br><span class="hljs-params">                 max_depth=<span class="hljs-number">10</span>, min_samples_split=<span class="hljs-number">10</span>,</span><br><span class="hljs-params">                 impurity_t=<span class="hljs-string">&#x27;entropy&#x27;</span></span>):<br><br>        self.classes = classes<br>        self.features = features<br>        self.max_depth = max_depth<br>        self.min_samples_split = min_samples_split<br>        self.impurity_t = impurity_t<br>        self.root = <span class="hljs-literal">None</span>  <span class="hljs-comment"># 定义根节点，未训练时为空</span><br>        self.tree = defaultdict(<span class="hljs-built_in">list</span>)<br><br>    <span class="hljs-comment"># 要调用sklearn的cross_validate需要实现该函数返回所有参数</span><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">get_params</span>(<span class="hljs-params">self, deep</span>):<br>        <span class="hljs-keyword">return</span> &#123;<span class="hljs-string">&#x27;classes&#x27;</span>: self.classes, <span class="hljs-string">&#x27;features&#x27;</span>: self.features,<br>                <span class="hljs-string">&#x27;max_depth&#x27;</span>: self.max_depth, <span class="hljs-string">&#x27;min_samples_split&#x27;</span>: self.min_samples_split,<br>                <span class="hljs-string">&#x27;impurity_t&#x27;</span>: self.impurity_t&#125;<br><br>    <span class="hljs-comment"># 要调用sklearn的GridSearchCV需要实现该函数给类设定所有参数</span><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">set_params</span>(<span class="hljs-params">self, **parameters</span>):<br>        <span class="hljs-keyword">for</span> parameter, value <span class="hljs-keyword">in</span> parameters.items():<br>            <span class="hljs-built_in">setattr</span>(self, parameter, value)<br>        <span class="hljs-keyword">return</span> self<br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">impurity</span>(<span class="hljs-params">self, label</span>):<br>        <span class="hljs-string">&#x27;&#x27;&#x27;</span><br><span class="hljs-string">        计算不纯度，根据传入参数计算信息熵或gini系数</span><br><span class="hljs-string">        label是numpy一维数组：根据当前特征划分后的标签组成</span><br><span class="hljs-string">        &#x27;&#x27;&#x27;</span><br>        cnt, total = Counter(label), <span class="hljs-built_in">float</span>(<span class="hljs-built_in">len</span>(label))<br>        probs = [cnt[v] / total <span class="hljs-keyword">for</span> v <span class="hljs-keyword">in</span> cnt]<br>        <span class="hljs-keyword">if</span> self.impurity_t == <span class="hljs-string">&#x27;gini&#x27;</span>:<br>            <span class="hljs-keyword">return</span> <span class="hljs-number">1</span> - <span class="hljs-built_in">sum</span>([p * p <span class="hljs-keyword">for</span> p <span class="hljs-keyword">in</span> probs])<br>        <span class="hljs-keyword">return</span> -<span class="hljs-built_in">sum</span>([p * np.log2(p) <span class="hljs-keyword">for</span> p <span class="hljs-keyword">in</span> probs <span class="hljs-keyword">if</span> p &gt; <span class="hljs-number">0</span>])<br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">gain</span>(<span class="hljs-params">self, feature, label</span>) -&gt; <span class="hljs-built_in">tuple</span>:<br><br>        <span class="hljs-comment"># 未分裂前的混杂度，仅仅根据标签计算</span><br>        p_impurity = self.impurity(label)<br><br>        <span class="hljs-comment"># 记录特征的每种取值所对应的样本下标</span><br>        f_index = defaultdict(<span class="hljs-built_in">list</span>)<br>        <span class="hljs-keyword">for</span> idx, v <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(feature):<br>            f_index[v].append(idx)<br><br>        <span class="hljs-comment"># 根据该特征分裂后的不纯度，与特征的每种值的数目加权和</span><br>        c_impurity = <span class="hljs-number">0</span><br>        <span class="hljs-keyword">for</span> v <span class="hljs-keyword">in</span> f_index:<br>            f_l = label[f_index[v]]<br>            c_impurity += self.impurity(f_l) * <span class="hljs-built_in">len</span>(f_l) / <span class="hljs-built_in">len</span>(label)<br><br>        <span class="hljs-comment"># 计算信息增益率，即在标签无关时的不纯度</span><br>        <span class="hljs-comment"># 防止对特征取值多的天然偏执，防止过拟合</span><br>        r = self.impurity(feature)<br>        r = (p_impurity - c_impurity) / (r <span class="hljs-keyword">if</span> r != <span class="hljs-number">0</span> <span class="hljs-keyword">else</span> <span class="hljs-number">1</span>)<br>        <span class="hljs-keyword">return</span> r, f_index<br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">expand_node</span>(<span class="hljs-params">self, feature, label, depth, used_features</span>) -&gt; <span class="hljs-built_in">tuple</span>:<br><br>        <span class="hljs-comment"># 1. 递归终止条件：只有一种类别无需分裂 或 达到分裂阈值，返回叶结点</span><br>        <span class="hljs-keyword">if</span> <span class="hljs-built_in">len</span>(<span class="hljs-built_in">set</span>(label)) == <span class="hljs-number">0</span>:<br>            <span class="hljs-keyword">return</span> label[<span class="hljs-number">0</span>]<br>        most = Counter(label).most_common(<span class="hljs-number">1</span>)[<span class="hljs-number">0</span>][<span class="hljs-number">0</span>]<br>        <span class="hljs-keyword">if</span> depth &gt; self.max_depth <span class="hljs-keyword">or</span> <span class="hljs-built_in">len</span>(label) &lt; self.min_samples_split:<br>            <span class="hljs-keyword">return</span> most<br><br>        <span class="hljs-comment"># 2. 遍历所有未使用特征，调用gain()找到最佳分裂特征</span><br>        bestf, max_gain, bestf_idx = -<span class="hljs-number">1</span>, -<span class="hljs-number">1</span>, <span class="hljs-literal">None</span><br>        <span class="hljs-keyword">for</span> f <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(self.features)):<br>            <span class="hljs-keyword">if</span> f <span class="hljs-keyword">in</span> used_features:<br>                <span class="hljs-keyword">continue</span><br>            <span class="hljs-comment"># 计算该特征的信息增益，和每个取值的样本下标</span><br>            f_gain, f_idx = self.gain(feature[:, f], label)<br>            <span class="hljs-keyword">if</span> bestf &lt; <span class="hljs-number">0</span> <span class="hljs-keyword">or</span> f_gain &gt; max_gain:<br>                bestf, max_gain, bestf_idx = f, f_gain, f_idx<br><br>        <span class="hljs-comment"># 3. 如果找不到有用的分裂特征，也结束递归</span><br>        <span class="hljs-keyword">if</span> bestf &lt; <span class="hljs-number">0</span>:<br>            <span class="hljs-keyword">return</span> most<br><br>        <span class="hljs-comment"># 4. 遍历特征的每种取值，递归调用expand_node进行建树，decision&#123;特征取值：子结点&#125;</span><br>        children = &#123;&#125;<br>        new_used_features = used_features + [bestf]<br>        <span class="hljs-keyword">for</span> v <span class="hljs-keyword">in</span> bestf_idx:<br>            c_idx = bestf_idx[v]<br>            children[v] = self.expand_node(feature[c_idx, :],<br>                                           label[c_idx], depth + <span class="hljs-number">1</span>, new_used_features)<br>        self.tree[depth].append(self.features[bestf])<br>        <span class="hljs-keyword">return</span> (bestf, children, most)<br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">traverse_node</span>(<span class="hljs-params">self, node, feature</span>):<br>        <span class="hljs-comment"># 要求输入样本特征数和模型定义时特征数目一致</span><br>        <span class="hljs-keyword">assert</span> <span class="hljs-built_in">len</span>(self.features) == <span class="hljs-built_in">len</span>(feature)<br>        <span class="hljs-comment"># 已经到达叶节点，则返回分类结果</span><br>        <span class="hljs-keyword">if</span> <span class="hljs-built_in">type</span>(node) <span class="hljs-keyword">is</span> <span class="hljs-keyword">not</span> <span class="hljs-built_in">tuple</span>:<br>            <span class="hljs-keyword">return</span> node<br>        <span class="hljs-comment"># 依据特征取值进入相应子节点，递归调用traverse_node，node[0]记录了特征的下标.</span><br>        fv = feature[node[<span class="hljs-number">0</span>]]<br>        <span class="hljs-keyword">if</span> fv <span class="hljs-keyword">in</span> node[<span class="hljs-number">1</span>]:<br>            <span class="hljs-keyword">return</span> self.traverse_node(node[<span class="hljs-number">1</span>][fv], feature)<br>        <span class="hljs-comment"># 该特征取值在训练集中未出现过，返回训练时到达当前节点的样本中最多的类别</span><br>        <span class="hljs-keyword">return</span> node[-<span class="hljs-number">1</span>]<br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">fit</span>(<span class="hljs-params">self, feature, label</span>):<br>        <span class="hljs-keyword">assert</span> <span class="hljs-built_in">len</span>(self.features) == <span class="hljs-built_in">len</span>(<br>            feature[<span class="hljs-number">0</span>])  <span class="hljs-comment"># 输入数据的特征数目应该和模型定义时的特征数目相同</span><br>        <span class="hljs-comment"># 从根节点开始分裂，模型记录根节点</span><br>        self.root = self.expand_node(<br>            feature, label, depth=<span class="hljs-number">1</span>, used_features=[])<br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">predict</span>(<span class="hljs-params">self, feature</span>):<br>        <span class="hljs-keyword">assert</span> <span class="hljs-built_in">len</span>(feature.shape) == <span class="hljs-number">1</span> <span class="hljs-keyword">or</span> <span class="hljs-built_in">len</span>(feature.shape) == <span class="hljs-number">2</span>  <span class="hljs-comment"># 只能是1维或2维</span><br>        <span class="hljs-keyword">if</span> <span class="hljs-built_in">len</span>(feature.shape) == <span class="hljs-number">1</span>:  <span class="hljs-comment"># 如果是一个样本</span><br>            <span class="hljs-keyword">return</span> self.traverse_node(self.root, feature)  <span class="hljs-comment"># 从根节点开始路由</span><br>        <span class="hljs-comment"># 如果是很多个样本</span><br>        <span class="hljs-keyword">return</span> np.array([self.traverse_node(self.root, f) <span class="hljs-keyword">for</span> f <span class="hljs-keyword">in</span> feature])<br></code></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 定义决策树模型，传入算法参数</span><br>DT = DecisionTree(classes=[<span class="hljs-number">0</span>, <span class="hljs-number">1</span>], features=feature_names,<br>                  max_depth=<span class="hljs-number">3</span>, min_samples_split=<span class="hljs-number">450</span>, impurity_t=<span class="hljs-string">&#x27;gini&#x27;</span>)<br><br>DT.fit(x_train, y_train)  <span class="hljs-comment"># 在训练集上训练</span><br>p_test = DT.predict(x_test)  <span class="hljs-comment"># 在测试集上预测，获得预测值</span><br><span class="hljs-built_in">print</span>(<span class="hljs-string">&#x27;pred_value &#x27;</span>, p_test)  <span class="hljs-comment"># 输出预测值</span><br><span class="hljs-built_in">print</span>(<span class="hljs-string">&#x27;true_value &#x27;</span>, y_test)<br>test_acc = accuracy_score(y_test, p_test)  <span class="hljs-comment"># 将测试预测值与测试集标签对比获得准确率</span><br>precision = precision_score(y_test, p_test)<br>recall = recall_score(y_test, p_test)<br>f1 = f1_score(y_test, p_test)<br><span class="hljs-built_in">print</span>(<span class="hljs-string">&#x27;\nTREE:&#x27;</span>)<br><span class="hljs-keyword">for</span> _ <span class="hljs-keyword">in</span> DT.tree.keys():<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&#x27;Layer&#x27;</span> + <span class="hljs-built_in">str</span>(_) + <span class="hljs-string">&#x27;:&#x27;</span> + <span class="hljs-built_in">str</span>(DT.tree[_]))<br><span class="hljs-built_in">print</span>(<span class="hljs-string">&#x27;\naccuracy: &#123;:.4f&#125;   precision: &#123;:.4f&#125;   recall: &#123;:.4f&#125;   f1_score: &#123;:.4f&#125;&#x27;</span>.<span class="hljs-built_in">format</span>(<br>    test_acc, precision, recall, f1))  <span class="hljs-comment"># 输出准确率</span><br></code></pre></td></tr></table></figure>
+
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80/" class="category-chain-item">深度学习基础</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" class="category-chain-item">机器学习</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" class="print-no-link">#机器学习</a>
+      
+        <a href="/tags/%E5%88%86%E7%B1%BB/" class="print-no-link">#分类</a>
+      
+        <a href="/tags/%E5%86%B3%E7%AD%96%E6%A0%91/" class="print-no-link">#决策树</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>基于决策树的游戏胜负预测</div>
+      <div>http://example.com/2023/10/28/基于决策树的游戏胜负预测/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Guoxin</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年10月28日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/10/29/%E5%9F%BA%E4%BA%8E%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E7%9A%84%E9%B8%BE%E5%B0%BE%E8%8A%B1%E5%88%86%E7%B1%BB/" title="基于神经网络的鸾尾花分类">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">基于神经网络的鸾尾花分类</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/10/22/%E4%BD%BF%E7%94%A8%E8%B4%9D%E5%8F%B6%E6%96%AF%E8%AF%86%E5%88%AB%E5%9E%83%E5%9C%BE%E9%82%AE%E4%BB%B6/" title="使用贝叶斯识别垃圾邮件分类">
+                        <span class="hidden-mobile">使用贝叶斯识别垃圾邮件分类</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

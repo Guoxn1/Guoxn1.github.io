@@ -1,0 +1,818 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Guoxin">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="1. 简介这次主要是对数据进行分析，主要是预处理阶段，会用到pandas,matplotlib等库。 所用的数据集是爱尔兰杀菌剂。出处：https:&#x2F;&#x2F;gitlab.diantouedu.cn&#x2F;QY&#x2F;test1。 除了本就有的内容，还有一些自己的思考和代码的更改、补充。 数据集和完整代码我放在这里，在我的仓库中也可以找到。链接：https:&#x2F;&#x2F;github.com&#x2F;Guoxn1&#x2F;ai。 这篇博客对">
+<meta property="og:type" content="article">
+<meta property="og:title" content="爱尔兰杀菌剂数据分析">
+<meta property="og:url" content="http://example.com/2023/09/24/%E7%88%B1%E5%B0%94%E5%85%B0%E6%9D%80%E8%8F%8C%E5%89%82%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="1. 简介这次主要是对数据进行分析，主要是预处理阶段，会用到pandas,matplotlib等库。 所用的数据集是爱尔兰杀菌剂。出处：https:&#x2F;&#x2F;gitlab.diantouedu.cn&#x2F;QY&#x2F;test1。 除了本就有的内容，还有一些自己的思考和代码的更改、补充。 数据集和完整代码我放在这里，在我的仓库中也可以找到。链接：https:&#x2F;&#x2F;github.com&#x2F;Guoxn1&#x2F;ai。 这篇博客对">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2023/09/24/%E7%88%B1%E5%B0%94%E5%85%B0%E6%9D%80%E8%8F%8C%E5%89%82%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/image-20230924173907356.png">
+<meta property="og:image" content="http://example.com/2023/09/24/%E7%88%B1%E5%B0%94%E5%85%B0%E6%9D%80%E8%8F%8C%E5%89%82%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/image-20230924182644004.png">
+<meta property="og:image" content="http://example.com/2023/09/24/%E7%88%B1%E5%B0%94%E5%85%B0%E6%9D%80%E8%8F%8C%E5%89%82%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/image-20230924221539326.png">
+<meta property="og:image" content="http://example.com/2023/09/24/%E7%88%B1%E5%B0%94%E5%85%B0%E6%9D%80%E8%8F%8C%E5%89%82%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/image-20230925095411721.png">
+<meta property="og:image" content="http://example.com/2023/09/24/%E7%88%B1%E5%B0%94%E5%85%B0%E6%9D%80%E8%8F%8C%E5%89%82%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/Year_Crop%20Type.png">
+<meta property="og:image" content="http://example.com/2023/09/24/%E7%88%B1%E5%B0%94%E5%85%B0%E6%9D%80%E8%8F%8C%E5%89%82%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/subplot_IR.png">
+<meta property="og:image" content="http://example.com/2023/09/24/%E7%88%B1%E5%B0%94%E5%85%B0%E6%9D%80%E8%8F%8C%E5%89%82%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/hectares_IR.png">
+<meta property="og:image" content="http://example.com/2023/09/24/%E7%88%B1%E5%B0%94%E5%85%B0%E6%9D%80%E8%8F%8C%E5%89%82%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/active_substance_per_hectare_IR.png">
+<meta property="og:image" content="http://example.com/2023/09/24/%E7%88%B1%E5%B0%94%E5%85%B0%E6%9D%80%E8%8F%8C%E5%89%82%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/top10.png">
+<meta property="og:image" content="http://example.com/2023/09/24/%E7%88%B1%E5%B0%94%E5%85%B0%E6%9D%80%E8%8F%8C%E5%89%82%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/relationship_between_year_and_fungicide_data.png">
+<meta property="og:image" content="http://example.com/2023/09/24/%E7%88%B1%E5%B0%94%E5%85%B0%E6%9D%80%E8%8F%8C%E5%89%82%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/image-20230928221647582.png">
+<meta property="article:published_time" content="2023-09-24T06:15:50.000Z">
+<meta property="article:modified_time" content="2023-12-03T09:02:41.335Z">
+<meta property="article:author" content="Guoxin">
+<meta property="article:tag" content="python数据分析">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/2023/09/24/%E7%88%B1%E5%B0%94%E5%85%B0%E6%9D%80%E8%8F%8C%E5%89%82%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/image-20230924173907356.png">
+  
+  
+  
+  <title>爱尔兰杀菌剂数据分析 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.5","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Guoxin</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="爱尔兰杀菌剂数据分析"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-09-24 14:15" pubdate>
+          2023年9月24日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          15k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          129 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">爱尔兰杀菌剂数据分析</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="1-简介"><a href="#1-简介" class="headerlink" title="1. 简介"></a>1. 简介</h1><p>这次主要是对数据进行分析，主要是预处理阶段，会用到pandas,matplotlib等库。</p>
+<p>所用的数据集是爱尔兰杀菌剂。出处：<a target="_blank" rel="noopener" href="https://gitlab.diantouedu.cn/QY/test1%E3%80%82">https://gitlab.diantouedu.cn/QY/test1。</a></p>
+<p>除了本就有的内容，还有一些自己的思考和代码的更改、补充。</p>
+<p>数据集和完整代码我放在这里，在我的仓库中也可以找到。链接：<a target="_blank" rel="noopener" href="https://github.com/Guoxn1/ai%E3%80%82">https://github.com/Guoxn1/ai。</a></p>
+<p>这篇博客对代码进行介绍，可运行的完整代码直接去仓库下载，都是有详情注释的。</p>
+<p>通过这篇博客，会掌握一些数据的清洗方式，包括对空数据的处理，对列名行名内容的清理整理，缺失值，总基数值的处理，散点图柱状图折线图的画图等。</p>
+<p>博客比较长，花了好几天磕磕畔畔弄完的，可以分时食用。</p>
+<h1 id="2-数据"><a href="#2-数据" class="headerlink" title="2. 数据"></a>2. 数据</h1><p>大致了解一下数据。</p>
+<p>数据还是有一定规模的，一共90个excel文件，放在了data_IR文件夹下，632KB的实际大小。</p>
+<img src="image-20230924173907356.png" srcset="/img/loading.gif" lazyload alt="image-20230924173907356" style="zoom: 67%;">
+
+<p>原始数据为data_IR下面所有的xlsx文件，其中命名解释一下。以Arable_crops_2000_ac.xlsx为例，和他一起出现的还有Arable_crops_2000_ha.xlsx，其中，数字表示年份，数字左侧表示农作物的种类，比如Arable_crops表示适于耕种的谷物，数字右侧表示杀虫剂的作用类型。ac表示杀虫剂的活性物质的值，ha表示使用杀虫剂的面积。</p>
+<p>对于数据的每一列，是农作物的种类，每一行是杀虫剂的种类，里面的数字就是面积或者活性物质的值。</p>
+<p>这个数据集就是每年各种农作物使用杀虫剂的情况。</p>
+<h1 id="3-预处理数据"><a href="#3-预处理数据" class="headerlink" title="3. 预处理数据"></a>3. 预处理数据</h1><p>开始分析之前，首先需要对数据进行清洗和预处理。这一步是必要的，因为清洗后的数据会让后续的统计和可视化更准确。</p>
+<h2 id="3-1-找到需要清洗的数据"><a href="#3-1-找到需要清洗的数据" class="headerlink" title="3.1 找到需要清洗的数据"></a>3.1 找到需要清洗的数据</h2><p>如何判断需要清洗的数据是必要的，比如：将原始数据中的空值替换为0.0， 并将原始数据中的“&lt;1”替换为0.1。这需要明确自己的数据需求。一般通过肉眼观察或者编写程序扫描。比如数据量比较小，就可以通过观察数据，有一些不合理的数据出现，就设法对其进行更改。如果数据量比较大，可以通过编写for循环遍历重要的数据，比如，面积和活性都需要是浮点数，我们遍历所有的列，如果不是浮点数则将其输出，然后在进行观察调研等。</p>
+<p>这里我给出一个简单的判断函数：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> os<br><span class="hljs-keyword">import</span> pandas <span class="hljs-keyword">as</span> pd<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">find_abnormal</span>():<br>    folder_path = <span class="hljs-string">&quot;./data_IR&quot;</span><br>    <span class="hljs-comment">#遍历所有的xlsx文件</span><br>    <span class="hljs-keyword">for</span> filename <span class="hljs-keyword">in</span> os.listdir(folder_path):<br>        <span class="hljs-keyword">if</span> filename.endswith(<span class="hljs-string">&quot;xlsx&quot;</span>):<br>            file_path = os.path.join(folder_path,filename)<br>            <span class="hljs-comment"># 读取xlsx文件</span><br>            df = pd.read_excel(file_path)<br>            <span class="hljs-comment">#选取每个文件除了第一列和第一行的值</span><br>            df = df.iloc[<span class="hljs-number">1</span>:,<span class="hljs-number">1</span>:]<br>            <span class="hljs-keyword">for</span> index, row <span class="hljs-keyword">in</span> df.iterrows():<br>                <span class="hljs-keyword">for</span> column <span class="hljs-keyword">in</span> df.columns:<br>                    data = df.at[index, column]<br>                    <span class="hljs-comment"># 在这里对每个数据点进行操作,首先里面所有的值都是str类型，我们尝试将其转成float，如果可以那就是float，如果无法转换我们就打印输出</span><br>                    <span class="hljs-keyword">try</span>:<br>                        data = <span class="hljs-built_in">float</span>(data)<br>                    <span class="hljs-keyword">except</span>:<br>                        <span class="hljs-keyword">pass</span><br>                    <span class="hljs-comment"># .是默认没有值，所以也要排除在外</span><br>                    <span class="hljs-keyword">if</span> <span class="hljs-built_in">type</span>(data) != <span class="hljs-built_in">float</span> <span class="hljs-keyword">and</span> data != <span class="hljs-string">&#x27;.&#x27;</span>:<br>                        <span class="hljs-built_in">print</span>(data)<br><br>find_abnormal()<br></code></pre></td></tr></table></figure>
+
+<p>给出输出结果如下：</p>
+<img src="image-20230924182644004.png" srcset="/img/loading.gif" lazyload alt="image-20230924182644004" style="zoom: 50%;">
+
+<p>可见，有很多不是我们想要的值，之后我们是要替换的，这里可以定义一些规则。</p>
+<p>比如，&lt;1替换成0.5，&lt;0.1替换成0.05。</p>
+<h2 id="3-2-清理列名"><a href="#3-2-清理列名" class="headerlink" title="3.2 清理列名"></a>3.2 清理列名</h2><p>列名和行名通常含有空格，我们将其清理。</p>
+<p>如何发现？要么观察要么编写程序检查。</p>
+<p>如果发现不了，未来进行数据分析的时候也会发现的。现在假设我们已经发现了。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">clean</span>():<br>    folder_path = <span class="hljs-string">&quot;./data_IR&quot;</span><br>    <span class="hljs-comment">#遍历所有的xlsx文件</span><br>    <span class="hljs-keyword">for</span> filename <span class="hljs-keyword">in</span> os.listdir(folder_path):<br>        <span class="hljs-keyword">if</span> filename.endswith(<span class="hljs-string">&quot;xlsx&quot;</span>):<br>            file_path = os.path.join(folder_path,filename)<br>            <span class="hljs-comment"># 读取xlsx文件</span><br>            df = pd.read_excel(file_path)<br><br>            <span class="hljs-comment">#删除第一列和第一行的空格</span><br>            df[df.columns[<span class="hljs-number">0</span>]] = df[df.columns[<span class="hljs-number">0</span>]].apply(<span class="hljs-keyword">lambda</span> x:x.replace(<span class="hljs-string">&quot; &quot;</span>,<span class="hljs-string">&quot;&quot;</span>) <span class="hljs-keyword">if</span> <span class="hljs-built_in">isinstance</span>(x,<span class="hljs-built_in">str</span>) <span class="hljs-keyword">else</span> x)<br>            df.columns = df.columns.to_series().apply(<span class="hljs-keyword">lambda</span> x:x.replace(<span class="hljs-string">&quot; &quot;</span>,<span class="hljs-string">&quot;&quot;</span>) <span class="hljs-keyword">if</span> <span class="hljs-built_in">isinstance</span>(x,<span class="hljs-built_in">str</span>) <span class="hljs-keyword">else</span> x)<br>            <span class="hljs-comment">#创建一个新frame  只包含第一列和那些不以Unnamed列开头的列    这里第一列要单独拿出来加上去，因为第一列就是空值</span><br>            df = df[df.columns[<span class="hljs-number">0</span>]].to_frame().join(df.loc[:,~df.columns.<span class="hljs-built_in">str</span>.startswith(<span class="hljs-string">&quot;Unnamed&quot;</span>)])<br><br>            df.rename(columns=&#123;df.columns[<span class="hljs-number">0</span>]:<span class="hljs-string">&quot;&quot;</span>&#125;,inplace=<span class="hljs-literal">True</span>)<br>            <span class="hljs-comment">#写入excel 且不保留索引列</span><br>            df.to_excel(file_path,index=<span class="hljs-literal">False</span>)<br><br></code></pre></td></tr></table></figure>
+
+<p>对每个表其中的第一列和第一行进行简单的预处理。</p>
+<h2 id="3-2-组合各个表"><a href="#3-2-组合各个表" class="headerlink" title="3.2  组合各个表"></a>3.2  组合各个表</h2><p>读取Data1中成对的ha和ac表格数据，组合成下表形式columns&#x3D;[‘Year’, ‘Crop Type’, ‘Crop’, ‘Fungicide’, ‘Hectares’, ‘Active Substance’] 其中，Year和Crop Type取自表格名(e.g. 1987_Orchards_fruit_ha.xlsx)  Crop列对应ha或ac表格中的行名；Fungicide列对应ha或ac表格中的列名 Hectares对应ha表格中的值；Active Substance对应ac表格中的值。组合成这个表的意义在于各个核心元素都有了，不用去原先90多个excel表中找数据了。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> os<br><span class="hljs-keyword">import</span> pandas <span class="hljs-keyword">as</span> pd<br><span class="hljs-keyword">def</span> <span class="hljs-title function_">clean</span>():<br>    folder_path = <span class="hljs-string">&quot;./data_IR&quot;</span><br>    <span class="hljs-comment">#遍历所有的xlsx文件</span><br>    <span class="hljs-keyword">for</span> filename <span class="hljs-keyword">in</span> os.listdir(folder_path):<br>        <span class="hljs-keyword">if</span> filename.endswith(<span class="hljs-string">&quot;xlsx&quot;</span>):<br>            file_path = os.path.join(folder_path,filename)<br>            <span class="hljs-comment"># 读取xlsx文件</span><br>            df = pd.read_excel(file_path)<br><br>            <span class="hljs-comment">#删除第一列和第一行的空格</span><br>            df[df.columns[<span class="hljs-number">0</span>]] = df[df.columns[<span class="hljs-number">0</span>]].apply(<span class="hljs-keyword">lambda</span> x:x.replace(<span class="hljs-string">&quot; &quot;</span>,<span class="hljs-string">&quot;&quot;</span>) <span class="hljs-keyword">if</span> <span class="hljs-built_in">isinstance</span>(x,<span class="hljs-built_in">str</span>) <span class="hljs-keyword">else</span> x)<br>            df.columns = df.columns.to_series().apply(<span class="hljs-keyword">lambda</span> x:x.replace(<span class="hljs-string">&quot; &quot;</span>,<span class="hljs-string">&quot;&quot;</span>) <span class="hljs-keyword">if</span> <span class="hljs-built_in">isinstance</span>(x,<span class="hljs-built_in">str</span>) <span class="hljs-keyword">else</span> x)<br>            <span class="hljs-comment">#创建一个新frame  只包含第一列和那些不以Unnamed列开头的列    这里第一列要单独拿出来加上去，因为第一列就是空值</span><br>            df = df[df.columns[<span class="hljs-number">0</span>]].to_frame().join(df.loc[:,~df.columns.<span class="hljs-built_in">str</span>.startswith(<span class="hljs-string">&quot;Unnamed&quot;</span>)])<br><br>            df.rename(columns=&#123;df.columns[<span class="hljs-number">0</span>]:<span class="hljs-string">&quot;&quot;</span>&#125;,inplace=<span class="hljs-literal">True</span>)<br>            <span class="hljs-comment">#写入excel 且不保留索引列</span><br>            df.to_excel(file_path,index=<span class="hljs-literal">False</span>)<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">trans</span>():<br>    folder_path = <span class="hljs-string">&quot;./data_IR&quot;</span><br>    <span class="hljs-comment">#遍历所有的xlsx文件</span><br>    <span class="hljs-comment">#输出文件目录</span><br>    out_path = os.path.join(os.getcwd(), <span class="hljs-string">&#x27;output/resultIR.xlsx&#x27;</span>)<br>    <span class="hljs-comment">#定义好输出的数据</span><br>    data = pd.DataFrame(columns=[<span class="hljs-string">&#x27;Year&#x27;</span>, <span class="hljs-string">&#x27;Crop_Type&#x27;</span>, <span class="hljs-string">&#x27;Crop&#x27;</span>, <span class="hljs-string">&#x27;Fungicide&#x27;</span>, <span class="hljs-string">&#x27;Hectares&#x27;</span>, <span class="hljs-string">&#x27;Active_Substance&#x27;</span>])<br><br>    <span class="hljs-comment"># 定义两个分别存放ha和ac的data,因为列名存在差异，所以必须先分开再合并</span><br>    data1 = []<br>    data2 = []<br>    <span class="hljs-keyword">for</span> filename <span class="hljs-keyword">in</span> os.listdir(folder_path):<br>        <span class="hljs-keyword">if</span> filename.endswith(<span class="hljs-string">&quot;xlsx&quot;</span>):<br>            parts = filename.split(<span class="hljs-string">&quot;_&quot;</span>)<br>            <span class="hljs-comment">#获取各项列名内容</span><br>            year = parts[-<span class="hljs-number">2</span>]<br>            Crop_Type = <span class="hljs-string">&#x27;_&#x27;</span>.join(parts[<span class="hljs-number">0</span>:-<span class="hljs-number">2</span>])<br>            table_type = parts[-<span class="hljs-number">1</span>].split(<span class="hljs-string">&quot;.&quot;</span>)[<span class="hljs-number">0</span>]<br>            <span class="hljs-comment">#读取每个文件</span><br>            df = pd.read_excel(os.path.join(folder_path, filename), header=<span class="hljs-number">0</span>, index_col=<span class="hljs-number">0</span>)<br><br>            <span class="hljs-keyword">for</span> index <span class="hljs-keyword">in</span> df.index:<br>                <span class="hljs-keyword">for</span> column <span class="hljs-keyword">in</span> df.columns:<br>                    <span class="hljs-keyword">if</span> pd.notna(df.loc[index,column]):<br>                        value = <span class="hljs-built_in">str</span>(df.loc[index,column])<br>                        <span class="hljs-comment">#只对&lt;1的进行了处理，&lt;0.01的都赋值为0.0  &gt;0.01为了图方便也设置为了0.0</span><br>                        value = value.strip().split(<span class="hljs-string">&quot;.&quot;</span>)[<span class="hljs-number">0</span>].replace(<span class="hljs-string">&quot;&lt;&quot;</span>,<span class="hljs-string">&quot;0.&quot;</span>)<br>                        <span class="hljs-keyword">try</span>:<br>                            value = <span class="hljs-built_in">float</span>(value)<br>                        <span class="hljs-keyword">except</span>:<br>                            value = <span class="hljs-number">0.0</span><br>                        <br>                        <span class="hljs-keyword">if</span> table_type == <span class="hljs-string">&quot;ac&quot;</span>:<br>                            <span class="hljs-comment">#每一列都是农作物  每一行都是杀虫剂</span><br>                            data1.append([year,Crop_Type,column,index,value])<br>                        <span class="hljs-keyword">if</span> table_type == <span class="hljs-string">&quot;ha&quot;</span>:<br>                            <span class="hljs-comment">#每一列都是农作物  每一行都是杀虫剂</span><br>                            data2.append([year,Crop_Type,column,index,value])<br>                    <br>    <br>    <br>    df_data1 = pd.DataFrame(data1,columns=[<span class="hljs-string">&#x27;Year&#x27;</span>, <span class="hljs-string">&#x27;Crop_Type&#x27;</span>, <span class="hljs-string">&#x27;Crop&#x27;</span>, <span class="hljs-string">&#x27;Fungicide&#x27;</span>, <span class="hljs-string">&#x27;Active_Substance&#x27;</span>])<br>    df_data2 = pd.DataFrame(data2,columns=[<span class="hljs-string">&#x27;Year&#x27;</span>, <span class="hljs-string">&#x27;Crop_Type&#x27;</span>, <span class="hljs-string">&#x27;Crop&#x27;</span>, <span class="hljs-string">&#x27;Fungicide&#x27;</span>, <span class="hljs-string">&#x27;Hectares&#x27;</span>]) <br>    df_data = pd.merge(df_data1, df_data2, how=<span class="hljs-string">&#x27;inner&#x27;</span>, on=[<span class="hljs-string">&#x27;Year&#x27;</span>, <span class="hljs-string">&#x27;Crop_Type&#x27;</span>, <span class="hljs-string">&#x27;Crop&#x27;</span>, <span class="hljs-string">&#x27;Fungicide&#x27;</span>])<br>    df_data.to_excel(out_path,index=<span class="hljs-literal">False</span>)<br><br>clean()<br>trans()<br><br><br><br></code></pre></td></tr></table></figure>
+
+
+
+<h2 id="3-3-综合基数的处理"><a href="#3-3-综合基数的处理" class="headerlink" title="3.3 综合基数的处理"></a>3.3 综合基数的处理</h2><p>什么叫综合基数呢，就是all开头的，other等开头的。因为这个往往是一个表在最后会有一个综述。给一个总结。但是我们分析时不需要这个东西，因为我们是好几年连在一块分析的。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> pandas <span class="hljs-keyword">as</span> pd<br><br>df=pd.read_excel(<span class="hljs-string">&quot;output/resultIR.xlsx&quot;</span>)<br><br><span class="hljs-built_in">print</span>(<span class="hljs-string">f&#x27;删除前的数据数量：<span class="hljs-subst">&#123;<span class="hljs-built_in">len</span>(df)&#125;</span>&#x27;</span>)<br><br>df.loc[df[<span class="hljs-string">&quot;Fungicide&quot;</span>].<span class="hljs-built_in">str</span>.contains(<span class="hljs-string">&quot;other Fungicide&quot;</span>,<span class="hljs-keyword">case</span>=<span class="hljs-literal">False</span>),<span class="hljs-string">&#x27;Fungicide&#x27;</span>] = <span class="hljs-string">&quot;Other Fungicide&quot;</span><br>df.loc[df[<span class="hljs-string">&quot;Fungicide&quot;</span>].<span class="hljs-built_in">str</span>.contains(<span class="hljs-string">&quot;all Fungicide&quot;</span>,<span class="hljs-keyword">case</span>=<span class="hljs-literal">False</span>),<span class="hljs-string">&#x27;Fungicide&#x27;</span>] = <span class="hljs-string">&quot;all Fungicide&quot;</span><br>df.loc[df[<span class="hljs-string">&#x27;Fungicide&#x27;</span>].<span class="hljs-built_in">str</span>.contains(<span class="hljs-string">&#x27;otherFungicide&#x27;</span>, <span class="hljs-keyword">case</span>=<span class="hljs-literal">False</span>), <span class="hljs-string">&#x27;Fungicide&#x27;</span>] = <span class="hljs-string">&#x27;Other Fungicide&#x27;</span><br>df.loc[df[<span class="hljs-string">&#x27;Fungicide&#x27;</span>].<span class="hljs-built_in">str</span>.contains(<span class="hljs-string">&#x27;allFungicide&#x27;</span>, <span class="hljs-keyword">case</span>=<span class="hljs-literal">False</span>), <span class="hljs-string">&#x27;Fungicide&#x27;</span>] = <span class="hljs-string">&#x27;all Fungicide&#x27;</span><br><br><br><span class="hljs-comment">#得到不存在综合基数的行列</span><br>df = df[~df[<span class="hljs-string">&quot;Fungicide&quot;</span>].<span class="hljs-built_in">str</span>.contains(<span class="hljs-string">&quot;Other Fungicide|all Fungicide&quot;</span>,<span class="hljs-keyword">case</span>=<span class="hljs-literal">False</span>)]<br><br>df = df[~df[<span class="hljs-string">&#x27;Crop&#x27;</span>].<span class="hljs-built_in">str</span>.contains(<span class="hljs-string">&#x27;Allcrops|Allcrops\\(spha\\)|Allcrops\\(kg\\)|Totalquantity\\(kg\\)|Totalarea\\(spha\\)|Totalquantity|Totalarea&#x27;</span>, <span class="hljs-keyword">case</span>=<span class="hljs-literal">False</span>, regex=<span class="hljs-literal">True</span>)]<br><br><br><span class="hljs-built_in">print</span>(<span class="hljs-string">f&#x27;删除后的数据数量：<span class="hljs-subst">&#123;<span class="hljs-built_in">len</span>(df)&#125;</span>&#x27;</span>)<br></code></pre></td></tr></table></figure>
+
+
+
+<h2 id="3-4-处理重复的内容"><a href="#3-4-处理重复的内容" class="headerlink" title="3.4 处理重复的内容"></a>3.4 处理重复的内容</h2><p>这里我们只认为农作物有重复的，通过观察得知。</p>
+<p>农药也可能，但是这里我们假设只处理农作物的。</p>
+<img src="image-20230924221539326.png" srcset="/img/loading.gif" lazyload alt="image-20230924221539326" style="zoom:67%;">
+
+<p>明显可以看到有重复的内容，类似于刚才进行更改。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment">#df[&quot;Crop_Type&quot;].unique()</span><br><span class="hljs-comment">#统一数据</span><br>df.loc[df[<span class="hljs-string">&quot;Crop_Type&quot;</span>].<span class="hljs-built_in">str</span>.contains(<span class="hljs-string">&quot;Arable&quot;</span>,<span class="hljs-keyword">case</span>=<span class="hljs-literal">False</span>),<span class="hljs-string">&#x27;Crop_Type&#x27;</span>] = <span class="hljs-string">&quot;Arable_crops&quot;</span><br>df.loc[df[<span class="hljs-string">&quot;Crop_Type&quot;</span>].<span class="hljs-built_in">str</span>.contains(<span class="hljs-string">&quot;Grassland&quot;</span>,<span class="hljs-keyword">case</span>=<span class="hljs-literal">False</span>),<span class="hljs-string">&#x27;Crop_Type&#x27;</span>] = <span class="hljs-string">&quot;Grassland_fodder_crops&quot;</span><br>df.loc[df[<span class="hljs-string">&quot;Crop_Type&quot;</span>].<span class="hljs-built_in">str</span>.contains(<span class="hljs-string">&quot;Soft&quot;</span>,<span class="hljs-keyword">case</span>=<span class="hljs-literal">False</span>),<span class="hljs-string">&#x27;Crop_Type&#x27;</span>] = <span class="hljs-string">&quot;Soft_fruit_crops&quot;</span><br>df.loc[df[<span class="hljs-string">&quot;Crop_Type&quot;</span>].<span class="hljs-built_in">str</span>.contains(<span class="hljs-string">&quot;Top&quot;</span>,<span class="hljs-keyword">case</span>=<span class="hljs-literal">False</span>),<span class="hljs-string">&#x27;Crop_Type&#x27;</span>] = <span class="hljs-string">&quot;Top_fruit_crops&quot;</span><br>df.loc[df[<span class="hljs-string">&#x27;Crop_Type&#x27;</span>].<span class="hljs-built_in">str</span>.contains(<span class="hljs-string">&#x27;vegetable&#x27;</span>, <span class="hljs-keyword">case</span>=<span class="hljs-literal">False</span>), <span class="hljs-string">&#x27;Crop_Type&#x27;</span>] = <span class="hljs-string">&#x27;Outdoor_vegetable_crops&#x27;</span><br>df[<span class="hljs-string">&#x27;Crop_Type&#x27;</span>].unique()<br><span class="hljs-comment">#print(df.head())</span><br>df.to_excel(<span class="hljs-string">&quot;output/resultIR.xlsx&quot;</span>,index=<span class="hljs-literal">False</span>)<br></code></pre></td></tr></table></figure>
+
+<p>统一化数据  或者说去除重复但是记录不重复的数据</p>
+<h2 id="3-5-分表"><a href="#3-5-分表" class="headerlink" title="3.5 分表"></a>3.5 分表</h2><p>进行预处理之后，表内容虽然符合要求了，但是面对各种场景时，涉及到查询任务可能会变慢。所以我们根据特征对表进行分表。最初始的表是根据每年每种农作物和杀虫剂的使用情况来进行分类，太细。我们可以考虑按照农作物来进行分类。</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs stylus">#按照农作物来进行分类<br><span class="hljs-keyword">for</span> <span class="hljs-selector-tag">i</span> <span class="hljs-keyword">in</span> df<span class="hljs-selector-attr">[<span class="hljs-string">&#x27;Crop_Type&#x27;</span>]</span><span class="hljs-selector-class">.unique</span>():<br>    data = df<span class="hljs-selector-attr">[df[<span class="hljs-string">&quot;Crop_Type&quot;</span>]</span>==i]<span class="hljs-selector-class">.to_excel</span>(f<span class="hljs-string">&quot;tmpdata/&#123;i&#125;.xlsx&quot;</span>,index=False)<br></code></pre></td></tr></table></figure>
+
+<img src="image-20230925095411721.png" srcset="/img/loading.gif" lazyload alt="image-20230925095411721" style="zoom: 50%;">
+
+<h1 id="4-可视化展示"><a href="#4-可视化展示" class="headerlink" title="4. 可视化展示"></a>4. 可视化展示</h1><p>可视化展示可以帮助人们更好地理解数据，以便于后续模型的选择。</p>
+<p>这里处理了几个可视化展示的任务及结果。</p>
+<h2 id="4-1-散点图不同作物类型报告和年份之间的关系"><a href="#4-1-散点图不同作物类型报告和年份之间的关系" class="headerlink" title="4.1 散点图不同作物类型报告和年份之间的关系"></a>4.1 散点图不同作物类型报告和年份之间的关系</h2><p>使用散点图说明不同作物类型报告和年份之间的关系。</p>
+<p>这里的意思是，要知道哪一年种了哪些农作物。</p>
+<p>我们可以设计横轴是农作物类型。</p>
+<p>纵坐标是年份，从2000到2023年。</p>
+<p>对于上面的散点，我们设计如果某个类型A的作物在某年a上有出现，散点就是上面的一个坐标（a,A），为其设定一个颜色，比如为蓝色。如果没有则相应的坐标为灰色。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> pandas <span class="hljs-keyword">as</span> pd<br><span class="hljs-keyword">import</span> matplotlib.pyplot <span class="hljs-keyword">as</span> plt<br><br><br>df=pd.read_excel(<span class="hljs-string">&quot;output/resultIR.xlsx&quot;</span>)<br><span class="hljs-comment">#获取横纵坐标需要的</span><br>years = df.iloc[:,<span class="hljs-number">0</span>].drop_duplicates().values<br>Crop_Type = df.iloc[:,<span class="hljs-number">1</span>].drop_duplicates().values<br><span class="hljs-comment"># 设置x y坐标</span><br><br>x = []<br>y = []<br><br><span class="hljs-keyword">for</span> year <span class="hljs-keyword">in</span> years:<br>    <span class="hljs-keyword">for</span> <span class="hljs-built_in">type</span> <span class="hljs-keyword">in</span> Crop_Type:<br>        <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> df[(df.iloc[:,<span class="hljs-number">0</span>]==year) &amp; (df.iloc[:,<span class="hljs-number">1</span>]==<span class="hljs-built_in">type</span>)].empty:<br>            x.append(<span class="hljs-built_in">type</span>)<br>            y.append(year)<br><br><br><span class="hljs-comment">#设置总的图</span><br>all_combinations = [(<span class="hljs-built_in">type</span>,year) <span class="hljs-keyword">for</span> <span class="hljs-built_in">type</span> <span class="hljs-keyword">in</span> Crop_Type <span class="hljs-keyword">for</span> year <span class="hljs-keyword">in</span> years]<br><span class="hljs-comment">#设置没点的图</span><br><br><span class="hljs-keyword">for</span> combinaton <span class="hljs-keyword">in</span> all_combinations:<br>    <span class="hljs-keyword">if</span> combinaton <span class="hljs-keyword">not</span> <span class="hljs-keyword">in</span> <span class="hljs-built_in">zip</span>(x,y):<br>        plt.scatter(combinaton[<span class="hljs-number">0</span>], combinaton[<span class="hljs-number">1</span>], color=<span class="hljs-string">&#x27;gray&#x27;</span>, alpha=<span class="hljs-number">0.5</span>, s=<span class="hljs-number">20</span>)<br><br>plt.scatter(x,y,s=<span class="hljs-number">50</span>)<br><br>plt.xlabel(<span class="hljs-string">&#x27;Crop Type&#x27;</span>)<br>plt.ylabel(<span class="hljs-string">&#x27;Year&#x27;</span>)<br>plt.yticks(<span class="hljs-built_in">range</span>(<span class="hljs-number">2000</span>, <span class="hljs-number">2023</span>))<br>plt.xticks(rotation=<span class="hljs-number">25</span>, ha=<span class="hljs-string">&#x27;right&#x27;</span>)<br>plt.tight_layout()<br>plt.savefig(<span class="hljs-string">&#x27;output/Year_Crop Type.png&#x27;</span>, dpi=<span class="hljs-number">1000</span>)<br>plt.show()<br><br></code></pre></td></tr></table></figure>
+
+<img src="Year_Crop%20Type.png" srcset="/img/loading.gif" lazyload alt="Year_Crop Type" style="zoom: 25%;">
+
+
+
+<h2 id="4-2-柱状图不同作物类型中-年份和杀菌剂使用的关系"><a href="#4-2-柱状图不同作物类型中-年份和杀菌剂使用的关系" class="headerlink" title="4.2 柱状图不同作物类型中,年份和杀菌剂使用的关系"></a>4.2 柱状图不同作物类型中,年份和杀菌剂使用的关系</h2><p>用柱状图表示不同作物类型中，年份和杀菌剂使用的关系</p>
+<p>首先每个作物都是一个柱状图，横轴是年份，纵轴是杀菌剂的使用面积或者活性物质。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> os<br><span class="hljs-keyword">import</span> pandas <span class="hljs-keyword">as</span> pd<br><span class="hljs-keyword">import</span> matplotlib.pyplot <span class="hljs-keyword">as</span> plt<br><br><br><span class="hljs-comment">#一共6种植物，画一个3*2的网格来存放这几张图</span><br><span class="hljs-comment">#这段代码使用 Matplotlib 创建了一个包含 3 行 2 列的子图网格，并设置了整个图形的大小为 10x10 英寸。</span><br><span class="hljs-comment">#fig 是一个 Figure 对象，代表整个图形。</span><br><span class="hljs-comment">#axs 是一个包含子图对象的二维数组。在这个例子中，axs 包含了 3 行 2 列的子图对象。</span><br>fig,axs = plt.subplots(nrows=<span class="hljs-number">3</span>,ncols=<span class="hljs-number">2</span>,figsize=(<span class="hljs-number">10</span>,<span class="hljs-number">10</span>))<br><br><span class="hljs-comment"># 对于每个作物进行操作，遍历的对象可以不在总表上遍历，而是从分表上遍历</span><br><span class="hljs-comment">#enumerate 获取索引值 如果想要索引值  这就是固定写法</span><br><span class="hljs-keyword">for</span> i,filename <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(os.listdir(<span class="hljs-string">&quot;tmpdata&quot;</span>)):<br>    <span class="hljs-keyword">if</span> filename.endswith(<span class="hljs-string">&quot;xlsx&quot;</span>):<br>        df = pd.read_excel(os.path.join(<span class="hljs-string">&quot;tmpdata&quot;</span>,filename))<br>        <span class="hljs-comment">#使用 groupby 方法对df 按照 &#x27;Year&#x27; 列进行分组，使用 agg 方法对每个分组进行聚合， &#x27;Hectares&#x27; 和 &#x27;Active Substance&#x27; 列的总和。</span><br>        <span class="hljs-comment"># 将子图索引 i 转换为网格索引 row 和 col。这样可以确定在网格中的正确位置，以便在每个子图上绘制数据。</span><br><br>        group_data = df.groupby(<span class="hljs-string">&quot;Year&quot;</span>).agg(&#123;<span class="hljs-string">&quot;Hectares&quot;</span>:<span class="hljs-string">&quot;sum&quot;</span>,<span class="hljs-string">&quot;Active_Substance&quot;</span>:<span class="hljs-string">&quot;sum&quot;</span>&#125;)<br><br>        row = i //<span class="hljs-number">2</span><br>        col = i%<span class="hljs-number">2</span><br>        ax = axs[row,col]<br>        group_data.plot(kind=<span class="hljs-string">&quot;bar&quot;</span>,ax=ax)<br>        ax.set_xlabel(<span class="hljs-string">&#x27;Year&#x27;</span>)<br>        ax.set_ylabel(<span class="hljs-string">&#x27;Sum of Hectares and Active Substance&#x27;</span>)<br>        plot_title = filename.rsplit(<span class="hljs-string">&#x27;.&#x27;</span>, <span class="hljs-number">1</span>)[<span class="hljs-number">0</span>]<br>        ax.set_title(plot_title)<br><br>        ax.legend()<br><br>plt.tight_layout()<br><br><span class="hljs-comment"># Save the plot to a file</span><br>plot_filename = os.path.join(<span class="hljs-string">&#x27;output_plots&#x27;</span>, <span class="hljs-string">&#x27;subplot_IR.png&#x27;</span>)<br>plt.savefig(plot_filename,  dpi=<span class="hljs-number">1000</span>)<br><br>plt.show()<br></code></pre></td></tr></table></figure>
+
+
+
+<img src="subplot_IR.png" srcset="/img/loading.gif" lazyload alt="subplot_IR" style="zoom: 25%;">
+
+<h2 id="4-3-柱状图不同作物类型在每年中使用的杀菌剂公顷数"><a href="#4-3-柱状图不同作物类型在每年中使用的杀菌剂公顷数" class="headerlink" title="4.3 柱状图不同作物类型在每年中使用的杀菌剂公顷数"></a>4.3 柱状图不同作物类型在每年中使用的杀菌剂公顷数</h2><p>还是不同的作物，还是使用分出来的数据集。</p>
+<p>但是细想一下，其实没必要分6个图。因为这里只需要公顷数，而不需要活性，那么数值变量就是一个。</p>
+<p>此时横轴可以是时间，纵轴是公顷数，每个柱子用六个柱子组成（也不一定是六个，有的年份不一定都用了六种药）。</p>
+<p>上面4.2如果也是只有一个图的话 纵轴表示数值， 那么就要给12个柱子了。所以上面分了6个图。</p>
+<p>当然4.2的结果其实包括4.3，只需要把蓝色的柱子单独挑出来就行。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> os<br><span class="hljs-keyword">import</span> pandas <span class="hljs-keyword">as</span> pd<br><span class="hljs-keyword">import</span> matplotlib.pyplot <span class="hljs-keyword">as</span> plt<br><br>df = pd.read_excel(<span class="hljs-string">&quot;output/resultIR.xlsx&quot;</span>)<br><br>group_data = df.groupby([<span class="hljs-string">&quot;Year&quot;</span>,<span class="hljs-string">&quot;Crop_Type&quot;</span>]).agg(&#123;<span class="hljs-string">&#x27;Hectares&#x27;</span>: <span class="hljs-string">&#x27;sum&#x27;</span>&#125;)<br><span class="hljs-comment">#这里得到的是“不正常的”excel，因为matplotlib解析不了，需要转换一下,即类似于：</span><br><span class="hljs-comment"># 2000 Arable_crops             62382.0</span><br><span class="hljs-comment"># 2002 Arable_crops            127351.0</span><br><span class="hljs-comment">#      Top_fruit_crops          23451.0</span><br><span class="hljs-comment"># 2003 Grassland_fodder_crops    7925.0</span><br><span class="hljs-comment"># 2004 Arable_crops            139002.0</span><br><span class="hljs-comment">#创建一个透视表,英文翻译为旋转表</span><br>pivoted_data = group_data.pivot_table(index=<span class="hljs-string">&quot;Year&quot;</span>,columns=<span class="hljs-string">&quot;Crop_Type&quot;</span>,values=<span class="hljs-string">&quot;Hectares&quot;</span>)<br><br><span class="hljs-comment">#这句话的作用是要让图画的好看，往右移动一格</span><br>pivoted_data.iloc[:, <span class="hljs-number">0</span>:<span class="hljs-number">2</span>] = pivoted_data.iloc[:, <span class="hljs-number">0</span>:<span class="hljs-number">2</span>].shift(periods=<span class="hljs-number">1</span>, axis=<span class="hljs-number">0</span>)<br><br>fix,ax = plt.subplots(figsize=(<span class="hljs-number">10</span>,<span class="hljs-number">6</span>))<br>colors = [<span class="hljs-string">&#x27;#1f77b4&#x27;</span>, <span class="hljs-string">&#x27;#ff7f0e&#x27;</span>, <span class="hljs-string">&#x27;#2ca02c&#x27;</span>, <span class="hljs-string">&#x27;#d62728&#x27;</span>, <span class="hljs-string">&#x27;#9467bd&#x27;</span>, <span class="hljs-string">&#x27;#8c564b&#x27;</span>, <span class="hljs-string">&#x27;#e377c2&#x27;</span>, <span class="hljs-string">&#x27;#7f7f7f&#x27;</span>, <span class="hljs-string">&#x27;#bcbd22&#x27;</span>, <span class="hljs-string">&#x27;#17becf&#x27;</span>]<br>pivoted_data.plot(kind=<span class="hljs-string">&#x27;bar&#x27;</span>, ax=ax, width=<span class="hljs-number">2</span>, color=colors)<br><span class="hljs-comment"># Set the axis labels and title</span><br>ax.set_xlabel(<span class="hljs-string">&#x27;Year&#x27;</span>)<br>ax.set_ylabel(<span class="hljs-string">&#x27;Hectares&#x27;</span>)<br>ax.set_title(<span class="hljs-string">&#x27;Hectares by Crop Type and Year&#x27;</span>)<br><br><span class="hljs-comment"># Add a legend to the plot</span><br>ax.legend()<br><br><span class="hljs-comment"># Save the plot to a file</span><br>plot_filename = os.path.join(<span class="hljs-string">&#x27;output_plots&#x27;</span>, <span class="hljs-string">&#x27;hectares_IR.png&#x27;</span>)<br>plt.savefig(plot_filename)<br></code></pre></td></tr></table></figure>
+
+<img src="hectares_IR.png" srcset="/img/loading.gif" lazyload alt="hectares_IR" style="zoom: 67%;">
+
+
+
+<h2 id="4-4-用折线图表示不同作物类型每年使用杀菌剂的密度"><a href="#4-4-用折线图表示不同作物类型每年使用杀菌剂的密度" class="headerlink" title="4.4 用折线图表示不同作物类型每年使用杀菌剂的密度"></a>4.4 用折线图表示不同作物类型每年使用杀菌剂的密度</h2><p>密度就是活性除以面积</p>
+<p>这里用到了sns库，其实也是画图的</p>
+<p>plt也可以画，如果用plt画需要for循环定义好x和y，这里直接用他的df的下标，比较方便吧。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> os<br><span class="hljs-keyword">import</span> pandas <span class="hljs-keyword">as</span> pd<br><span class="hljs-keyword">import</span> seaborn <span class="hljs-keyword">as</span> sns<br><span class="hljs-keyword">import</span> matplotlib.pyplot <span class="hljs-keyword">as</span> plt<br><br><br>df = pd.read_excel(<span class="hljs-string">&quot;output/resultIR.xlsx&quot;</span>)<br>group_data = df.groupby([<span class="hljs-string">&quot;Year&quot;</span>,<span class="hljs-string">&quot;Crop_Type&quot;</span>]).agg(&#123;<span class="hljs-string">&#x27;Hectares&#x27;</span>: <span class="hljs-string">&#x27;sum&#x27;</span>, <span class="hljs-string">&#x27;Active_Substance&#x27;</span>: <span class="hljs-string">&#x27;sum&#x27;</span>&#125;)<br><span class="hljs-comment">#计算密度</span><br>group_data[<span class="hljs-string">&quot;Active_Substance_per_Hectare&quot;</span>] = group_data[<span class="hljs-string">&quot;Active_Substance&quot;</span>]/group_data[<span class="hljs-string">&quot;Hectares&quot;</span>]<br><span class="hljs-comment">#旋转成合适的能画的excel表</span><br>group_data = group_data.reset_index()<br><br>fig,ax = plt.subplots(figsize=(<span class="hljs-number">10</span>,<span class="hljs-number">6</span>))<br><span class="hljs-comment">#hue=&quot;Crop_Type&quot; 根据 &quot;Crop_Type&quot; 列的值对折线进行分组，并使用不同的颜色进行区分。</span><br>sns.lineplot(data=group_data,x=<span class="hljs-string">&quot;Year&quot;</span>,y=<span class="hljs-string">&quot;Active_Substance_per_Hectare&quot;</span>,hue=<span class="hljs-string">&quot;Crop_Type&quot;</span>,ax=ax)<br>ax.set_xlabel(<span class="hljs-string">&#x27;Year&#x27;</span>)<br>ax.set_ylabel(<span class="hljs-string">&#x27;Active Substance per Hectare&#x27;</span>)<br>ax.set_title(<span class="hljs-string">&#x27;Active Substance per Hectare by Crop Type and Year&#x27;</span>)<br><br><span class="hljs-comment"># Add a legend to the plot</span><br>ax.legend()<br><br><span class="hljs-comment"># Save the plot to a file</span><br>plot_filename = os.path.join(<span class="hljs-string">&#x27;output_plots&#x27;</span>, <span class="hljs-string">&#x27;active_substance_per_hectare_IR.png&#x27;</span>)<br>plt.savefig(plot_filename)<br><br>plt.show()<br></code></pre></td></tr></table></figure>
+
+<img src="active_substance_per_hectare_IR.png" srcset="/img/loading.gif" lazyload alt="active_substance_per_hectare_IR" style="zoom: 67%;">
+
+<h2 id="4-5-用柱状图表示所有杀菌剂中使用周期排名前十的使用情况"><a href="#4-5-用柱状图表示所有杀菌剂中使用周期排名前十的使用情况" class="headerlink" title="4.5 用柱状图表示所有杀菌剂中使用周期排名前十的使用情况"></a>4.5 用柱状图表示所有杀菌剂中使用周期排名前十的使用情况</h2><p>使用周期 &#x3D; last year - first year</p>
+<p>可能是画图的原因，运行时间一分多。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> os<br><span class="hljs-keyword">import</span> pandas <span class="hljs-keyword">as</span> pd<br><span class="hljs-keyword">import</span> seaborn <span class="hljs-keyword">as</span> sns<br><span class="hljs-keyword">import</span> matplotlib.pyplot <span class="hljs-keyword">as</span> plt<br><br>df = pd.read_excel(<span class="hljs-string">&quot;output/resultIR.xlsx&quot;</span>)<br><span class="hljs-comment">#找出每个杀菌剂对应的最小和最大年份</span><br>min_year = df.groupby(<span class="hljs-string">&quot;Fungicide&quot;</span>)[<span class="hljs-string">&quot;Year&quot;</span>].<span class="hljs-built_in">min</span>()<br>max_year = df.groupby(<span class="hljs-string">&quot;Fungicide&quot;</span>)[<span class="hljs-string">&quot;Year&quot;</span>].<span class="hljs-built_in">max</span>()<br><span class="hljs-comment"># 组装成一起</span><br>result = pd.concat([min_year,max_year],axis=<span class="hljs-number">1</span>)<br>result.columns = [<span class="hljs-string">&quot;First_year&quot;</span>,<span class="hljs-string">&quot;Last_year&quot;</span>]<br>result[<span class="hljs-string">&quot;year_range&quot;</span>] = result[<span class="hljs-string">&quot;Last_year&quot;</span>]- result[<span class="hljs-string">&quot;First_year&quot;</span>] <br><span class="hljs-comment">#排序</span><br>result.sort_values(by=<span class="hljs-string">&quot;year_range&quot;</span>, inplace=<span class="hljs-literal">True</span>)<br>result.to_excel(<span class="hljs-string">&quot;output/year_range.xlsx&quot;</span>)<br><span class="hljs-comment">#找出最大的10个杀菌剂</span><br>top_10 = result.tail(<span class="hljs-number">10</span>)<br>top_10_fungicides = top_10.index.tolist()<br><span class="hljs-comment"># 获取top_10_df</span><br>top_10_df = df[df[<span class="hljs-string">&quot;Fungicide&quot;</span>].isin(top_10_fungicides)]<br>top_10_df = top_10_df.groupby([<span class="hljs-string">&quot;Year&quot;</span>,<span class="hljs-string">&quot;Fungicide&quot;</span>]).agg(&#123;<span class="hljs-string">&quot;Hectares&quot;</span>: <span class="hljs-string">&quot;sum&quot;</span>&#125;)<br>top_10_df.reset_index(inplace=<span class="hljs-literal">True</span>)<br>top_10_df = top_10_df.pivot(index=<span class="hljs-string">&quot;Year&quot;</span>, columns=<span class="hljs-string">&quot;Fungicide&quot;</span>, values=<span class="hljs-string">&quot;Hectares&quot;</span>)<br><br><br><span class="hljs-comment">#绘图</span><br>fig, axs = plt.subplots(nrows=<span class="hljs-number">5</span>, ncols=<span class="hljs-number">2</span>, figsize=(<span class="hljs-number">15</span>, <span class="hljs-number">20</span>))<br>fig.subplots_adjust(hspace=<span class="hljs-number">0.3</span>)<br><span class="hljs-keyword">for</span> i,fungicide <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(top_10_fungicides):<br>    row = i // <span class="hljs-number">2</span><br>    col = i % <span class="hljs-number">2</span><br><br>    fungicide_df = top_10_df[fungicide]<br>    axs[row, col].bar(fungicide_df.index, fungicide_df.values)<br>    axs[row, col].set_xlabel(<span class="hljs-string">&#x27;Year&#x27;</span>)<br>    axs[row, col].set_ylabel(<span class="hljs-string">&#x27;Hectares&#x27;</span>)<br>    axs[row, col].set_title(<span class="hljs-string">f&#x27;<span class="hljs-subst">&#123;fungicide&#125;</span> Usage Over Years&#x27;</span>)<br>    axs[row, col].tick_params(axis=<span class="hljs-string">&#x27;x&#x27;</span>)<br><br>    plot_filename = os.path.join(<span class="hljs-string">&#x27;output_plots&#x27;</span>, <span class="hljs-string">&#x27;top10.png&#x27;</span>)<br>    plt.savefig(plot_filename, dpi=<span class="hljs-number">1000</span>)<br>plt.show()<br><br><br></code></pre></td></tr></table></figure>
+
+<img src="top10.png" srcset="/img/loading.gif" lazyload alt="top10">
+
+<h2 id="4-6-用折线图表示不同作物类型中每年使用的杀菌剂的数量变化"><a href="#4-6-用折线图表示不同作物类型中每年使用的杀菌剂的数量变化" class="headerlink" title="4.6 用折线图表示不同作物类型中每年使用的杀菌剂的数量变化"></a>4.6 用折线图表示不同作物类型中每年使用的杀菌剂的数量变化</h2><p>横轴表示年份，纵轴表示杀菌剂数量，各个折线代表每个不同种类的作物。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> os<br><span class="hljs-keyword">import</span> pandas <span class="hljs-keyword">as</span> pd<br><span class="hljs-keyword">import</span> matplotlib.pyplot <span class="hljs-keyword">as</span> plt<br><br><br><span class="hljs-keyword">for</span> filename <span class="hljs-keyword">in</span> os.listdir(<span class="hljs-string">&quot;tmpdata&quot;</span>):<br>    <span class="hljs-keyword">if</span> filename.endswith(<span class="hljs-string">&quot;xlsx&quot;</span>):<br>        df = pd.read_excel(os.path.join(<span class="hljs-string">&quot;tmpdata&quot;</span>,filename))<br>        <span class="hljs-comment">#Year改为int类型  方便后面画图的时候进行+2递增</span><br>        df[<span class="hljs-string">&#x27;Year&#x27;</span>] = df[<span class="hljs-string">&#x27;Year&#x27;</span>].astype(<span class="hljs-built_in">int</span>)<br>        <span class="hljs-comment"># 以年分组，得到每个杀虫剂的数量。</span><br>        df = df.groupby(<span class="hljs-string">&quot;Year&quot;</span>)[<span class="hljs-string">&quot;Fungicide&quot;</span>].nunique()<br>        df.plot(kind=<span class="hljs-string">&#x27;line&#x27;</span>, label=filename)<br>plt.xlabel(<span class="hljs-string">&#x27;Year&#x27;</span>)<br>plt.ylabel(<span class="hljs-string">&#x27;Number of Unique Fungicides&#x27;</span>)<br>plt.title(<span class="hljs-string">&#x27;Relationship between Year and Fungicide Data&#x27;</span>)<br>plt.legend(fontsize=<span class="hljs-string">&#x27;small&#x27;</span>, loc=<span class="hljs-string">&#x27;center left&#x27;</span>, bbox_to_anchor=(<span class="hljs-number">1</span>, <span class="hljs-number">0.5</span>))<br>plt.xlim(<span class="hljs-number">2000</span>, <span class="hljs-number">2021</span>)<br>plt.xticks(<span class="hljs-built_in">range</span>(<span class="hljs-number">2000</span>, <span class="hljs-number">2022</span>, <span class="hljs-number">2</span>))<br>plt.savefig(<span class="hljs-string">&#x27;output_plots/relationship_between_year_and_fungicide_data.png&#x27;</span>, dpi=<span class="hljs-number">1000</span>, bbox_inches=<span class="hljs-string">&#x27;tight&#x27;</span>)<br>plt.show()<br></code></pre></td></tr></table></figure>
+
+
+
+<p><img src="relationship_between_year_and_fungicide_data.png" srcset="/img/loading.gif" lazyload alt="relationship_between_year_and_fungicide_data"></p>
+<p>还可以自己拓展一些，但是我这里的就先分析和可视化这么多。</p>
+<p>其实这些都是python数据分析的准备工作。</p>
+<p>未来数据太大可能需要降维，可能需要分类、聚类，应用机器学习算法和深度学习算法等。</p>
+<p>这以后再学再写。</p>
+<p>如果这篇博客给到您帮助，我希望您能给我的仓库点一个star，这将是我继续创作下去的动力。</p>
+<p>我的仓库地址，<a target="_blank" rel="noopener" href="https://github.com/Guoxn1?tab=repositories">https://github.com/Guoxn1?tab=repositories</a></p>
+<img src="image-20230928221647582.png" srcset="/img/loading.gif" lazyload alt="image-20230928221647582" style="zoom:67%;">
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80/" class="category-chain-item">深度学习基础</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80/python%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/" class="category-chain-item">python数据分析</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/python%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/" class="print-no-link">#python数据分析</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>爱尔兰杀菌剂数据分析</div>
+      <div>http://example.com/2023/09/24/爱尔兰杀菌剂数据分析/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Guoxin</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年9月24日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/09/26/sklearn%E5%9F%BA%E4%BA%8E%E9%99%8D%E7%BB%B4%E8%81%9A%E7%B1%BB%E5%8F%AF%E8%A7%86%E5%8C%96/" title="sklearn基于降维聚类可视化">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">sklearn基于降维聚类可视化</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

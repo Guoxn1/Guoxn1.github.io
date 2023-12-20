@@ -1,0 +1,853 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Guoxin">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="1 简介这次需要面对的会议数据和之前“sklearn基于降维聚类可视化”那一篇的原理几乎一样，但是数据格式略有不同。 原出处：https:&#x2F;&#x2F;gitlab.diantouedu.cn&#x2F;QY&#x2F;test1&#x2F;tree&#x2F;master&#x2F;%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E7%B3%BB%E7%BB%9F%E5%AE%9E%E6%88%98%E7%AC%AC%E4%B8">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AAAI会议论文聚类分析">
+<meta property="og:url" content="http://example.com/2023/10/08/AAAI%E4%BC%9A%E8%AE%AE%E8%AE%BA%E6%96%87%E8%81%9A%E7%B1%BB%E5%88%86%E6%9E%90/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="1 简介这次需要面对的会议数据和之前“sklearn基于降维聚类可视化”那一篇的原理几乎一样，但是数据格式略有不同。 原出处：https:&#x2F;&#x2F;gitlab.diantouedu.cn&#x2F;QY&#x2F;test1&#x2F;tree&#x2F;master&#x2F;%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E7%B3%BB%E7%BB%9F%E5%AE%9E%E6%88%98%E7%AC%AC%E4%B8">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2023/10/08/AAAI%E4%BC%9A%E8%AE%AE%E8%AE%BA%E6%96%87%E8%81%9A%E7%B1%BB%E5%88%86%E6%9E%90/image-20231007173331234.png">
+<meta property="og:image" content="http://example.com/2023/10/08/AAAI%E4%BC%9A%E8%AE%AE%E8%AE%BA%E6%96%87%E8%81%9A%E7%B1%BB%E5%88%86%E6%9E%90/image-20231008142415228.png">
+<meta property="og:image" content="http://example.com/2023/10/08/AAAI%E4%BC%9A%E8%AE%AE%E8%AE%BA%E6%96%87%E8%81%9A%E7%B1%BB%E5%88%86%E6%9E%90/score.png">
+<meta property="og:image" content="http://example.com/2023/10/08/AAAI%E4%BC%9A%E8%AE%AE%E8%AE%BA%E6%96%87%E8%81%9A%E7%B1%BB%E5%88%86%E6%9E%90/gmm_score.png">
+<meta property="og:image" content="http://example.com/2023/10/08/AAAI%E4%BC%9A%E8%AE%AE%E8%AE%BA%E6%96%87%E8%81%9A%E7%B1%BB%E5%88%86%E6%9E%90/pca_2d.png">
+<meta property="og:image" content="http://example.com/2023/10/08/AAAI%E4%BC%9A%E8%AE%AE%E8%AE%BA%E6%96%87%E8%81%9A%E7%B1%BB%E5%88%86%E6%9E%90/pca_3d.png">
+<meta property="og:image" content="http://example.com/2023/10/08/AAAI%E4%BC%9A%E8%AE%AE%E8%AE%BA%E6%96%87%E8%81%9A%E7%B1%BB%E5%88%86%E6%9E%90/image-20231008154805965.png">
+<meta property="og:image" content="http://example.com/2023/10/08/AAAI%E4%BC%9A%E8%AE%AE%E8%AE%BA%E6%96%87%E8%81%9A%E7%B1%BB%E5%88%86%E6%9E%90/gmm_score_tsne2.png">
+<meta property="og:image" content="http://example.com/2023/10/08/AAAI%E4%BC%9A%E8%AE%AE%E8%AE%BA%E6%96%87%E8%81%9A%E7%B1%BB%E5%88%86%E6%9E%90/image-20231008153844707.png">
+<meta property="og:image" content="http://example.com/2023/10/08/AAAI%E4%BC%9A%E8%AE%AE%E8%AE%BA%E6%96%87%E8%81%9A%E7%B1%BB%E5%88%86%E6%9E%90/gmm_score_tsne.png">
+<meta property="og:image" content="http://example.com/2023/10/08/AAAI%E4%BC%9A%E8%AE%AE%E8%AE%BA%E6%96%87%E8%81%9A%E7%B1%BB%E5%88%86%E6%9E%90/tsne_2d.png">
+<meta property="og:image" content="http://example.com/2023/10/08/AAAI%E4%BC%9A%E8%AE%AE%E8%AE%BA%E6%96%87%E8%81%9A%E7%B1%BB%E5%88%86%E6%9E%90/tsne_3d.png">
+<meta property="og:image" content="http://example.com/2023/10/08/AAAI%E4%BC%9A%E8%AE%AE%E8%AE%BA%E6%96%87%E8%81%9A%E7%B1%BB%E5%88%86%E6%9E%90/image-20231008182127925.png">
+<meta property="og:image" content="http://example.com/2023/10/08/AAAI%E4%BC%9A%E8%AE%AE%E8%AE%BA%E6%96%87%E8%81%9A%E7%B1%BB%E5%88%86%E6%9E%90/like.png">
+<meta property="article:published_time" content="2023-10-08T08:41:24.000Z">
+<meta property="article:modified_time" content="2023-12-03T09:02:18.255Z">
+<meta property="article:author" content="Guoxin">
+<meta property="article:tag" content="python数据分析">
+<meta property="article:tag" content="聚类">
+<meta property="article:tag" content="降维">
+<meta property="article:tag" content="文本转向量">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/2023/10/08/AAAI%E4%BC%9A%E8%AE%AE%E8%AE%BA%E6%96%87%E8%81%9A%E7%B1%BB%E5%88%86%E6%9E%90/image-20231007173331234.png">
+  
+  
+  
+  <title>AAAI会议论文聚类分析 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.5","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Guoxin</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="AAAI会议论文聚类分析"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-10-08 16:41" pubdate>
+          2023年10月8日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          22k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          181 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">AAAI会议论文聚类分析</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="1-简介"><a href="#1-简介" class="headerlink" title="1 简介"></a>1 简介</h1><p>这次需要面对的会议数据和之前“sklearn基于降维聚类可视化”那一篇的原理几乎一样，但是数据格式略有不同。</p>
+<p>原出处：<a target="_blank" rel="noopener" href="https://gitlab.diantouedu.cn/QY/test1/tree/master/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E7%B3%BB%E7%BB%9F%E5%AE%9E%E6%88%98%E7%AC%AC%E4%B8%89%E6%9C%9F/%E5%AE%9E%E6%88%98%E4%BB%A3%E7%A0%81/AAAI%E4%BC%9A%E8%AE%AE%E8%AE%BA%E6%96%87%E8%81%9A%E7%B1%BB%E5%88%86%E6%9E%90">https://gitlab.diantouedu.cn/QY/test1/tree/master/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E7%B3%BB%E7%BB%9F%E5%AE%9E%E6%88%98%E7%AC%AC%E4%B8%89%E6%9C%9F/%E5%AE%9E%E6%88%98%E4%BB%A3%E7%A0%81/AAAI%E4%BC%9A%E8%AE%AE%E8%AE%BA%E6%96%87%E8%81%9A%E7%B1%BB%E5%88%86%E6%9E%90</a></p>
+<p>除了原本就有的内容，还加了一些自己的理解和代码补充，比如，最初是选择数据列的不同，并添加了“t-sne降维”、“给聚类结果一个家”等。旨在补充原内容，更好地分析数据。</p>
+<p>这篇博客的完整代码，在我的仓库中，地址：<a target="_blank" rel="noopener" href="https://github.com/Guoxn1/ai%E3%80%82">https://github.com/Guoxn1/ai。</a></p>
+<p>首先看下这次的数据：</p>
+<p><img src="image-20231007173331234.png" srcset="/img/loading.gif" lazyload alt="image-20231007173331234"></p>
+<p>这个数据集是2014年某会议的投稿论文简介，其中包括title、topic、abstract等。现在的任务，就是根据这些描述，重新对这些文章进行聚类。可能会问，每个文章都已经有group了，为什么还要我们对其聚类。原因在于这些文章在投到类别时，可以投了多个，也可能有更好的类别适合原本投的那一类。我们现在要做的，就是根据描述信息，重新为其聚类。</p>
+<p>考虑使用哪些数据来进行分析呢，对文章分类，与作者无关，要对文章重新分类，所以也不能把group加进来。author和group，title我们不作为分类的主要依据，这好理解。所以我们把剩下的：keywords、topics、abstract这三项作为分类的数据。可以考虑将其拼接在一块进行处理。</p>
+<p>这里的数据有些不同，是文本数据，而聚类算法通常是要处理向量的，所以考虑先把其转换为向量。经常利用到的方法可能是tdidf算法，（后面做简要介绍）变成向量，即数字后，可以对其进行kmeans聚类或者高斯聚类等聚类方法，也可以考虑使用pca或t-sne进行降维后，再进行聚类。期间，使用聚类时，参数的指定，可以使用肘部法则或者使用本文提到的方法进行参数的最优化选择，以期得到较好的聚类结果。最后，可以对结果进行可视化展示。</p>
+<h1 id="2-文本转向量"><a href="#2-文本转向量" class="headerlink" title="2 文本转向量"></a>2 文本转向量</h1><h2 id="2-1-tdidf算法简介"><a href="#2-1-tdidf算法简介" class="headerlink" title="2.1 tdidf算法简介"></a>2.1 tdidf算法简介</h2><p>TF-IDF（Term Frequency-Inverse Document Frequency）是一种常用于文本挖掘和信息检索的技术，用于评估一个词语在一篇文档中的重要程度。</p>
+<p>具体来说，调用它的tdidf接口，把文本转换成向量，主要做了下面几件事：</p>
+<ol>
+<li>文本预处理：在使用 <code>TfidfVectorizer</code> 之前，需要对文本数据进行预处理，例如分词、去除停用词、转换为小写等操作。这些预处理步骤有助于提取准确的词语，并减少无关信息的干扰。</li>
+<li>词频（Term Frequency，TF）：TF 表示一个词语在文档中的频率，计算方式为词语在文档中出现的次数除以文档中的总词语数。TF 表示了一个词语在当前文档中的重要程度。</li>
+<li>逆文档频率（Inverse Document Frequency，IDF）：IDF 表示一个词语在整个语料库中的常见程度，计算方式为语料库中的文档总数除以包含该词语的文档数的对数取倒数。IDF 表示了一个词语在整个语料库中的重要程度。</li>
+<li>TF-IDF 特征向量：TF-IDF 特征向量是将文本数据转换为数值表示的过程。通过将每个词语的 TF 值与 IDF 值相乘，可以得到每个词语在文档中的 TF-IDF 值。最终，将每个文档表示为一个向量，其中每个维度对应一个词语的 TF-IDF 值。</li>
+</ol>
+<p>TF &#x3D; (词语在文档中出现的次数) &#x2F; (文档中的总词语数)</p>
+<p>例如，如果一个词语在文档中出现了5次，而文档中的总词语数为100，则其词频为 5&#x2F;100 &#x3D; 0.05。</p>
+<p>IDF &#x3D; log((语料库中的文档总数) &#x2F; (包含该词语的文档数))</p>
+<p>这里的 log 表示以10为底或以自然对数为底的对数，选择哪种对数取决于具体的需求。</p>
+<p>例如，如果语料库中的文档总数为1000，而包含某个词语的文档数为100，则其逆文档频率为 log(1000&#x2F;100) &#x3D; log(10) &#x3D; 1。</p>
+<p>这里面文档数就是文章数，就是咱一共分析的文章数目。由于计算每个词的tf*idf，因此可以每个文档可以写成一个向量形式。</p>
+<h2 id="2-2-拼接文本数据"><a href="#2-2-拼接文本数据" class="headerlink" title="2.2 拼接文本数据"></a>2.2 拼接文本数据</h2><p>拼接四列的数据，注意对每一列做一个处理，比如keywords列，为每一行加.，这样可以在分词的时候不会被后面的词连在一块影响。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> pandas <span class="hljs-keyword">as</span> pd<br><br>data = pd.read_csv(<span class="hljs-string">&quot;[UCI] AAAI-14 Accepted Papers - Papers.csv&quot;</span>)<br><br><br><span class="hljs-comment"># 给title加个. 分隔符</span><br>title = data[<span class="hljs-string">&quot;title&quot;</span>]<br>title = title.apply(<span class="hljs-keyword">lambda</span> x: x + <span class="hljs-string">&#x27;.&#x27;</span>)<br><br>keywords = data[<span class="hljs-string">&quot;keywords&quot;</span>]<br>keywords = keywords.apply(<span class="hljs-keyword">lambda</span> x: <span class="hljs-string">&quot;. &quot;</span>.join(x.split(<span class="hljs-string">&quot;\n&quot;</span>))+<span class="hljs-string">&quot;. &quot;</span>)<br><br><span class="hljs-comment"># </span><br><span class="hljs-comment"># topics = data[&quot;topics&quot;]</span><br><span class="hljs-comment"># topics =  topics.apply(lambda x: &quot;. &quot;.join(x.split(&quot;\n&quot;))+&quot;. &quot; if type(x)!=float else &quot;&quot;)</span><br><br>abstract = data[<span class="hljs-string">&quot;abstract&quot;</span>]<br><br>df = pd.concat([title,keywords,abstract],axis=<span class="hljs-number">1</span>)<br>df[<span class="hljs-string">&quot;content&quot;</span>] = df.apply(<span class="hljs-keyword">lambda</span> row: <span class="hljs-string">&#x27; &#x27;</span>.join(row.values.astype(<span class="hljs-built_in">str</span>)), axis=<span class="hljs-number">1</span>)<br><br><br>df[<span class="hljs-string">&quot;content&quot;</span>] .to_excel(<span class="hljs-string">&quot;content.xlsx&quot;</span>,index=<span class="hljs-literal">False</span>)<br><br></code></pre></td></tr></table></figure>
+
+<p><img src="image-20231008142415228.png" srcset="/img/loading.gif" lazyload alt="image-20231008142415228"></p>
+<h2 id="2-3-转换为向量"><a href="#2-3-转换为向量" class="headerlink" title="2.3 转换为向量"></a>2.3 转换为向量</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> sklearn.feature_extraction.text <span class="hljs-keyword">import</span> TfidfVectorizer<br><span class="hljs-keyword">from</span> sklearn.cluster <span class="hljs-keyword">import</span> KMeans<br><br><span class="hljs-comment"># 转换为向量</span><br>vectorizer = TfidfVectorizer(stop_words=<span class="hljs-string">&quot;english&quot;</span>,max_features=<span class="hljs-number">1000</span>)<br>X = vectorizer.fit_transform(df[<span class="hljs-string">&quot;content&quot;</span>] )<br><br></code></pre></td></tr></table></figure>
+
+<p>这个直接调用接口，指定最大向量为1000维，提取频率最大的1000个词。</p>
+<p>到此，已经将文本转换为向量。</p>
+<h1 id="3-pca降维聚类"><a href="#3-pca降维聚类" class="headerlink" title="3 pca降维聚类"></a>3 pca降维聚类</h1><h2 id="3-1-pca降维"><a href="#3-1-pca降维" class="headerlink" title="3.1 pca降维"></a>3.1 pca降维</h2><p>这里就不在对原数据进行聚类了，而是先降维后再进行聚类，因为维数确实很大，1000维，必然效果一般，考虑先用pca进行降维后再进行处理。</p>
+<p>降低成三维可行吗，可视化是可行，但是数据分析估计不太行，计算多少维的数据能代表80%的数据，至少</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> sklearn.decomposition <span class="hljs-keyword">import</span> PCA<br><br>pca = PCA()<br><span class="hljs-comment">#X.toarray()：假设 X 是一个稀疏矩阵或稀疏数据表示的文本数据。通过 toarray() 方法将其转换为稠密矩阵，以便进行 PCA 分析。</span><br>pca.fit_transform(X.toarray())<br><br><span class="hljs-comment"># 特征向量 pca.explained_variance_ratio_</span><br>cumulative_variance = np.cumsum(pca.explained_variance_ratio_)<br><br><span class="hljs-comment"># 计算前几个特征向量的和，比如第二个数据就是前两个特征向量的和</span><br><span class="hljs-comment"># 计算最少多少个特征向量可以表示80%的数据</span><br>num_components = np.where(cumulative_variance&gt;<span class="hljs-number">0.8</span>)[<span class="hljs-number">0</span>][<span class="hljs-number">0</span>]+<span class="hljs-number">1</span><br><br><span class="hljs-built_in">print</span>(num_components)<br><br><br></code></pre></td></tr></table></figure>
+
+<p>输出 187</p>
+<p>至少187维。</p>
+<p>那么我们想要表示95%的数据，应当有多少维：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python">pca1 = PCA(n_components=<span class="hljs-number">0.95</span>)<br><span class="hljs-comment">#X.toarray()：假设 X 是一个稀疏矩阵或稀疏数据表示的文本数据。通过 toarray() 方法将其转换为稠密矩阵，以便进行 PCA 分析。</span><br>pca_data = pca1.fit_transform(X.toarray())<br>pca_data.shape<br></code></pre></td></tr></table></figure>
+
+<p>需要301维。</p>
+<p>那好，pca确定降维就到301维。</p>
+<h2 id="3-2-评价标准确定参数"><a href="#3-2-评价标准确定参数" class="headerlink" title="3.2 评价标准确定参数"></a>3.2 评价标准确定参数</h2><p>进行Kmeans聚类，选择合适的聚类数目是必要的。上次用到了肘部法则。这里再介绍一个轮廓分数，silhouette score。它衡量了聚类结果中簇内的紧密度和簇间的分离度。</p>
+<p>通过计算轮廓系数，可以评估聚类算法在给定数据上的聚类质量。具体而言，较高的轮廓系数表示聚类结果的簇内紧密度较高、簇间分离度较好，聚类效果较好。</p>
+<p>用轮廓系数和肘部法则同时进行评判kmeans在不同聚类数目下的聚类效果，以确定最佳聚类数目。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs python"><br><span class="hljs-keyword">from</span> sklearn.metrics <span class="hljs-keyword">import</span> silhouette_score<br><span class="hljs-keyword">import</span> matplotlib.pyplot <span class="hljs-keyword">as</span> plt<br><br>score = []<br>distance = []<br><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">2</span>,<span class="hljs-number">15</span>):<br>    kmeans = KMeans(n_clusters=i,init=<span class="hljs-string">&#x27;k-means++&#x27;</span>,random_state=<span class="hljs-number">42</span>,n_init=<span class="hljs-number">10</span>,max_iter=<span class="hljs-number">300</span>)<br>    kmeans.fit(pca_data)<br>    score.append(silhouette_score(pca_data,kmeans.labels_))<br>    distance.append(kmeans.inertia_)<br><br>fig,axs = plt.subplots(nrows=<span class="hljs-number">1</span>,ncols=<span class="hljs-number">2</span>,figsize=(<span class="hljs-number">16</span>,<span class="hljs-number">9</span>))<br><br>axs[<span class="hljs-number">0</span>].set_title(<span class="hljs-string">&#x27;Silhouette Score vs. Number of Clusters&#x27;</span>)<br>axs[<span class="hljs-number">0</span>].set_xlabel(<span class="hljs-string">&#x27;Number of Clusters&#x27;</span>)<br>axs[<span class="hljs-number">0</span>].set_ylabel(<span class="hljs-string">&#x27;Silhouette Score&#x27;</span>)<br>axs[<span class="hljs-number">0</span>].plot(<span class="hljs-built_in">range</span>(<span class="hljs-number">2</span>,<span class="hljs-number">15</span>),score,marker=<span class="hljs-string">&quot;o&quot;</span>,linestyle=<span class="hljs-string">&quot;--&quot;</span>)<br><br>axs[<span class="hljs-number">1</span>].set_title(<span class="hljs-string">&#x27;distance vs. Number of Clusters&#x27;</span>)<br>axs[<span class="hljs-number">1</span>].set_xlabel(<span class="hljs-string">&#x27;Number of Clusters&#x27;</span>)<br>axs[<span class="hljs-number">1</span>].set_ylabel(<span class="hljs-string">&#x27;distance&#x27;</span>)<br>axs[<span class="hljs-number">1</span>].plot(<span class="hljs-built_in">range</span>(<span class="hljs-number">2</span>,<span class="hljs-number">15</span>),distance,marker=<span class="hljs-string">&quot;o&quot;</span>,linestyle=<span class="hljs-string">&quot;--&quot;</span>)<br><br>plt.show()<br></code></pre></td></tr></table></figure>
+
+<p><img src="score.png" srcset="/img/loading.gif" lazyload alt="score"></p>
+<p>这个数据的肘部法则显然不太明显，而且对于轮廓系数，理论上是越高越好，但是簇数目也不宜偏多。效果差了点，但也没什么问题。</p>
+<p>这里可以选择以4或者6作为聚类数，为了防止过拟合，我们以4作为聚类数目，当然以6也可以。</p>
+<p>kmeans弄完了，我们再来看一下高斯聚类，同样的道理，但是指标有所不同。这里要看高斯聚类的轮廓系数和BIC和AIC的值。</p>
+<p>较低的 BIC 或 AIC 值表示较好的模型拟合。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> sklearn.mixture <span class="hljs-keyword">import</span> GaussianMixture<br><br>gmm_score = []<br>bic = []<br>aic = []<br><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">2</span>,<span class="hljs-number">15</span>):<br>    gmm = GaussianMixture(n_components=i, covariance_type=<span class="hljs-string">&#x27;full&#x27;</span>).fit(pca_data)<br>    labels = gmm.predict(pca_data)<br>    gmm_score.append( silhouette_score(pca_data, labels))<br>    bic.append(gmm.bic(pca_data))<br>    aic.append(gmm.aic(pca_data))<br><br>fig,axs = plt.subplots(nrows=<span class="hljs-number">1</span>,ncols=<span class="hljs-number">3</span>,figsize=(<span class="hljs-number">24</span>,<span class="hljs-number">9</span>))<br><br>axs[<span class="hljs-number">0</span>].set_title(<span class="hljs-string">&#x27;Silhouette Score vs. Number of Clusters&#x27;</span>)<br>axs[<span class="hljs-number">0</span>].set_xlabel(<span class="hljs-string">&#x27;Number of Clusters&#x27;</span>)<br>axs[<span class="hljs-number">0</span>].set_ylabel(<span class="hljs-string">&#x27;Silhouette Score&#x27;</span>)<br>axs[<span class="hljs-number">0</span>].plot(<span class="hljs-built_in">range</span>(<span class="hljs-number">2</span>,<span class="hljs-number">15</span>),gmm_score,marker=<span class="hljs-string">&quot;o&quot;</span>,linestyle=<span class="hljs-string">&quot;--&quot;</span>)<br><br>axs[<span class="hljs-number">1</span>].set_title(<span class="hljs-string">&#x27;bic vs. Number of Clusters&#x27;</span>)<br>axs[<span class="hljs-number">1</span>].set_xlabel(<span class="hljs-string">&#x27;Number of Clusters&#x27;</span>)<br>axs[<span class="hljs-number">1</span>].set_ylabel(<span class="hljs-string">&#x27;bic&#x27;</span>)<br>axs[<span class="hljs-number">1</span>].plot(<span class="hljs-built_in">range</span>(<span class="hljs-number">2</span>,<span class="hljs-number">15</span>),bic,marker=<span class="hljs-string">&quot;o&quot;</span>,linestyle=<span class="hljs-string">&quot;--&quot;</span>)<br><br>axs[<span class="hljs-number">2</span>].set_title(<span class="hljs-string">&#x27;aic vs. Number of Clusters&#x27;</span>)<br>axs[<span class="hljs-number">2</span>].set_xlabel(<span class="hljs-string">&#x27;Number of Clusters&#x27;</span>)<br>axs[<span class="hljs-number">2</span>].set_ylabel(<span class="hljs-string">&#x27;aic&#x27;</span>)<br>axs[<span class="hljs-number">2</span>].plot(<span class="hljs-built_in">range</span>(<span class="hljs-number">2</span>,<span class="hljs-number">15</span>),aic,marker=<span class="hljs-string">&quot;o&quot;</span>,linestyle=<span class="hljs-string">&quot;--&quot;</span>)<br><br>plt.tight_layout()<br>plt.savefig(<span class="hljs-string">&quot;output_plot/gmm_score.png&quot;</span>)<br>plt.show()<br></code></pre></td></tr></table></figure>
+
+<p><img src="gmm_score.png" srcset="/img/loading.gif" lazyload alt="gmm_score"></p>
+<p>结果显示聚类在5类左右效果综合来看比较好。</p>
+<h2 id="3-3-进行聚类并可视化"><a href="#3-3-进行聚类并可视化" class="headerlink" title="3.3 进行聚类并可视化"></a>3.3 进行聚类并可视化</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> seaborn <span class="hljs-keyword">as</span> sns<br>kmeans = KMeans(n_clusters=<span class="hljs-number">4</span>,n_init=<span class="hljs-number">10</span>).fit(pca_data)<br>gmm = GaussianMixture(n_components=<span class="hljs-number">5</span>, covariance_type=<span class="hljs-string">&#x27;full&#x27;</span>).fit(pca_data)<br><br>kmeans_clusters = kmeans.labels_<br>gmm_clusters = gmm.predict(pca_data)<br><br><span class="hljs-comment">#分别在二维和三维进行可视化  因为300多维肯定没法可视化啊</span><br>pca2 = PCA(n_components=<span class="hljs-number">2</span>)<br>pca3 = PCA(n_components=<span class="hljs-number">3</span>)<br>pca2_data = pca2.fit_transform(X.toarray())<br>pca3_data = pca3.fit_transform(X.toarray())<br><br>fig,axs = plt.subplots(nrows=<span class="hljs-number">1</span>,ncols=<span class="hljs-number">2</span>,figsize=(<span class="hljs-number">16</span>,<span class="hljs-number">9</span>))<br><br>axs[<span class="hljs-number">0</span>].scatter(pca2_data[:, <span class="hljs-number">0</span>], pca2_data[:, <span class="hljs-number">1</span>], c=kmeans_clusters)<br>axs[<span class="hljs-number">0</span>].set_title(<span class="hljs-string">&#x27;KMeans &#x27;</span>)<br>axs[<span class="hljs-number">0</span>].set_xlabel(<span class="hljs-string">&#x27;Principal Component 1&#x27;</span>)<br>axs[<span class="hljs-number">0</span>].set_ylabel(<span class="hljs-string">&#x27;Principal Component 2&#x27;</span>)<br><br><br>axs[<span class="hljs-number">1</span>].scatter(pca2_data[:, <span class="hljs-number">0</span>], pca2_data[:, <span class="hljs-number">1</span>], c=gmm_clusters)<br>axs[<span class="hljs-number">1</span>].set_title(<span class="hljs-string">&#x27;gmm &#x27;</span>)<br>axs[<span class="hljs-number">1</span>].set_xlabel(<span class="hljs-string">&#x27;Principal Component 1&#x27;</span>)<br>axs[<span class="hljs-number">1</span>].set_ylabel(<span class="hljs-string">&#x27;Principal Component 2&#x27;</span>)<br><br>plt.tight_layout()<br>plt.savefig(<span class="hljs-string">&quot;output_plot/pca_2d.png&quot;</span>)<br>plt.show()<br><br></code></pre></td></tr></table></figure>
+
+<p><img src="pca_2d.png" srcset="/img/loading.gif" lazyload alt="pca_2d"></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs python">fig,axs = plt.subplots(nrows=<span class="hljs-number">1</span>,ncols=<span class="hljs-number">2</span>,figsize=(<span class="hljs-number">16</span>,<span class="hljs-number">9</span>),subplot_kw=&#123;<span class="hljs-string">&#x27;projection&#x27;</span>: <span class="hljs-string">&#x27;3d&#x27;</span>&#125;)<br><br><br>axs[<span class="hljs-number">0</span>].scatter(pca3_data[:, <span class="hljs-number">0</span>], pca3_data[:, <span class="hljs-number">1</span>],pca3_data[:, <span class="hljs-number">2</span>], c=kmeans_clusters)<br>axs[<span class="hljs-number">0</span>].set_title(<span class="hljs-string">&#x27;KMeans &#x27;</span>)<br>axs[<span class="hljs-number">0</span>].set_xlabel(<span class="hljs-string">&#x27;Principal Component 1&#x27;</span>)<br>axs[<span class="hljs-number">0</span>].set_ylabel(<span class="hljs-string">&#x27;Principal Component 2&#x27;</span>)<br>axs[<span class="hljs-number">0</span>].set_zlabel(<span class="hljs-string">&#x27;Principal Component 3&#x27;</span>)<br><br>axs[<span class="hljs-number">1</span>].scatter(pca3_data[:, <span class="hljs-number">0</span>], pca3_data[:, <span class="hljs-number">1</span>],pca3_data[:, <span class="hljs-number">2</span>], c=gmm_clusters)<br>axs[<span class="hljs-number">1</span>].set_title(<span class="hljs-string">&#x27;gmm &#x27;</span>)<br>axs[<span class="hljs-number">1</span>].set_xlabel(<span class="hljs-string">&#x27;Principal Component 1&#x27;</span>)<br>axs[<span class="hljs-number">1</span>].set_ylabel(<span class="hljs-string">&#x27;Principal Component 2&#x27;</span>)<br>axs[<span class="hljs-number">1</span>].set_zlabel(<span class="hljs-string">&#x27;Principal Component 3&#x27;</span>)<br><br>plt.tight_layout()<br>plt.savefig(<span class="hljs-string">&quot;output_plot/pca_3d.png&quot;</span>)<br>plt.show()<br></code></pre></td></tr></table></figure>
+
+<p><img src="pca_3d.png" srcset="/img/loading.gif" lazyload alt="pca_3d"></p>
+<p>直观上看还是kmeans的分类效果好一点。</p>
+<h1 id="4-t-sne降维聚类"><a href="#4-t-sne降维聚类" class="headerlink" title="4 t-sne降维聚类"></a>4 t-sne降维聚类</h1><h2 id="4-1-tsne降维"><a href="#4-1-tsne降维" class="headerlink" title="4.1 tsne降维"></a>4.1 tsne降维</h2><p>t-sne没有一个很好的评价指标，他不像pca一样可以限定解释95%的主成分，直接这样指定在参数内，可以获得降维后的维数。并且t-sne的降维后的维度不能多于3维。所以直接指定降维成二或三维，并聚类。</p>
+<p>由于维数数目比较大（1000），很可能不是线性问题，所以采用了t-sne降维。</p>
+<h2 id="4-2-评价指标确定参数"><a href="#4-2-评价指标确定参数" class="headerlink" title="4.2 评价指标确定参数"></a>4.2 评价指标确定参数</h2><p>这里的代码和仓库中的代码顺序略有不同，仓库的代码是先分析三维再二维。</p>
+<p>先在二维条件下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs python"><br><span class="hljs-keyword">from</span> sklearn.metrics <span class="hljs-keyword">import</span> silhouette_score<br><span class="hljs-keyword">import</span> matplotlib.pyplot <span class="hljs-keyword">as</span> plt<br><br>score = []<br>distance = []<br><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">2</span>,<span class="hljs-number">15</span>):<br>    kmeans = KMeans(n_clusters=i,init=<span class="hljs-string">&#x27;k-means++&#x27;</span>,random_state=<span class="hljs-number">42</span>,n_init=<span class="hljs-number">10</span>,max_iter=<span class="hljs-number">300</span>)<br>    kmeans.fit(tsne_data2)<br>    score.append(silhouette_score(tsne_data2,kmeans.labels_))<br>    distance.append(kmeans.inertia_)<br><br>fig,axs = plt.subplots(nrows=<span class="hljs-number">1</span>,ncols=<span class="hljs-number">2</span>,figsize=(<span class="hljs-number">16</span>,<span class="hljs-number">9</span>))<br><br>axs[<span class="hljs-number">0</span>].set_title(<span class="hljs-string">&#x27;Silhouette Score vs. Number of Clusters&#x27;</span>)<br>axs[<span class="hljs-number">0</span>].set_xlabel(<span class="hljs-string">&#x27;Number of Clusters&#x27;</span>)<br>axs[<span class="hljs-number">0</span>].set_ylabel(<span class="hljs-string">&#x27;Silhouette Score&#x27;</span>)<br>axs[<span class="hljs-number">0</span>].plot(<span class="hljs-built_in">range</span>(<span class="hljs-number">2</span>,<span class="hljs-number">15</span>),score,marker=<span class="hljs-string">&quot;o&quot;</span>,linestyle=<span class="hljs-string">&quot;--&quot;</span>)<br><br>axs[<span class="hljs-number">1</span>].set_title(<span class="hljs-string">&#x27;distance vs. Number of Clusters&#x27;</span>)<br>axs[<span class="hljs-number">1</span>].set_xlabel(<span class="hljs-string">&#x27;Number of Clusters&#x27;</span>)<br>axs[<span class="hljs-number">1</span>].set_ylabel(<span class="hljs-string">&#x27;distance&#x27;</span>)<br>axs[<span class="hljs-number">1</span>].plot(<span class="hljs-built_in">range</span>(<span class="hljs-number">2</span>,<span class="hljs-number">15</span>),distance,marker=<span class="hljs-string">&quot;o&quot;</span>,linestyle=<span class="hljs-string">&quot;--&quot;</span>)<br><br>plt.show()<br></code></pre></td></tr></table></figure>
+
+<p><img src="image-20231008154805965.png" srcset="/img/loading.gif" lazyload alt="image-20231008154805965"></p>
+<p>二维条件下，kmeans适合聚类为3个。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> sklearn.mixture <span class="hljs-keyword">import</span> GaussianMixture<br><br>gmm_score = []<br>bic = []<br>aic = []<br><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">2</span>,<span class="hljs-number">15</span>):<br>    gmm = GaussianMixture(n_components=i, covariance_type=<span class="hljs-string">&#x27;full&#x27;</span>).fit(tsne_data2)<br>    labels = gmm.predict(tsne_data2)<br>    gmm_score.append( silhouette_score(tsne_data2, labels))<br>    bic.append(gmm.bic(tsne_data2))<br>    aic.append(gmm.aic(tsne_data2))<br><br>fig,axs = plt.subplots(nrows=<span class="hljs-number">1</span>,ncols=<span class="hljs-number">3</span>,figsize=(<span class="hljs-number">24</span>,<span class="hljs-number">9</span>))<br><br>axs[<span class="hljs-number">0</span>].set_title(<span class="hljs-string">&#x27;Silhouette Score vs. Number of Clusters&#x27;</span>)<br>axs[<span class="hljs-number">0</span>].set_xlabel(<span class="hljs-string">&#x27;Number of Clusters&#x27;</span>)<br>axs[<span class="hljs-number">0</span>].set_ylabel(<span class="hljs-string">&#x27;Silhouette Score&#x27;</span>)<br>axs[<span class="hljs-number">0</span>].plot(<span class="hljs-built_in">range</span>(<span class="hljs-number">2</span>,<span class="hljs-number">15</span>),gmm_score,marker=<span class="hljs-string">&quot;o&quot;</span>,linestyle=<span class="hljs-string">&quot;--&quot;</span>)<br><br>axs[<span class="hljs-number">1</span>].set_title(<span class="hljs-string">&#x27;bic vs. Number of Clusters&#x27;</span>)<br>axs[<span class="hljs-number">1</span>].set_xlabel(<span class="hljs-string">&#x27;Number of Clusters&#x27;</span>)<br>axs[<span class="hljs-number">1</span>].set_ylabel(<span class="hljs-string">&#x27;bic&#x27;</span>)<br>axs[<span class="hljs-number">1</span>].plot(<span class="hljs-built_in">range</span>(<span class="hljs-number">2</span>,<span class="hljs-number">15</span>),bic,marker=<span class="hljs-string">&quot;o&quot;</span>,linestyle=<span class="hljs-string">&quot;--&quot;</span>)<br><br>axs[<span class="hljs-number">2</span>].set_title(<span class="hljs-string">&#x27;aic vs. Number of Clusters&#x27;</span>)<br>axs[<span class="hljs-number">2</span>].set_xlabel(<span class="hljs-string">&#x27;Number of Clusters&#x27;</span>)<br>axs[<span class="hljs-number">2</span>].set_ylabel(<span class="hljs-string">&#x27;aic&#x27;</span>)<br>axs[<span class="hljs-number">2</span>].plot(<span class="hljs-built_in">range</span>(<span class="hljs-number">2</span>,<span class="hljs-number">15</span>),aic,marker=<span class="hljs-string">&quot;o&quot;</span>,linestyle=<span class="hljs-string">&quot;--&quot;</span>)<br><br>plt.tight_layout()<br>plt.savefig(<span class="hljs-string">&quot;output_plot/gmm_score_tsne2.png&quot;</span>)<br>plt.show()<br></code></pre></td></tr></table></figure>
+
+<p><img src="gmm_score_tsne2.png" srcset="/img/loading.gif" lazyload alt="gmm_score_tsne2"></p>
+<p>二维条件下，高斯聚类也更偏向于3类。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs python"><br><span class="hljs-keyword">from</span> sklearn.metrics <span class="hljs-keyword">import</span> silhouette_score<br><span class="hljs-keyword">import</span> matplotlib.pyplot <span class="hljs-keyword">as</span> plt<br><br>score = []<br>distance = []<br><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">2</span>,<span class="hljs-number">15</span>):<br>    kmeans = KMeans(n_clusters=i,init=<span class="hljs-string">&#x27;k-means++&#x27;</span>,random_state=<span class="hljs-number">42</span>,n_init=<span class="hljs-number">10</span>,max_iter=<span class="hljs-number">300</span>)<br>    kmeans.fit(tsne_data)<br>    score.append(silhouette_score(tsne_data,kmeans.labels_))<br>    distance.append(kmeans.inertia_)<br><br>fig,axs = plt.subplots(nrows=<span class="hljs-number">1</span>,ncols=<span class="hljs-number">2</span>,figsize=(<span class="hljs-number">16</span>,<span class="hljs-number">9</span>))<br><br>axs[<span class="hljs-number">0</span>].set_title(<span class="hljs-string">&#x27;Silhouette Score vs. Number of Clusters&#x27;</span>)<br>axs[<span class="hljs-number">0</span>].set_xlabel(<span class="hljs-string">&#x27;Number of Clusters&#x27;</span>)<br>axs[<span class="hljs-number">0</span>].set_ylabel(<span class="hljs-string">&#x27;Silhouette Score&#x27;</span>)<br>axs[<span class="hljs-number">0</span>].plot(<span class="hljs-built_in">range</span>(<span class="hljs-number">2</span>,<span class="hljs-number">15</span>),score,marker=<span class="hljs-string">&quot;o&quot;</span>,linestyle=<span class="hljs-string">&quot;--&quot;</span>)<br><br>axs[<span class="hljs-number">1</span>].set_title(<span class="hljs-string">&#x27;distance vs. Number of Clusters&#x27;</span>)<br>axs[<span class="hljs-number">1</span>].set_xlabel(<span class="hljs-string">&#x27;Number of Clusters&#x27;</span>)<br>axs[<span class="hljs-number">1</span>].set_ylabel(<span class="hljs-string">&#x27;distance&#x27;</span>)<br>axs[<span class="hljs-number">1</span>].plot(<span class="hljs-built_in">range</span>(<span class="hljs-number">2</span>,<span class="hljs-number">15</span>),distance,marker=<span class="hljs-string">&quot;o&quot;</span>,linestyle=<span class="hljs-string">&quot;--&quot;</span>)<br><br>plt.show()<br></code></pre></td></tr></table></figure>
+
+<p><img src="image-20231008153844707.png" srcset="/img/loading.gif" lazyload alt="image-20231008153844707"></p>
+<p>这个效果还不错，当n等于5时效果不错。</p>
+<p>在三维条件下，考虑使用kmeans聚类成5类。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> sklearn.mixture <span class="hljs-keyword">import</span> GaussianMixture<br><br>gmm_score = []<br>bic = []<br>aic = []<br><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">2</span>,<span class="hljs-number">15</span>):<br>    gmm = GaussianMixture(n_components=i, covariance_type=<span class="hljs-string">&#x27;full&#x27;</span>).fit(tsne_data)<br>    labels = gmm.predict(tsne_data)<br>    gmm_score.append( silhouette_score(tsne_data, labels))<br>    bic.append(gmm.bic(tsne_data))<br>    aic.append(gmm.aic(tsne_data))<br><br>fig,axs = plt.subplots(nrows=<span class="hljs-number">1</span>,ncols=<span class="hljs-number">3</span>,figsize=(<span class="hljs-number">24</span>,<span class="hljs-number">9</span>))<br><br>axs[<span class="hljs-number">0</span>].set_title(<span class="hljs-string">&#x27;Silhouette Score vs. Number of Clusters&#x27;</span>)<br>axs[<span class="hljs-number">0</span>].set_xlabel(<span class="hljs-string">&#x27;Number of Clusters&#x27;</span>)<br>axs[<span class="hljs-number">0</span>].set_ylabel(<span class="hljs-string">&#x27;Silhouette Score&#x27;</span>)<br>axs[<span class="hljs-number">0</span>].plot(<span class="hljs-built_in">range</span>(<span class="hljs-number">2</span>,<span class="hljs-number">15</span>),gmm_score,marker=<span class="hljs-string">&quot;o&quot;</span>,linestyle=<span class="hljs-string">&quot;--&quot;</span>)<br><br>axs[<span class="hljs-number">1</span>].set_title(<span class="hljs-string">&#x27;bic vs. Number of Clusters&#x27;</span>)<br>axs[<span class="hljs-number">1</span>].set_xlabel(<span class="hljs-string">&#x27;Number of Clusters&#x27;</span>)<br>axs[<span class="hljs-number">1</span>].set_ylabel(<span class="hljs-string">&#x27;bic&#x27;</span>)<br>axs[<span class="hljs-number">1</span>].plot(<span class="hljs-built_in">range</span>(<span class="hljs-number">2</span>,<span class="hljs-number">15</span>),bic,marker=<span class="hljs-string">&quot;o&quot;</span>,linestyle=<span class="hljs-string">&quot;--&quot;</span>)<br><br>axs[<span class="hljs-number">2</span>].set_title(<span class="hljs-string">&#x27;aic vs. Number of Clusters&#x27;</span>)<br>axs[<span class="hljs-number">2</span>].set_xlabel(<span class="hljs-string">&#x27;Number of Clusters&#x27;</span>)<br>axs[<span class="hljs-number">2</span>].set_ylabel(<span class="hljs-string">&#x27;aic&#x27;</span>)<br>axs[<span class="hljs-number">2</span>].plot(<span class="hljs-built_in">range</span>(<span class="hljs-number">2</span>,<span class="hljs-number">15</span>),aic,marker=<span class="hljs-string">&quot;o&quot;</span>,linestyle=<span class="hljs-string">&quot;--&quot;</span>)<br><br>plt.tight_layout()<br>plt.savefig(<span class="hljs-string">&quot;output_plot/gmm_score_tsne.png&quot;</span>)<br>plt.show()<br></code></pre></td></tr></table></figure>
+
+<p><img src="gmm_score_tsne.png" srcset="/img/loading.gif" lazyload alt="gmm_score_tsne"></p>
+<p>在三维条件下，高斯聚类在n&#x3D;5时也不错。</p>
+<h2 id="4-3-进行聚类并可视化"><a href="#4-3-进行聚类并可视化" class="headerlink" title="4.3 进行聚类并可视化"></a>4.3 进行聚类并可视化</h2><p>二维：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs python"><br>kmeans = KMeans(n_clusters=<span class="hljs-number">3</span>,n_init=<span class="hljs-number">10</span>).fit(tsne_data2)<br>gmm = GaussianMixture(n_components=<span class="hljs-number">3</span>, covariance_type=<span class="hljs-string">&#x27;full&#x27;</span>).fit(tsne_data2)<br><br>kmeans_clusters = kmeans.labels_<br>gmm_clusters = gmm.predict(tsne_data2)<br><br><br>fig,axs = plt.subplots(nrows=<span class="hljs-number">1</span>,ncols=<span class="hljs-number">2</span>,figsize=(<span class="hljs-number">16</span>,<span class="hljs-number">9</span>))<br><br><br>axs[<span class="hljs-number">0</span>].scatter(tsne_data2[:, <span class="hljs-number">0</span>], tsne_data2[:, <span class="hljs-number">1</span>], c=kmeans_clusters)<br>axs[<span class="hljs-number">0</span>].set_title(<span class="hljs-string">&#x27;KMeans &#x27;</span>)<br>axs[<span class="hljs-number">0</span>].set_xlabel(<span class="hljs-string">&#x27;tsne 1&#x27;</span>)<br>axs[<span class="hljs-number">0</span>].set_ylabel(<span class="hljs-string">&#x27;tsne 2&#x27;</span>)<br><br><br>axs[<span class="hljs-number">1</span>].scatter(tsne_data2[:, <span class="hljs-number">0</span>], tsne_data2[:, <span class="hljs-number">1</span>], c=gmm_clusters)<br>axs[<span class="hljs-number">1</span>].set_title(<span class="hljs-string">&#x27;gmm &#x27;</span>)<br>axs[<span class="hljs-number">1</span>].set_xlabel(<span class="hljs-string">&#x27;tsne 1&#x27;</span>)<br>axs[<span class="hljs-number">1</span>].set_ylabel(<span class="hljs-string">&#x27;tsne 2&#x27;</span>)<br><br><br>plt.tight_layout()<br>plt.savefig(<span class="hljs-string">&quot;output_plot/tsne_2d.png&quot;</span>)<br>plt.show()<br></code></pre></td></tr></table></figure>
+
+
+
+<p><img src="tsne_2d.png" srcset="/img/loading.gif" lazyload alt="tsne_2d"></p>
+<p>效果都还蛮不错的。</p>
+<p>三维的：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> seaborn <span class="hljs-keyword">as</span> sns<br>kmeans = KMeans(n_clusters=<span class="hljs-number">5</span>,n_init=<span class="hljs-number">10</span>).fit(tsne_data)<br>gmm = GaussianMixture(n_components=<span class="hljs-number">5</span>, covariance_type=<span class="hljs-string">&#x27;full&#x27;</span>).fit(tsne_data)<br><br>kmeans_clusters = kmeans.labels_<br>gmm_clusters = gmm.predict(tsne_data)<br><br><br>fig,axs = plt.subplots(nrows=<span class="hljs-number">1</span>,ncols=<span class="hljs-number">2</span>,figsize=(<span class="hljs-number">16</span>,<span class="hljs-number">9</span>),subplot_kw=&#123;<span class="hljs-string">&#x27;projection&#x27;</span>: <span class="hljs-string">&#x27;3d&#x27;</span>&#125;)<br><br><br>axs[<span class="hljs-number">0</span>].scatter(tsne_data[:, <span class="hljs-number">0</span>], tsne_data[:, <span class="hljs-number">1</span>],tsne_data[:, <span class="hljs-number">2</span>], c=kmeans_clusters)<br>axs[<span class="hljs-number">0</span>].set_title(<span class="hljs-string">&#x27;KMeans &#x27;</span>)<br>axs[<span class="hljs-number">0</span>].set_xlabel(<span class="hljs-string">&#x27;Principal Component 1&#x27;</span>)<br>axs[<span class="hljs-number">0</span>].set_ylabel(<span class="hljs-string">&#x27;Principal Component 2&#x27;</span>)<br>axs[<span class="hljs-number">0</span>].set_zlabel(<span class="hljs-string">&#x27;Principal Component 3&#x27;</span>)<br><br>axs[<span class="hljs-number">1</span>].scatter(tsne_data[:, <span class="hljs-number">0</span>], tsne_data[:, <span class="hljs-number">1</span>],tsne_data[:, <span class="hljs-number">2</span>], c=gmm_clusters)<br>axs[<span class="hljs-number">1</span>].set_title(<span class="hljs-string">&#x27;gmm &#x27;</span>)<br>axs[<span class="hljs-number">1</span>].set_xlabel(<span class="hljs-string">&#x27;Principal Component 1&#x27;</span>)<br>axs[<span class="hljs-number">1</span>].set_ylabel(<span class="hljs-string">&#x27;Principal Component 2&#x27;</span>)<br>axs[<span class="hljs-number">1</span>].set_zlabel(<span class="hljs-string">&#x27;Principal Component 3&#x27;</span>)<br><br>plt.tight_layout()<br>plt.savefig(<span class="hljs-string">&quot;output_plot/tsne_3d.png&quot;</span>)<br>plt.show()<br></code></pre></td></tr></table></figure>
+
+<p><img src="tsne_3d.png" srcset="/img/loading.gif" lazyload alt="tsne_3d"></p>
+<p>三维的看起来略微有点吃力了，但总体来看还是比较集中，结果也很不错的。</p>
+<h1 id="5-给聚类结果一个家"><a href="#5-给聚类结果一个家" class="headerlink" title="5 给聚类结果一个家"></a>5 给聚类结果一个家</h1><p>为什么这么说呢，因为聚类只是聚成了一个类，但是没有给一个明确的标签。这就要我们来规定某一类它应该是什么，说白了就是找这一类的共性。我们为了分析，把文本转换为数字向量，为了给每一类赋予实际的意义，我们还需要找到他们这一类的共同点。</p>
+<p>还是采用tdidf算法，找到相同类别的所有文档中最高的10个tdidf的词，最后手工给一个好的标签。</p>
+<p>这里呢，我们以分类较好的pca0.95-kmeans-4类和tsne2-kmeans-3类为例。</p>
+<h2 id="5-1-集合类文档"><a href="#5-1-集合类文档" class="headerlink" title="5.1 集合类文档"></a>5.1 集合类文档</h2><p>pca0.95的kmeans算法一共分为了4类，总共需要有4个documents（对应4类），每个documents中存储各个原始content。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 获得pca0.95-kmeans-4类</span><br>kmeans = KMeans(n_clusters=<span class="hljs-number">4</span>,n_init=<span class="hljs-number">10</span>).fit(pca_data)<br>kmeans_labels = kmeans.labels_<br>kmeans_labels = pd.Series(kmeans_labels)<br><span class="hljs-comment"># 获得tsne2-kmeans-3类</span><br>kmeans2 = KMeans(n_clusters=<span class="hljs-number">3</span>,n_init=<span class="hljs-number">10</span>).fit(tsne_data2)<br>kmeans2_labels = kmeans2.labels_<br>kmeans2_labels = pd.Series(kmeans2_labels)<br><span class="hljs-comment"># 制造两个content 里面存储内容和标签</span><br>content = pd.read_excel(<span class="hljs-string">&quot;content.xlsx&quot;</span>)<br>content1 = pd.concat([content,kmeans_labels],axis=<span class="hljs-number">1</span>)<br>content2 = pd.concat([content,kmeans2_labels],axis=<span class="hljs-number">1</span>)<br><br><br><span class="hljs-comment"># pca的documents</span><br>p_documents0 = content1[content1.iloc[:, <span class="hljs-number">1</span>] == <span class="hljs-number">0</span>].iloc[:,<span class="hljs-number">0</span>].values<br>p_documents1 = content1[content1.iloc[:, <span class="hljs-number">1</span>] == <span class="hljs-number">1</span>].iloc[:,<span class="hljs-number">0</span>].values<br>p_documents2 = content1[content1.iloc[:, <span class="hljs-number">1</span>] == <span class="hljs-number">2</span>].iloc[:,<span class="hljs-number">0</span>].values<br>p_documents3 = content1[content1.iloc[:, <span class="hljs-number">1</span>] == <span class="hljs-number">3</span>].iloc[:,<span class="hljs-number">0</span>].values<br><br><span class="hljs-comment"># tsne的documents</span><br>k_documents0 = content2[content2.iloc[:, <span class="hljs-number">1</span>] == <span class="hljs-number">0</span>].iloc[:,<span class="hljs-number">0</span>].values<br>k_documents1 = content2[content2.iloc[:, <span class="hljs-number">1</span>] == <span class="hljs-number">1</span>].iloc[:,<span class="hljs-number">0</span>].values<br>k_documents2 = content2[content2.iloc[:, <span class="hljs-number">1</span>] == <span class="hljs-number">2</span>].iloc[:,<span class="hljs-number">0</span>].values<br><br><br></code></pre></td></tr></table></figure>
+
+
+
+<p>tsne2的kmeans算法一共分为了3类，总共需要3个ducuments（对应3类），每个documents存储各个原始的content。</p>
+<h2 id="5-2-给出每类的家（标签）"><a href="#5-2-给出每类的家（标签）" class="headerlink" title="5.2 给出每类的家（标签）"></a>5.2 给出每类的家（标签）</h2><p>先定义好寻出10个最具代表性的词的函数：</p>
+<p>每个documents（类别）都要被调用到该函数中，得到最具代表的5个词。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> sklearn.feature_extraction.text <span class="hljs-keyword">import</span> TfidfVectorizer<br><br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">find_top10words</span>(<span class="hljs-params">documents</span>):<br>    <span class="hljs-comment"># 假设文档存储在一个列表中，每个元素表示一个文档</span><br>    documents = documents<br><br>    <span class="hljs-comment"># 创建TF-IDF向量化器</span><br>    vectorizer = TfidfVectorizer(stop_words=<span class="hljs-string">&quot;english&quot;</span>)<br><br>    <span class="hljs-comment"># 对文档进行向量化</span><br>    tfidf_matrix = vectorizer.fit_transform(documents)<br><br>    <span class="hljs-comment"># 获取所有词的列表</span><br>    words = vectorizer.get_feature_names_out()<br><br>    <span class="hljs-comment"># 计算每个词的平均TF-IDF值</span><br>    avg_tfidf = tfidf_matrix.mean(axis=<span class="hljs-number">0</span>).tolist()[<span class="hljs-number">0</span>]<br><br>    <span class="hljs-comment"># 按照TF-IDF值对词进行排序</span><br>    sorted_words = <span class="hljs-built_in">sorted</span>(<span class="hljs-built_in">zip</span>(words, avg_tfidf), key=<span class="hljs-keyword">lambda</span> x: x[<span class="hljs-number">1</span>], reverse=<span class="hljs-literal">True</span>)<br><br>    <span class="hljs-comment"># 获取频率最高的10个词</span><br>    top_words = sorted_words[:<span class="hljs-number">10</span>]<br><br>    <span class="hljs-comment"># 输出结果</span><br>    <span class="hljs-keyword">for</span> word, tfidf <span class="hljs-keyword">in</span> top_words:<br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Word: <span class="hljs-subst">&#123;word&#125;</span>, TF-IDF: <span class="hljs-subst">&#123;tfidf&#125;</span>&quot;</span>)<br>    <span class="hljs-keyword">return</span> top_words<br></code></pre></td></tr></table></figure>
+
+<p>运行算法，得到top10标签</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><code class="hljs python">pdoc0_top10 =  find_top10words(p_documents0)<br>pdoc1_top10 =  find_top10words(p_documents1)<br>pdoc2_top10 =  find_top10words(p_documents2)<br>pdoc3_top10 =  find_top10words(p_documents3)<br><br><br><br>kdoc0_top10 =  find_top10words(k_documents0)<br>kdoc1_top10 =  find_top10words(k_documents1)<br>kdoc2_top10 =  find_top10words(k_documents2)<br><br><br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot; ---------------------------------------------------&quot;</span>)<br><span class="hljs-built_in">print</span>(pdoc0_top10)<br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot; ---------------------------------------------------&quot;</span>)<br><span class="hljs-built_in">print</span>(pdoc1_top10)<br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot; ---------------------------------------------------&quot;</span>)<br><span class="hljs-built_in">print</span>(pdoc2_top10)<br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot; ---------------------------------------------------&quot;</span>)<br><span class="hljs-built_in">print</span>(pdoc3_top10)<br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot; ---------------------------------------------------&quot;</span>)<br><span class="hljs-built_in">print</span>(kdoc0_top10)<br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot; ---------------------------------------------------&quot;</span>)<br><span class="hljs-built_in">print</span>(kdoc1_top10)<br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot; ---------------------------------------------------&quot;</span>)<br><span class="hljs-built_in">print</span>(kdoc2_top10)<br><br><br></code></pre></td></tr></table></figure>
+
+<p>输出如下：</p>
+<figure class="highlight tex"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs tex">[(&#x27;model&#x27;, 0.0312970179018108), (&#x27;learning&#x27;, 0.02358092602722818), (&#x27;search&#x27;, 0.02354847356471189), (&#x27;data&#x27;, 0.02260826430495191), (&#x27;algorithm&#x27;, 0.022304946701099244), (&#x27;based&#x27;, 0.02220019249274445), (&#x27;models&#x27;, 0.021010465990798245), (&#x27;problem&#x27;, 0.01767478726319837), (&#x27;approach&#x27;, 0.016819407053894543), (&#x27;algorithms&#x27;, 0.01605314908659892)]<br> ---------------------------------------------------<br>[(&#x27;social&#x27;, 0.04510211978092555), (&#x27;games&#x27;, 0.04504669474440806), (&#x27;game&#x27;, 0.04046895517997759), (&#x27;agents&#x27;, 0.031052656587273512), (&#x27;mechanism&#x27;, 0.029466847093243476), (&#x27;problem&#x27;, 0.0285675171535538), (&#x27;information&#x27;, 0.025741990489727164), (&#x27;equilibrium&#x27;, 0.023367275174187088), (&#x27;rules&#x27;, 0.022829801945930657), (&#x27;algorithm&#x27;, 0.022741924594730265)]<br> ---------------------------------------------------<br>[(&#x27;planning&#x27;, 0.1029602074165655), (&#x27;problems&#x27;, 0.05050770024521803), (&#x27;search&#x27;, 0.0415329159674629), (&#x27;model&#x27;, 0.03994323451607318), (&#x27;logic&#x27;, 0.0377300001553648), (&#x27;checking&#x27;, 0.0348343916010304), (&#x27;problem&#x27;, 0.034062522048315294), (&#x27;actions&#x27;, 0.03406229833259561), (&#x27;based&#x27;, 0.03251512616705883), (&#x27;control&#x27;, 0.03020101306168859)]<br> ---------------------------------------------------<br>[(&#x27;learning&#x27;, 0.07039797925507545), (&#x27;data&#x27;, 0.045224090333515786), (&#x27;multi&#x27;, 0.03489442101241867), (&#x27;domain&#x27;, 0.0341388574103674), (&#x27;classification&#x27;, 0.033751072281247144), (&#x27;method&#x27;, 0.031032992862673293), (&#x27;feature&#x27;, 0.030718475564451758), (&#x27;image&#x27;, 0.028986387301546495), (&#x27;sparse&#x27;, 0.02679208768021003), (&#x27;view&#x27;, 0.026296128690430624)]<br> ---------------------------------------------------<br>[(&#x27;learning&#x27;, 0.055292034883908346), (&#x27;data&#x27;, 0.04168746955915514), (&#x27;model&#x27;, 0.028767758706449528), (&#x27;domain&#x27;, 0.025749891994746164), (&#x27;multi&#x27;, 0.025715651503204363), (&#x27;based&#x27;, 0.025644220532921626), (&#x27;classification&#x27;, 0.02514256676979259), (&#x27;method&#x27;, 0.024619139085464394), (&#x27;image&#x27;, 0.02358730923145252), (&#x27;feature&#x27;, 0.02305081150386184)]<br> ---------------------------------------------------<br>[(&#x27;planning&#x27;, 0.045725135532694125), (&#x27;search&#x27;, 0.03618781098275538), (&#x27;model&#x27;, 0.03152456777076464), (&#x27;algorithm&#x27;, 0.03141473719845585), (&#x27;learning&#x27;, 0.031326497214051494), (&#x27;problem&#x27;, 0.02743754848212037), (&#x27;problems&#x27;, 0.02696284859711259), (&#x27;algorithms&#x27;, 0.024055321241744382), (&#x27;constraints&#x27;, 0.023686020291149794), (&#x27;based&#x27;, 0.021780125963545133)]<br> ---------------------------------------------------<br>[(&#x27;social&#x27;, 0.03400671909941485), (&#x27;games&#x27;, 0.028992526616124815), (&#x27;game&#x27;, 0.027160852597817173), (&#x27;model&#x27;, 0.023030488210168135), (&#x27;agents&#x27;, 0.022110734913480045), (&#x27;problem&#x27;, 0.021482548893973955), (&#x27;learning&#x27;, 0.01941557542618883), (&#x27;mechanism&#x27;, 0.018760311438059764), (&#x27;information&#x27;, 0.018148637248287233), (&#x27;based&#x27;, 0.01745430831020115)]<br></code></pre></td></tr></table></figure>
+
+<p>接下来，我们人工给这出现最高的10个词，选几个合适的，给类别打上标签。</p>
+<p>前四个是pca0.95-kmeans的，第一类可以打标签是：search learning model（搜索学习模型），第二类：the equilibrium mechanism for social games（社会游戏的均衡机制） ,第三类：Based on control logic and checking learning（基于控制逻辑和检查学习），第四类：multi sparse image domain classification（多稀疏图像域分类）</p>
+<p>后三个是tsne2-kmeans的，第一类：multi sparse image domain classification（多稀疏图像域分类），第二类：constraints  planning， search  learning（约束规划、搜索学习），第三类：the equilibrium mechanism for social games（社会游戏的均衡机制）。</p>
+<p>这些后面的打标签，靠人的知识来进行组合，大体来看，相似度还挺高的，效果也不错，为每一个类找到一个家。</p>
+<h2 id="5-3-每个title后面加一列属于自己的标签列"><a href="#5-3-每个title后面加一列属于自己的标签列" class="headerlink" title="5.3 每个title后面加一列属于自己的标签列"></a>5.3 每个title后面加一列属于自己的标签列</h2><p>接下来还可以考虑将这些标签重新返回到最初始的文件中，给每个title后面加一列属于自己的标签列。</p>
+<p>我这里仅以pca0.95的四分类为例。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs python">content = pd.read_excel(<span class="hljs-string">&quot;content.xlsx&quot;</span>)<br>content3 = content<br>content3.loc[content3.iloc[:, <span class="hljs-number">0</span>].isin(p_documents0), <span class="hljs-string">&quot;labels&quot;</span>] = <span class="hljs-string">&quot;search learning model（搜索学习模型）&quot;</span><br>content3.loc[content3.iloc[:, <span class="hljs-number">0</span>].isin(p_documents1), <span class="hljs-string">&quot;labels&quot;</span>] = <span class="hljs-string">&quot;the equilibrium mechanism for social games（社会游戏的均衡机制）&quot;</span><br>content3.loc[content3.iloc[:, <span class="hljs-number">0</span>].isin(p_documents2), <span class="hljs-string">&quot;labels&quot;</span>] = <span class="hljs-string">&quot;Based on control logic and checking learning（基于控制逻辑和检查学习）&quot;</span><br>content3.loc[content3.iloc[:, <span class="hljs-number">0</span>].isin(p_documents3), <span class="hljs-string">&quot;labels&quot;</span>] = <span class="hljs-string">&quot;multi sparse image domain classification（多稀疏图像域分类）&quot;</span><br><span class="hljs-comment"># 赋值给content后，再根据坐标赋值给原文件，这里为了不破坏源文件，再新建一个文件，内容比源文件多一个标签列</span><br>aaai = pd.read_csv(<span class="hljs-string">&quot;[UCI] AAAI-14 Accepted Papers - Papers.csv&quot;</span>)<br>aaai[<span class="hljs-string">&quot;labels&quot;</span>] = content3[<span class="hljs-string">&quot;labels&quot;</span>]<br>aaai.to_excel(<span class="hljs-string">&quot;aaai_label.xlsx&quot;</span>)<br></code></pre></td></tr></table></figure>
+
+<p><img src="image-20231008182127925.png" srcset="/img/loading.gif" lazyload alt="image-20231008182127925"></p>
+<p>这样每一个文章，它的聚类结果，就对应上了。</p>
+<p>如果这篇博客给到您帮助，我希望您能给我的仓库点一个star，这将是我继续创作下去的动力。</p>
+<p>我的仓库地址，<a target="_blank" rel="noopener" href="https://github.com/Guoxn1?tab=repositories%E3%80%82">https://github.com/Guoxn1?tab=repositories。</a></p>
+<p><img src="like.png" srcset="/img/loading.gif" lazyload alt="like"></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80/" class="category-chain-item">深度学习基础</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80/python%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/" class="category-chain-item">python数据分析</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/python%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/" class="print-no-link">#python数据分析</a>
+      
+        <a href="/tags/%E8%81%9A%E7%B1%BB/" class="print-no-link">#聚类</a>
+      
+        <a href="/tags/%E9%99%8D%E7%BB%B4/" class="print-no-link">#降维</a>
+      
+        <a href="/tags/%E6%96%87%E6%9C%AC%E8%BD%AC%E5%90%91%E9%87%8F/" class="print-no-link">#文本转向量</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>AAAI会议论文聚类分析</div>
+      <div>http://example.com/2023/10/08/AAAI会议论文聚类分析/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Guoxin</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年10月8日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/10/15/%E5%9F%BA%E4%BA%8E%E5%9B%9E%E5%BD%92%E5%88%86%E6%9E%90%E7%9A%84%E5%A4%A7%E5%AD%A6%E5%BE%97%E5%88%86%E9%A2%84%E6%B5%8B/" title="基于回归分析的大学得分预测">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">基于回归分析的大学得分预测</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/10/02/%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BASVM%E5%8E%9F%E7%90%86%E5%8F%8Asklearn%E5%AE%9E%E7%8E%B0/" title="支持向量机SVM及sklearn处理问题实现">
+                        <span class="hidden-mobile">支持向量机SVM及sklearn处理问题实现</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

@@ -1,0 +1,748 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Guoxin">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="对抗样本技术在恶意软件检测和自动驾驶应用中的研究（更新中~） 2020年的刘鑫波的博士毕业论文。 0 摘要当前深度神经网络研究中出现的对抗样本技术带 来了人工智能研究领域中的新问题。对抗样本是指在原样本中通过人为增加某些少量的特定干扰，可以在人类无法准确分辨差异的情况下使得某些人工智能模型 产生错误的判定结果。这种误判现象对于人工智能研究领域却是灾难性的。特别 是针对应用较为广泛的人脸识别、无人驾">
+<meta property="og:type" content="article">
+<meta property="og:title" content="对抗样本技术在恶意软件检测和自动驾驶应用中的研究_刘鑫波_2020">
+<meta property="og:url" content="http://example.com/2023/12/13/%E5%AF%B9%E6%8A%97%E6%A0%B7%E6%9C%AC%E6%8A%80%E6%9C%AF%E5%9C%A8%E6%81%B6%E6%84%8F%E8%BD%AF%E4%BB%B6%E6%A3%80%E6%B5%8B%E5%92%8C%E8%87%AA%E5%8A%A8%E9%A9%BE%E9%A9%B6%E5%BA%94%E7%94%A8%E4%B8%AD%E7%9A%84%E7%A0%94%E7%A9%B6-%E5%88%98%E9%91%AB%E6%B3%A2-2020/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="对抗样本技术在恶意软件检测和自动驾驶应用中的研究（更新中~） 2020年的刘鑫波的博士毕业论文。 0 摘要当前深度神经网络研究中出现的对抗样本技术带 来了人工智能研究领域中的新问题。对抗样本是指在原样本中通过人为增加某些少量的特定干扰，可以在人类无法准确分辨差异的情况下使得某些人工智能模型 产生错误的判定结果。这种误判现象对于人工智能研究领域却是灾难性的。特别 是针对应用较为广泛的人脸识别、无人驾">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2023/12/13/%E5%AF%B9%E6%8A%97%E6%A0%B7%E6%9C%AC%E6%8A%80%E6%9C%AF%E5%9C%A8%E6%81%B6%E6%84%8F%E8%BD%AF%E4%BB%B6%E6%A3%80%E6%B5%8B%E5%92%8C%E8%87%AA%E5%8A%A8%E9%A9%BE%E9%A9%B6%E5%BA%94%E7%94%A8%E4%B8%AD%E7%9A%84%E7%A0%94%E7%A9%B6-%E5%88%98%E9%91%AB%E6%B3%A2-2020/image-20231213202725922.png">
+<meta property="og:image" content="http://example.com/2023/12/13/%E5%AF%B9%E6%8A%97%E6%A0%B7%E6%9C%AC%E6%8A%80%E6%9C%AF%E5%9C%A8%E6%81%B6%E6%84%8F%E8%BD%AF%E4%BB%B6%E6%A3%80%E6%B5%8B%E5%92%8C%E8%87%AA%E5%8A%A8%E9%A9%BE%E9%A9%B6%E5%BA%94%E7%94%A8%E4%B8%AD%E7%9A%84%E7%A0%94%E7%A9%B6-%E5%88%98%E9%91%AB%E6%B3%A2-2020/image-20231213203016850.png">
+<meta property="og:image" content="http://example.com/2023/12/13/%E5%AF%B9%E6%8A%97%E6%A0%B7%E6%9C%AC%E6%8A%80%E6%9C%AF%E5%9C%A8%E6%81%B6%E6%84%8F%E8%BD%AF%E4%BB%B6%E6%A3%80%E6%B5%8B%E5%92%8C%E8%87%AA%E5%8A%A8%E9%A9%BE%E9%A9%B6%E5%BA%94%E7%94%A8%E4%B8%AD%E7%9A%84%E7%A0%94%E7%A9%B6-%E5%88%98%E9%91%AB%E6%B3%A2-2020/image-20231214195543967.png">
+<meta property="og:image" content="http://example.com/2023/12/13/%E5%AF%B9%E6%8A%97%E6%A0%B7%E6%9C%AC%E6%8A%80%E6%9C%AF%E5%9C%A8%E6%81%B6%E6%84%8F%E8%BD%AF%E4%BB%B6%E6%A3%80%E6%B5%8B%E5%92%8C%E8%87%AA%E5%8A%A8%E9%A9%BE%E9%A9%B6%E5%BA%94%E7%94%A8%E4%B8%AD%E7%9A%84%E7%A0%94%E7%A9%B6-%E5%88%98%E9%91%AB%E6%B3%A2-2020/image-20231214195613068.png">
+<meta property="og:image" content="http://example.com/2023/12/13/%E5%AF%B9%E6%8A%97%E6%A0%B7%E6%9C%AC%E6%8A%80%E6%9C%AF%E5%9C%A8%E6%81%B6%E6%84%8F%E8%BD%AF%E4%BB%B6%E6%A3%80%E6%B5%8B%E5%92%8C%E8%87%AA%E5%8A%A8%E9%A9%BE%E9%A9%B6%E5%BA%94%E7%94%A8%E4%B8%AD%E7%9A%84%E7%A0%94%E7%A9%B6-%E5%88%98%E9%91%AB%E6%B3%A2-2020/image-20231214195808353.png">
+<meta property="og:image" content="http://example.com/2023/12/13/%E5%AF%B9%E6%8A%97%E6%A0%B7%E6%9C%AC%E6%8A%80%E6%9C%AF%E5%9C%A8%E6%81%B6%E6%84%8F%E8%BD%AF%E4%BB%B6%E6%A3%80%E6%B5%8B%E5%92%8C%E8%87%AA%E5%8A%A8%E9%A9%BE%E9%A9%B6%E5%BA%94%E7%94%A8%E4%B8%AD%E7%9A%84%E7%A0%94%E7%A9%B6-%E5%88%98%E9%91%AB%E6%B3%A2-2020/image-20231214202208699.png">
+<meta property="og:image" content="http://example.com/2023/12/13/%E5%AF%B9%E6%8A%97%E6%A0%B7%E6%9C%AC%E6%8A%80%E6%9C%AF%E5%9C%A8%E6%81%B6%E6%84%8F%E8%BD%AF%E4%BB%B6%E6%A3%80%E6%B5%8B%E5%92%8C%E8%87%AA%E5%8A%A8%E9%A9%BE%E9%A9%B6%E5%BA%94%E7%94%A8%E4%B8%AD%E7%9A%84%E7%A0%94%E7%A9%B6-%E5%88%98%E9%91%AB%E6%B3%A2-2020/image-20231214203243770.png">
+<meta property="og:image" content="http://example.com/2023/12/13/%E5%AF%B9%E6%8A%97%E6%A0%B7%E6%9C%AC%E6%8A%80%E6%9C%AF%E5%9C%A8%E6%81%B6%E6%84%8F%E8%BD%AF%E4%BB%B6%E6%A3%80%E6%B5%8B%E5%92%8C%E8%87%AA%E5%8A%A8%E9%A9%BE%E9%A9%B6%E5%BA%94%E7%94%A8%E4%B8%AD%E7%9A%84%E7%A0%94%E7%A9%B6-%E5%88%98%E9%91%AB%E6%B3%A2-2020/image-20231214203508544.png">
+<meta property="og:image" content="http://example.com/2023/12/13/%E5%AF%B9%E6%8A%97%E6%A0%B7%E6%9C%AC%E6%8A%80%E6%9C%AF%E5%9C%A8%E6%81%B6%E6%84%8F%E8%BD%AF%E4%BB%B6%E6%A3%80%E6%B5%8B%E5%92%8C%E8%87%AA%E5%8A%A8%E9%A9%BE%E9%A9%B6%E5%BA%94%E7%94%A8%E4%B8%AD%E7%9A%84%E7%A0%94%E7%A9%B6-%E5%88%98%E9%91%AB%E6%B3%A2-2020/image-20231214203734141.png">
+<meta property="og:image" content="http://example.com/2023/12/13/%E5%AF%B9%E6%8A%97%E6%A0%B7%E6%9C%AC%E6%8A%80%E6%9C%AF%E5%9C%A8%E6%81%B6%E6%84%8F%E8%BD%AF%E4%BB%B6%E6%A3%80%E6%B5%8B%E5%92%8C%E8%87%AA%E5%8A%A8%E9%A9%BE%E9%A9%B6%E5%BA%94%E7%94%A8%E4%B8%AD%E7%9A%84%E7%A0%94%E7%A9%B6-%E5%88%98%E9%91%AB%E6%B3%A2-2020/image-20231214220211009.png">
+<meta property="og:image" content="http://example.com/2023/12/13/%E5%AF%B9%E6%8A%97%E6%A0%B7%E6%9C%AC%E6%8A%80%E6%9C%AF%E5%9C%A8%E6%81%B6%E6%84%8F%E8%BD%AF%E4%BB%B6%E6%A3%80%E6%B5%8B%E5%92%8C%E8%87%AA%E5%8A%A8%E9%A9%BE%E9%A9%B6%E5%BA%94%E7%94%A8%E4%B8%AD%E7%9A%84%E7%A0%94%E7%A9%B6-%E5%88%98%E9%91%AB%E6%B3%A2-2020/image-20231214221317460.png">
+<meta property="og:image" content="http://example.com/2023/12/13/%E5%AF%B9%E6%8A%97%E6%A0%B7%E6%9C%AC%E6%8A%80%E6%9C%AF%E5%9C%A8%E6%81%B6%E6%84%8F%E8%BD%AF%E4%BB%B6%E6%A3%80%E6%B5%8B%E5%92%8C%E8%87%AA%E5%8A%A8%E9%A9%BE%E9%A9%B6%E5%BA%94%E7%94%A8%E4%B8%AD%E7%9A%84%E7%A0%94%E7%A9%B6-%E5%88%98%E9%91%AB%E6%B3%A2-2020/image-20231214221736388.png">
+<meta property="og:image" content="http://example.com/2023/12/13/%E5%AF%B9%E6%8A%97%E6%A0%B7%E6%9C%AC%E6%8A%80%E6%9C%AF%E5%9C%A8%E6%81%B6%E6%84%8F%E8%BD%AF%E4%BB%B6%E6%A3%80%E6%B5%8B%E5%92%8C%E8%87%AA%E5%8A%A8%E9%A9%BE%E9%A9%B6%E5%BA%94%E7%94%A8%E4%B8%AD%E7%9A%84%E7%A0%94%E7%A9%B6-%E5%88%98%E9%91%AB%E6%B3%A2-2020/image-20231214222124391.png">
+<meta property="og:image" content="http://example.com/2023/12/13/%E5%AF%B9%E6%8A%97%E6%A0%B7%E6%9C%AC%E6%8A%80%E6%9C%AF%E5%9C%A8%E6%81%B6%E6%84%8F%E8%BD%AF%E4%BB%B6%E6%A3%80%E6%B5%8B%E5%92%8C%E8%87%AA%E5%8A%A8%E9%A9%BE%E9%A9%B6%E5%BA%94%E7%94%A8%E4%B8%AD%E7%9A%84%E7%A0%94%E7%A9%B6-%E5%88%98%E9%91%AB%E6%B3%A2-2020/image-20231215093609700.png">
+<meta property="article:published_time" content="2023-12-13T12:15:39.000Z">
+<meta property="article:modified_time" content="2023-12-15T02:19:40.224Z">
+<meta property="article:author" content="Guoxin">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/2023/12/13/%E5%AF%B9%E6%8A%97%E6%A0%B7%E6%9C%AC%E6%8A%80%E6%9C%AF%E5%9C%A8%E6%81%B6%E6%84%8F%E8%BD%AF%E4%BB%B6%E6%A3%80%E6%B5%8B%E5%92%8C%E8%87%AA%E5%8A%A8%E9%A9%BE%E9%A9%B6%E5%BA%94%E7%94%A8%E4%B8%AD%E7%9A%84%E7%A0%94%E7%A9%B6-%E5%88%98%E9%91%AB%E6%B3%A2-2020/image-20231213202725922.png">
+  
+  
+  
+  <title>对抗样本技术在恶意软件检测和自动驾驶应用中的研究_刘鑫波_2020 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.5","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Guoxin</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="对抗样本技术在恶意软件检测和自动驾驶应用中的研究_刘鑫波_2020"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-12-13 20:15" pubdate>
+          2023年12月13日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          7.1k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          59 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">对抗样本技术在恶意软件检测和自动驾驶应用中的研究_刘鑫波_2020</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p><strong>对抗样本技术在恶意软件检测和自动驾驶应用中的研究</strong>（更新中~）</p>
+<p>2020年的刘鑫波的博士毕业论文。</p>
+<h1 id="0-摘要"><a href="#0-摘要" class="headerlink" title="0 摘要"></a>0 摘要</h1><p>当前深度神经网络研究中出现的对抗样本技术带 来了人工智能研究领域中的新问题。对抗样本是指在原样本中通过人为增加某些少量的特定干扰，可以在人类无法准确分辨差异的情况下使得某些人工智能模型 产生错误的判定结果。这种误判现象对于人工智能研究领域却是灾难性的。特别 是针对应用较为广泛的人脸识别、无人驾驶、恶意软件检测等技术领域，相关研 究的安全问题引起人们的普遍重视。论文主要就对抗样本技术在当前值得关注的 恶意软件检测、以及自动驾驶等领域的应用展开研究，并提出相应的攻击与防御方法。</p>
+<p>论文的主要工作和创新点包括以下几个方面内容：针对对抗样本技术进行了综述。针对对抗样本技术对恶意软件检测器的攻击进行研究。研究了利用对抗样本技术强化恶意软件检测器和提高检测准确度的问题。研究了对抗样本技术在自动驾驶系统中的安全问题。针对对抗样本技术以及自动驾驶技术的应用，设计并实现一个对抗样 本交通标志攻击系统原型。</p>
+<h1 id="1-绪论"><a href="#1-绪论" class="headerlink" title="1 绪论"></a>1 绪论</h1><h2 id="1-1-研究背景及意义"><a href="#1-1-研究背景及意义" class="headerlink" title="1.1 研究背景及意义"></a>1.1 研究背景及意义</h2><p>深度神经网络（Deep neural network，DNN）作为机器学习研究领域中的一个 热点，近年来已经在网络安全防御、自然语言处理、图像与语音识别、自动驾 驶、机器人的模拟仿真、恶意行为检测等研究领域展现出了巨大的优势，特别是 针对人工智能（Artificial Intelligence，AI）领域的研究与应用。近年来，对抗样本技 术（Adversarial Example，AE）作为一种全新的攻击手段正逐渐呈现在人们的视 野之中。2014 年，Szegedy 团队[2]首次提出对抗样本的概念，即对神经网络的输 入添加细微的目标干扰，可以导致模型以高置信度给出一个错误的输出，但人眼 却很难分辨出该样本与真实样本的区别。研究发现，深度学习模型对于对抗样本 的攻击几乎全都具有极高的脆弱性。在很多情况下，即便两个模型的结构和训练 数据完全不同，同样的对抗样本也可以对不同的检测模型互相实施攻击。尤其 是，针对目前对抗样本的发展情况来看，该项技术在自动驾驶、图像分类、语音 识别、恶意行为检测和图像标注等领域显示出了其强大的攻击能力。</p>
+<p>通过播放隐藏的语 音命令可能会导致智能手机访问恶意网页以及下载病毒软件。对抗样本可以帮助恶意软件逃避系 统的检测。通过给交通标识涂油漆贴纸，添加扰动使得自动驾驶错误分类交通标识。加入对抗性扰动，逃避娱乐平台关于黄赌毒暴力等图像识别的监管；在验证码中加入对抗性扰动，可以使得攻击者难以进行针对验证码的识别攻击。</p>
+<h2 id="1-2-国内外研究现状"><a href="#1-2-国内外研究现状" class="headerlink" title="1.2 国内外研究现状"></a>1.2 国内外研究现状</h2><p>对抗样本技术的研究与应用还是具有非常重要的研究意义。其中，针对目前的研究成果可以从两个层面来进行分类与归纳总结，包括：技术层面的研究现 状和应用层面的研究现状。技术层面的研究现状可以根据对抗样本技术的攻击方 法与防御策略的不同方式进行划分；而应用层面的研究现状则是根据对抗性技术 在所属不同应用领域中所取得的成果而进行归纳。</p>
+<h3 id="1-2-1-技术层面的研究现状"><a href="#1-2-1-技术层面的研究现状" class="headerlink" title="1.2.1 技术层面的研究现状"></a>1.2.1 技术层面的研究现状</h3><p>目 前 为 止 最 具 影 响 力 的 对 抗 样 本 生成方法有：L-BFGS[2] , FGSM[4] , BIM[18] , JSMA[19] , One Pixel[20] , C&amp;W’s attack[21] , DeepFool[22] , Universal Adversarial Perturbations[23] , UPSET[24] , ANGRI[24] , Houdini[25] , ATNs[26] , Miscellaneous Attacks[11,27] 等方法。这些方法不仅具有极好的攻击性能， 同时针对不同的检测模型，这些方法还具有较强的转移性与泛化能力。</p>
+<img src="image-20231213202725922.png" srcset="/img/loading.gif" lazyload alt="image-20231213202725922" style="zoom:67%;">
+
+<p>针对现有对抗样本技术的防御策略与检测方法来说，基于对抗样本攻击的防 御性研究主要包括以下三个方向：第一个方向，在对抗样本学习过程中修改训练 过程或者修改输入样本以达到检测目的。第二个方向，修改检测或判定网络。例 如，增加多层结构或者子网络结构、以及修改损失函数或者激活函数等。第三种 方法，采用外部网络结构。例如，当检测器分类到未见过的待测样本时，可以采 用一个外部识别模型作为附加网络进行辅助检测。然而，第一个方法没有直接处 理学习模型，仅仅停留在预处理阶段，一般来说推广性不大。相比之下，另外两 个主要方向则更加关注神经网络的本身。对其进一步细分又可以分为：完全防御 与仅探测性防御两种类型。完全防御指的是，防御方法可以利用目标网络将对抗样本识别为它本来应该有的正确类别。而仅探测性防御值的是，该防御方法仅仅 在遇到对抗样本时会发出报警，并且拒绝任何可能的下一步处理。三类防御方法 的研究方向及其所含的进一步类别划分在下图 1.2 中进行了详细展示。</p>
+<img src="image-20231213203016850.png" srcset="/img/loading.gif" lazyload alt="image-20231213203016850" style="zoom:67%;">
+
+<p>其中，在第一方向修改训练过程或者输入数据的研究方法中又包括了四种手 段：蛮力对抗训练（如，Moosavi-Dezfooli[23] 方法），数据压缩（如，JPG 图像压 缩的方法[28]、PCA 压缩方法），基于中央凹机制的防御（如，中央凹机制[29]）， 以及数据随机化方法（如，随机重缩放方法[30]）。</p>
+<h3 id="1-2-2-应用层面的研究现状"><a href="#1-2-2-应用层面的研究现状" class="headerlink" title="1.2.2 应用层面的研究现状"></a>1.2.2 应用层面的研究现状</h3><p>其中，常见的研究领域就包括，图像分类、人 脸识别、语音处理、自动驾驶、垃圾邮件处理、安防监控、以及恶意行为检测等 其他研究领域。最为经典、同时也是最常见的应用领域即是图像识别与分类领 域.目 前的技术已经发现，通过对抗样本技术的干扰，可以使得部分人员通过佩戴特定 的饰品（如，耳环、贴钻片[47]）、眼镜（如，特制太阳镜[48]）、假体（如，人造皮肤、假发[49]）等，达到欺骗人脸识别器的目的[50]。</p>
+<p>考虑到另一个人工智能技术应用的热点研究领域——自动驾驶技术，对抗样 本技术的应用也比较广泛。Eykholt 团队与 Liu 等人[17,52] 发现可以通过对“STOP”的交通标示做某些干扰 （例如，贴标签、喷涂小部分油漆），就能干扰深度神经网络识别器输出不必停车 的指令。</p>
+<p>除此之外，不同于上述常见的研究领域，对抗样本技术的应用在还其他很多 领域中得到了应用与推广。例如，恶意软件的检测、Android 应用市场的管理、 文本识别与文档的分类管理、信息掩蔽、隐私保护的应用、甚至生物医学数据的 处理与分析等[11,45,51,56]。Grosse 团队[57]就利用对抗样本技术对 Android 恶意软件 进行干扰并成功攻击基于 DNNs 的安卓恶意软件检测器。</p>
+<p>综上所述 ， 白 盒攻击 在 图 像分类 领域的 研 究 已 经非常 充 分 ， 各种 不 同 类 型 的 攻击 都 能够达到 较高 的 成功 率 。 但在语音 领域的 研 究还不 完善 ， 当 前 语音领域 的 攻击方法 都 来 自 于 图 像领域 ， 存 在 攻击 效率低 ， 攻击成功 率不 高 ， 扰动 太 大 的 问 题 。 仍 然缺 乏 一 种 专 门 针对语音 领域 的 高 效且扰动 小 的 攻击方 法 。 对 于 黑 盒攻击 ， 目 前 的 攻击方法 无 法 同 时 兼 顾 攻击 成 功 率 和 查询 效率 ， 研 宄 同 时 具 有 高攻击 成 功 率 和 高 查 询 效率 的 攻击方法将 是黑 盒攻击研 宄 的 重 点 。</p>
+<p>综上所述 ， 基于 预处理 的 主动 防御策略 使用 简单 ， 独立于 目 标模 型 ， 可 以 与 任 意 目 标模型 搭配 使用 且 不 需 要重新训 练 目 标模 型 ， 但 防 御 效 果 一 般 ， 泛化性 较 差 。 基于 正 则 化 的 被 动 防 御 策 略 需 要 重 新 训 练 目 标模 型 ， 计 算量大 。 在 “ 最坏 ” 情 况 下 的 鲁 棒 性优 于 基于 预 处 理 的 防 御 策 略 ， 但会 影 响 模 型 的 自 然 准 确 率 并 且 容 易 出 现鲁 棒 过 拟 合等 问 题 。</p>
+<h2 id="1-3-本文的主要研究工作与贡献"><a href="#1-3-本文的主要研究工作与贡献" class="headerlink" title="1.3 本文的主要研究工作与贡献"></a>1.3 本文的主要研究工作与贡献</h2><p>对抗样本技术的综述：（1）介绍并分析了对抗样本的概念、原因、特点以及评估指标。（2）详细阐 述了当前对抗样本生成的几类主要方法以及相关的构造原理，并且通过对比测试 分析每种方法的优劣。（3）介绍当前防御对抗样本的几类方法以及这几类方法的 局限性。（4）举例了当前对抗样本技术的应用情况，归纳并分析了对抗样本的发 展趋势以及所面临的挑战。</p>
+<p>对抗样本技术对恶意软件检测器的攻击研究：（1）首次将对抗 样本技术应用到攻击基于机器学习的恶意软件可视化检测方法中来，并提出了一 种对抗性纹理恶意软件干扰攻击方法（ATMPA）。（2）归纳了最新的对抗样本生 成方法以及基于可视化的恶意软件检测方法。并且，通过分析各种对抗样本的变 体，分析出了一种针对基于机器学习方法的恶意软件检测器的最佳攻击方 法。（3）通过详细的实验验证，评估了论文中所提出的 ATMPA 攻击方法。其中， 包括了攻击效率的测试以及攻击不同机器学习检测器之间转移率。（4）提出了三 条针对恶意软件变种以及防御基于对抗样本攻击的解决方案，同时，也为今后的 恶意软件检测技术提供了一个新的研究思路。</p>
+<p>利用对抗性技术强化恶意软件检测器的研究：（1）提出了一个恶意软件可视化自动检测方法，即 Visual-AT。该方法是第一 个利用对抗性技术在强化模型正则水平上优化基于机器学习算法的检测方 法。（2）所提出 Visual-AT 方法能够产生恶意软件变体以及其可能的伪装特征， 并可以对潜在的恶意软件进行防御。同时，该方法具有防止零日攻击的效 果。（3）通过真实存在的恶意数据集对 Visual-AT 方法进行了详细的性能分析， 同时对它的准确性、稳健性以及性能开销三个方面进行了全面的评估。</p>
+<p>对抗样本技术对自动驾驶系统的攻击研究：本工作中通过针对对抗性技术的研究提出了一种基于对抗样本技术的实时路 况攻击方法，即 AE-Sign。AE-Sign 方法通过 图像缩放技术，在原始实景图中利用对抗样本方法添加微弱的干扰信息，并且在 不破坏原图可识别性的情况下达到干扰交通标示识别系统的目的，进而破坏整个 自动驾驶系统。（1）提出了一种利用对抗样本技术攻击自动 驾驶交通标志识别系统的全新方法，并证明了基于深度学习方法的车辆自动驾驶 系统存在巨大的安全漏洞。（2）分析了各种对抗样本的生成方法，并讨论了针对 基于机器学习算法自动驾驶识别系统的相对最优攻击策略。（3）评估了 AE-sign 攻击方法，并针对攻击不同类型的检测器进行了有效性与转移性分析。（4）讨论 分析了基于对抗样本技术的攻击特征，并提出了若干防御对策与解决方案。</p>
+<p>对抗样本攻击系统的设计与实现：设计并实现了一个利用对抗样本技术攻击自动驾驶系统的用户可视化操作 系统。该系统实现了一个基于实时数据采集、并进行分析检测的简单自动驾驶模 拟界面。然后，以此为基础利用上文中所提出的 AE-Sign 攻击方法，设计了一个 基于不同对抗样本攻击方法的攻击演示系统，该系统中不仅包括基于深度学习方 法的自动驾驶系统交通标识分类器；同时，还提供了可供选择的四种对抗样本生 成方法在 AE-Sign 攻击中进行选择性攻击的演示场景。该攻击系统试图通过真实 可见的实验测试效果，向该研究领域的科研人员提供一个更加贴近真实攻击环境的演示场景，从而进一步促进该研究领域的发展。</p>
+<h1 id="2-对抗样本技术综述"><a href="#2-对抗样本技术综述" class="headerlink" title="2 对抗样本技术综述"></a>2 对抗样本技术综述</h1><h2 id="2-1-对抗样本基础知识"><a href="#2-1-对抗样本基础知识" class="headerlink" title="2.1 对抗样本基础知识"></a>2.1 对抗样本基础知识</h2><h3 id="2-1-1-范数"><a href="#2-1-1-范数" class="headerlink" title="2.1.1 范数"></a>2.1.1 范数</h3><p>范数（Norm），是一类具有“长度”概念的数学函数。</p>
+<p><img src="image-20231214195543967.png" srcset="/img/loading.gif" lazyload alt="image-20231214195543967"></p>
+<p>（1）当 P &#x3D; 0 时，称为：L0 范数；L0 范数可以被用来度量两个向量中对应 元素位置不同取值的个数； （2）当 P &#x3D; 2 时，称为：L2 范数；L2 范数可以用来度量两个向量之间的欧 式距离； （3）当 P &#x3D; ∞ 时，称为：L∞ 无穷范数；L∞ 无穷范数则备用来度量任意向量 元素差异中的最大值。</p>
+<h3 id="2-1-2-Lipschitz-连续性"><a href="#2-1-2-Lipschitz-连续性" class="headerlink" title="2.1.2 Lipschitz 连续性"></a>2.1.2 Lipschitz 连续性</h3><img src="image-20231214195613068.png" srcset="/img/loading.gif" lazyload alt="image-20231214195613068" style="zoom:50%;">
+
+<p>简单理解，Lipschitz 连续函数就是为了限定一个函数的变化速率[71]。即，给 定一个输入的变化，限定目标函数满足 Lipschitz 连续函数或者具有 Lipschitz 连续 导数的条件。要求导数在某一个常数下。</p>
+<h2 id="2-2-对抗样本评价指标"><a href="#2-2-对抗样本评价指标" class="headerlink" title="2.2 对抗样本评价指标"></a>2.2 对抗样本评价指标</h2><h3 id="2-2-1-形式化定义及类型"><a href="#2-2-1-形式化定义及类型" class="headerlink" title="2.2.1 形式化定义及类型"></a>2.2.1 形式化定义及类型</h3><p>对抗样本的形式化定义 对抗样本的形式化定义可以表示为：给定一个分类函数 f 和一个原始的纯数 据样本 x，其中 x 可被 f 正确的分类为类别 l。外界条件下，通过向 x 添加一个小 的抖动信息 δ，生成一个对抗样本 x 0，使得 x 0 被 f 分类为另一个标签 l 0，且 l , l 0。 其数学符号表示为下式 2.6，即</p>
+<img src="image-20231214195808353.png" srcset="/img/loading.gif" lazyload alt="image-20231214195808353" style="zoom:50%;">
+
+<p>分为白箱攻击、灰箱攻击、黑箱攻击。目标有置信度减少、非目标分类错误、目标分类错误、源&#x2F;目标错误分类。</p>
+<p>特点：迁移性、正则化、波动性。</p>
+<h3 id="2-2-2-产生对抗样本的原因"><a href="#2-2-2-产生对抗样本的原因" class="headerlink" title="2.2.2 产生对抗样本的原因"></a>2.2.2 产生对抗样本的原因</h3><p>目前，一些研究者怀疑对抗样本的产生是由于模型过度拟合（Overfitting）或正则化（Regularization）不足而导致的泛化能力不够引起的最终 误判。其中，泛化能力的不足主要表现在学习模型缺乏对未知数据预测的能力 上。然而，Goodfellow 等人[4]却对此观点持否定意见，他们通过对一个正则化处 理后的模型加入干扰，依旧发现防御对抗样本的效果并没有显著改善。另外，部 分学者怀疑深度神经网络模型的高度非线性是引起对抗样本最终达到干扰目标的 原因。但是，Goodfellow 团队依旧对此观点提出了质疑；他们通过对一个线性模 型加入对抗性干扰，发现只要线性模型的输入拥有足够的维度，攻击者也可以产 生高置信度的对抗样本。而一般情况下，考虑到维度过低的输入会导致决策模型 的准确率较低，因此模型输入的维度一般都比较高。此外，Goodfellow 等人[4] 也 提出了一种观点，他们认为产生对抗样本的原因是高维空间中的线性行为。即， 在高维空间的线性分类器中，如果每个单独的输入特征都被归一化处理，那么对 于任何一个输入，小范围的改变虽然不会改变分类器的总体预测，但对输入的所 有维度进行即使是非常微小的改变，都会导致最后的输出结果产生很大的偏差。</p>
+<p>最主要原因还是在高维空间中线性部分的存在。</p>
+<h3 id="2-2-3-评价指标"><a href="#2-2-3-评价指标" class="headerlink" title="2.2.3 评价指标"></a>2.2.3 评价指标</h3><p>成功率：就目前来 说，还没有一种对抗样本生成方法可以在任何情况下完全达到 100% 的成功率， 这说明当前的攻击方法仍然存在进一步完善和改进提升的空间。</p>
+<p>鲁棒性：性能越优越的机器学习模型更不容易受到对抗样本的攻击。随后，为了评估决策模型抵御对抗 样本的能力，Papernot 等人[32]则提出了一个度量标准，并以此来评估深度神经网 络（DNN）抵御干扰的能力，也就是我们所讨论的模型鲁棒性。一般而言，一个 具有鲁棒性的深度神经网络模型应该具有以下两点特征：（1）目标模型在其训练数据集的内部和外部都具有很高的准确率。（2）模型分类器对平滑样本附近的输入点，会产生相对一致的分类结果。</p>
+<img src="image-20231214202208699.png" srcset="/img/loading.gif" lazyload alt="image-20231214202208699" style="zoom:50%;">
+
+<p>转移性：经分析这种现象是可以归结于对抗样本空间中存在一个大维度的连续子空间，而该子空间正是对抗空间中很重要的一部分。由于该部分被不同模型所共享，因此能够实现模型的转移性，这也是同一对抗样本可以对不同模型进行攻击的一个很重要的原因。对抗样本的转移性一般通过转移率来进行评价，即，转移后攻击成功的对抗 样本的数量与转移前攻击原模型成功时所生成的对抗样本的数量的比率。</p>
+<p>在非目 标性攻击（Un-targeted attack）中，通过一个模型生成的对抗样本被另一个模型正 确分类出来度量非指定目标转移性，我们把这个百分比称为准确率，较低的准确 率意味着更好的非指定目标转移率。在指定目标类攻击（Targeted attack）中，通 过一个模型生成的对抗样本被另一个模型分类为指定目标标签的百分比来度量指定目标转移性，我们把这个百分比称为匹配率，较高的匹配率意味着更好的指定 目标转移率。</p>
+<p>通常情况下，对抗样本的转移率取决于两个因素。 第一，与模型相关的因素，包括模型结构、模型容量和测试精度。Wu 等 人[75] 提出在模型结构相似、模型容量较低（模型参数数量较较少）、或者测试精 度要求过高的模型之间，其对抗样本的转移率更高。 第二，对抗性干扰的大小。在一定的干扰范围内，对抗样本的转移率与干扰 值的大小成正比，即，对原始样本的扰动越大，攻击者所产生的对抗样本转移率 越高。当然，针对不同对抗样本的生成方法所需的最小干扰值也相对不同。</p>
+<p>干扰值：干扰值太小，则难以生成合适的对抗样本； 干扰值太大，又非常容易被人眼直接分辨出来。因此，攻击者需要在既能构建出 对抗样本又不被人眼所分辨出来，这两者之间达到一个平衡。</p>
+<img src="image-20231214203243770.png" srcset="/img/loading.gif" lazyload alt="image-20231214203243770" style="zoom:50%;">
+
+<p>pass阈值：对抗样本不仅要使其被决策模型错误地分类为目标类，而且在视觉上还要不被人类识别为原始类别。</p>
+<img src="image-20231214203508544.png" srcset="/img/loading.gif" lazyload alt="image-20231214203508544" style="zoom: 67%;">
+
+<img src="image-20231214203734141.png" srcset="/img/loading.gif" lazyload alt="image-20231214203734141" style="zoom:50%;">
+
+<h2 id="2-3-几种对抗样本的比较"><a href="#2-3-几种对抗样本的比较" class="headerlink" title="2.3 几种对抗样本的比较"></a>2.3 几种对抗样本的比较</h2><p>L-BFGS 方法：Szegedy 等人[2] 利用简单界约束条件提出了一种 L-BFGS 方法来构建对抗样 本。该方法给定一个图像样本（x），然后通过找到一个在 L2 距离范数下与（x） 相似的图像（x 0），但是该样本又可以被分类器标记为不同的类别。</p>
+<img src="image-20231214220211009.png" srcset="/img/loading.gif" lazyload alt="image-20231214220211009" style="zoom:67%;">
+
+<p>FGSM 方法：考虑到对抗样本的构建需要较大的计算量，Goodfellow 等人[4]提出一种最简 单、快速的对抗样本生成方法，该方法通过在梯度方向上添加信号从而致使决策 模型对所生成的对抗样本图产生错误分类。这种方法被称为快速梯度符号法 （Fast gradient sign method），简称 FGSM 方法。</p>
+<img src="image-20231214221317460.png" srcset="/img/loading.gif" lazyload alt="image-20231214221317460" style="zoom:67%;">
+
+<p>在FGSM中，为了使对抗样本扰动尽可能大，攻击者希望最大化损失函数关于输入样本的梯度。因此，选择使用无穷范数作为度量扰动大小的方式，即使得对抗样本的扰动在每个维度上的绝对值的最大值最大化。</p>
+<p>DeepFool 方法：该方法假设神经网络是完全线性的，那么一定存在一个超平面可 以把一个类与另一个类分开。基于上述假设该方法通过迭代计算的方法，生成最 小规范的对抗性扰动，并将位于分类决策边界内的图像点逐步推到边界外，直到 出现错误分类出现。</p>
+<img src="image-20231214221736388.png" srcset="/img/loading.gif" lazyload alt="image-20231214221736388" style="zoom:67%;">
+
+<p>梯度就是方向*距离（就是f(x)&#x2F;法向量的平方）</p>
+<img src="image-20231214222124391.png" srcset="/img/loading.gif" lazyload alt="image-20231214222124391" style="zoom:67%;">
+
+<p>C&amp;W’s attack 方法：C&amp;W’s 方法对目标距离的度量可以是定向亦 或是非定向的，其中 C&amp;W’s attack 方法包括了 L0, L2, L∞ 三种范数距离评价。本章 中以 L2 范数距离为例进行阐述，其对应目标函数可以表示为下式。</p>
+<img src="image-20231215093609700.png" srcset="/img/loading.gif" lazyload alt="image-20231215093609700" style="zoom:67%;">
+
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>对抗样本技术在恶意软件检测和自动驾驶应用中的研究_刘鑫波_2020</div>
+      <div>http://example.com/2023/12/13/对抗样本技术在恶意软件检测和自动驾驶应用中的研究-刘鑫波-2020/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Guoxin</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年12月13日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/12/17/Attenion-is-all-you-need/" title="Attenion is all you need">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Attenion is all you need</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/12/08/%E4%BD%BF%E7%94%A8%E8%87%AA%E7%BC%96%E7%A0%81%E5%99%A8%E8%BF%9B%E8%A1%8C%E5%9B%BE%E7%89%87%E6%A3%80%E7%B4%A2/" title="使用自编码器进行图片检索">
+                        <span class="hidden-mobile">使用自编码器进行图片检索</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

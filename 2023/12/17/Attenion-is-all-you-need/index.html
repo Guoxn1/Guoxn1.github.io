@@ -1,0 +1,770 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Guoxin">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="0 摘要主流的序列转导模型是基于循环或者卷积神经网络，基本上是一个编码器和解码器。表现比较好的就是使用了注意力来连接编码器和解码器。并且，我们提出了一个新的架构叫做transformer，它完全基于注意力机制，省去了卷积和循环。 1 介绍循环神经网络已经被认为是序列模型转换问题的最佳解决办法，因此许多努力都在推动编码器-解码器的发展。 循环神经网络最大的限制就是没办法进行并行计算，这很吃内存和时间">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Attenion is all you need">
+<meta property="og:url" content="http://example.com/2023/12/17/Attenion-is-all-you-need/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="0 摘要主流的序列转导模型是基于循环或者卷积神经网络，基本上是一个编码器和解码器。表现比较好的就是使用了注意力来连接编码器和解码器。并且，我们提出了一个新的架构叫做transformer，它完全基于注意力机制，省去了卷积和循环。 1 介绍循环神经网络已经被认为是序列模型转换问题的最佳解决办法，因此许多努力都在推动编码器-解码器的发展。 循环神经网络最大的限制就是没办法进行并行计算，这很吃内存和时间">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2023/12/17/Attenion-is-all-you-need/image-20231218102904925.png">
+<meta property="og:image" content="http://example.com/2023/12/17/Attenion-is-all-you-need/image-20231218210812992.png">
+<meta property="og:image" content="http://example.com/2023/12/17/Attenion-is-all-you-need/image-20231218211017725.png">
+<meta property="og:image" content="http://example.com/2023/12/17/Attenion-is-all-you-need/image-20231218210947671.png">
+<meta property="og:image" content="http://example.com/2023/12/17/Attenion-is-all-you-need/image-20231218211004657.png">
+<meta property="og:image" content="http://example.com/2023/12/17/Attenion-is-all-you-need/image-20231218211243185.png">
+<meta property="og:image" content="http://example.com/2023/12/17/Attenion-is-all-you-need/image-20231218212915155.png">
+<meta property="og:image" content="http://example.com/2023/12/17/Attenion-is-all-you-need/image-20231218221003452.png">
+<meta property="article:published_time" content="2023-12-17T02:01:15.000Z">
+<meta property="article:modified_time" content="2023-12-18T14:11:30.475Z">
+<meta property="article:author" content="Guoxin">
+<meta property="article:tag" content="论文读后总结">
+<meta property="article:tag" content="经典模型系列">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/2023/12/17/Attenion-is-all-you-need/image-20231218102904925.png">
+  
+  
+  
+  <title>Attenion is all you need - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.5","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Guoxin</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Attenion is all you need"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-12-17 10:01" pubdate>
+          2023年12月17日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.3k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          19 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Attenion is all you need</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="0-摘要"><a href="#0-摘要" class="headerlink" title="0 摘要"></a>0 摘要</h1><p>主流的序列转导模型是基于循环或者卷积神经网络，基本上是一个编码器和解码器。表现比较好的就是使用了注意力来连接编码器和解码器。并且，我们提出了一个新的架构叫做transformer，它完全基于注意力机制，省去了卷积和循环。</p>
+<h1 id="1-介绍"><a href="#1-介绍" class="headerlink" title="1 介绍"></a>1 介绍</h1><p>循环神经网络已经被认为是序列模型转换问题的最佳解决办法，因此许多努力都在推动编码器-解码器的发展。</p>
+<p>循环神经网络最大的限制就是没办法进行并行计算，这很吃内存和时间，尽管有些改进，但是还是没办法解决根本上的问题。</p>
+<p>注意力机制已经成为一个整体在序列建模和转换当中，允许模型不考虑输入输出之间的距离。</p>
+<p>在本次工作，作者提出了tranformer，一个没有循环的架构，完全依靠注意力机制得出全局依赖关系，并且有更大的并行化。</p>
+<h1 id="2-结论"><a href="#2-结论" class="headerlink" title="2 结论"></a>2 结论</h1><p>在这项工作中，作者提出了tranformer的架构，完全基于注意力机制，表现很好。并且对未来的工作进行了展望，希望tranformer可以用到文本之外的其它方面，给出了代码实现。</p>
+<h1 id="3-相关工作"><a href="#3-相关工作" class="headerlink" title="3 相关工作"></a>3 相关工作</h1><p>减少顺序计算的目标形成了一些网络，它们对所有输入输出并行计算隐藏表述，但是，将任意两个输入输出联系起来是线性或者对数增长，这使得学习远处的依赖关系比较困难。在transformer中，这被减少到一个恒定值。使用多头注意力机制来制造多个输出通道，匹配不同的模式。	</p>
+<p>自我注意力机制，计算序列中不同位置的相关性，自我注意力已经应用于各种任务。</p>
+<p>端到端的记忆网络是基于循环注意力机制而不是序列对齐的循环，表现不错。</p>
+<p>tranformer是第一个完全依靠自我注意力来计算输入输出的表示而不是用循环或者卷积网络。</p>
+<h1 id="4-模型结构"><a href="#4-模型结构" class="headerlink" title="4 模型结构"></a>4 模型结构</h1><h2 id="4-1-编码器和解码器堆栈"><a href="#4-1-编码器和解码器堆栈" class="headerlink" title="4.1 编码器和解码器堆栈"></a>4.1 编码器和解码器堆栈</h2><p>编码器是由6个相同的层，每个层又含有两个子层。这两个子层中第一个是自注意力机制，第二个是一个简单的全连接的前向反馈网络。在两个子层上也应用残差连接，紧接着还有对其的归一化操作。</p>
+<p>解码器也是由6个相同的层组成的。除了每个编码器中的两个子层之外，还插入了第三个子层，第三个子层输出执行多头注意力机制，与编码器类似，都执行残差连接和层归一化操作。修改了解码器的自关注子层，防止当前位置去关注之后的位置。</p>
+<img src="image-20231218102904925.png" srcset="/img/loading.gif" lazyload alt="image-20231218102904925" style="zoom:67%;">
+
+<h2 id="4-2-注意力"><a href="#4-2-注意力" class="headerlink" title="4.2 注意力"></a>4.2 注意力</h2><p>首先计算key和value计算出相似度后，相当于得到一个权重矩阵，然后和v相乘，即结果output。</p>
+<p>标准化的点注意，计算query和所有key相乘，最后再和value相乘，除以根号dk。</p>
+<img src="image-20231218210812992.png" srcset="/img/loading.gif" lazyload alt="image-20231218210812992" style="zoom:67%;">
+
+<img src="image-20231218211017725.png" srcset="/img/loading.gif" lazyload alt="image-20231218211017725" style="zoom:67%;">
+
+
+
+<p>多头注意力：使用不同的学习线性投影来将查询键值分别投影h次到dk、dk和dv是更有效的。</p>
+<img src="image-20231218210947671.png" srcset="/img/loading.gif" lazyload alt="image-20231218210947671" style="zoom:67%;">
+
+<img src="image-20231218211004657.png" srcset="/img/loading.gif" lazyload alt="image-20231218211004657" style="zoom:67%;">
+
+<p>全连接层作用于最后一个维度，是两个mlp。</p>
+<p>embedding前需要把weight乘以根号512。</p>
+<p>位置编码使用相对位置编码，而且使用的是一个和输入相同维数的向量。需要直接相加后再进行输入。</p>
+<img src="image-20231218211243185.png" srcset="/img/loading.gif" lazyload alt="image-20231218211243185" style="zoom:67%;">
+
+<h1 id="5-为什么需要自注意力机制"><a href="#5-为什么需要自注意力机制" class="headerlink" title="5 为什么需要自注意力机制"></a>5 为什么需要自注意力机制</h1><p>对于自注意力机制它的计算复杂度和卷积、循环都差不多，但是在并行计算和最大路径长度上有明显的优势。序列操作越小表示每次计算需要关注的序列点少，同时并行度会比较高，然后最大路径长度越小表示当前计算的值能被较远的值很好的影响到。</p>
+<img src="image-20231218212915155.png" srcset="/img/loading.gif" lazyload alt="image-20231218212915155" style="zoom:67%;">
+
+<p>但同时，self-attention很多东西都没有假设到，都需要学，所以往往transformer的模型都比较大，需要训练的数据也比较多。</p>
+<h1 id="6-训练"><a href="#6-训练" class="headerlink" title="6 训练"></a>6 训练</h1><p>训练数据有2014 英语到德语和英语到法语，8个p100训练了3.5天。</p>
+<p>使用到了adam优化器，在训练当中还会根据公式改变学习率。在第一个warmup_steps&#x3D;4000，训练步骤中线性增加学习率，然后按步骤数的平方根倒数成比例地降低学习率。</p>
+<p>正则化，dropout&#x3D;0.1应用于每个子层的输出，还应用于编码器和解码器加入位置信息之后的地方。</p>
+<p>使用了标签平滑，使用了值为0.1的标签平滑，softmax的置信度只需要是0.1就可以了，但这会伤害困惑度。</p>
+<h1 id="7-结果"><a href="#7-结果" class="headerlink" title="7 结果"></a>7 结果</h1><p>结果很好，不说了。</p>
+<p>参数情况：</p>
+<img src="image-20231218221003452.png" srcset="/img/loading.gif" lazyload alt="image-20231218221003452" style="zoom:67%;">
+
+<h1 id="问题"><a href="#问题" class="headerlink" title="#问题"></a>#问题</h1><p>1 为什么用layernorm而不用batchnorm?</p>
+<ul>
+<li>LN：针对每个样本序列进行Norm，没有样本间的依赖。对一个序列的不同特征维度进行Norm</li>
+<li>CV使用BN是认为channel维度的信息对cv方面有重要意义，假如说输进去是四维的（B,C,W,H），首先不用考虑batchsize，bn是指对于单个C，对于其中的WH进行。如果对channel维度也归一化会造成不同通道信息一定的损失。而同理nlp领域认为句子长度不一致，并且各个batch的信息没什么关系，因此只考虑句子内信息的归一化，也就是LN。</li>
+</ul>
+<ol start="2">
+<li>为什么要除以根号dk？</li>
+</ol>
+<p>首先计算相似度，不能因为向量的本来长度决定，是需要对其进行一定的归一化操作，比如除以dk。</p>
+<p>那为什么要除以根号dk，是因为在数值比较小的情况下，无所谓。但是当dk比较大的时候，会导致最后进入softmax的值相对差距变大，最后出来大的值为接近于1，小的值接近于为0，这样会使得softmax认为即将要分类好了（因为分类好的结果就是对的结果是1，其余是0），导致梯度很低，更新慢。</p>
+<ol start="3">
+<li>rnn和tranformer有什么区别？</li>
+</ol>
+<p>rnn和transformer都是把序列信息传入mlp后，通过线性层来进行语义空间的转换。</p>
+<p>不一样的是如何传递序列信息。rnn把序列信息按照时序信息传递给下一个要计算的输入，而tranformer是对全局的把握，一下子计算全局的信息。</p>
+<ol start="4">
+<li>为什么要在embedding中把权重乘以根号512</li>
+</ol>
+<p>因为通常会做l2norm，这样会使得权重值归一化，维度越大的向量归一化后单个值就越小。为了和position encoding有比较好的匹配，所以乘以一个值平衡一下，让它们在同一个scale上面。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E8%AE%BA%E6%96%87%E8%AF%BB%E5%90%8E%E6%80%BB%E7%BB%93/" class="category-chain-item">论文读后总结</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E8%AE%BA%E6%96%87%E8%AF%BB%E5%90%8E%E6%80%BB%E7%BB%93/%E7%BB%8F%E5%85%B8%E6%A8%A1%E5%9E%8B%E7%B3%BB%E5%88%97/" class="category-chain-item">经典模型系列</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E8%AE%BA%E6%96%87%E8%AF%BB%E5%90%8E%E6%80%BB%E7%BB%93/" class="print-no-link">#论文读后总结</a>
+      
+        <a href="/tags/%E7%BB%8F%E5%85%B8%E6%A8%A1%E5%9E%8B%E7%B3%BB%E5%88%97/" class="print-no-link">#经典模型系列</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Attenion is all you need</div>
+      <div>http://example.com/2023/12/17/Attenion-is-all-you-need/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Guoxin</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年12月17日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/12/13/%E5%AF%B9%E6%8A%97%E6%A0%B7%E6%9C%AC%E6%8A%80%E6%9C%AF%E5%9C%A8%E6%81%B6%E6%84%8F%E8%BD%AF%E4%BB%B6%E6%A3%80%E6%B5%8B%E5%92%8C%E8%87%AA%E5%8A%A8%E9%A9%BE%E9%A9%B6%E5%BA%94%E7%94%A8%E4%B8%AD%E7%9A%84%E7%A0%94%E7%A9%B6-%E5%88%98%E9%91%AB%E6%B3%A2-2020/" title="对抗样本技术在恶意软件检测和自动驾驶应用中的研究_刘鑫波_2020">
+                        <span class="hidden-mobile">对抗样本技术在恶意软件检测和自动驾驶应用中的研究_刘鑫波_2020</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

@@ -1,0 +1,1025 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Guoxin">
+  <meta name="keywords" content="">
+  
+    <meta property="og:type" content="website">
+<meta property="og:title" content="Hexo">
+<meta property="og:url" content="http://example.com/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:author" content="Guoxin">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.5","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 100vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Guoxin</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Welcome to my blog"></span>
+          
+        </div>
+
+        
+      </div>
+
+      
+        <div class="scroll-down-bar">
+          <i class="iconfont icon-arrowdown"></i>
+        </div>
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      <div class="container nopadding-x-md">
+        <div id="board"
+          style="margin-top: 0">
+          
+          <div class="container">
+            <div class="row">
+              <div class="col-12 col-md-10 m-auto">
+                
+
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2023/12/17/Attenion-is-all-you-need/" target="_blank">
+          Attenion is all you need
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/17/Attenion-is-all-you-need/" target="_blank">
+        <div>
+          0 摘要主流的序列转导模型是基于循环或者卷积神经网络，基本上是一个编码器和解码器。表现比较好的就是使用了注意力来连接编码器和解码器。并且，我们提出了一个新的架构叫做transformer，它完全基于注意力机制，省去了卷积和循环。 1 介绍循环神经网络已经被认为是序列模型转换问题的最佳解决办法，因此许多努力都在推动编码器-解码器的发展。 循环神经网络最大的限制就是没办法进行并行计算，这很吃内存和时间
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-17 10:01" pubdate>
+              2023-12-17
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E8%AE%BA%E6%96%87%E8%AF%BB%E5%90%8E%E6%80%BB%E7%BB%93/" class="category-chain-item">论文读后总结</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E8%AE%BA%E6%96%87%E8%AF%BB%E5%90%8E%E6%80%BB%E7%BB%93/%E7%BB%8F%E5%85%B8%E6%A8%A1%E5%9E%8B%E7%B3%BB%E5%88%97/" class="category-chain-item">经典模型系列</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E8%AE%BA%E6%96%87%E8%AF%BB%E5%90%8E%E6%80%BB%E7%BB%93/">#论文读后总结</a>
+            
+              <a href="/tags/%E7%BB%8F%E5%85%B8%E6%A8%A1%E5%9E%8B%E7%B3%BB%E5%88%97/">#经典模型系列</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2023/12/13/%E5%AF%B9%E6%8A%97%E6%A0%B7%E6%9C%AC%E6%8A%80%E6%9C%AF%E5%9C%A8%E6%81%B6%E6%84%8F%E8%BD%AF%E4%BB%B6%E6%A3%80%E6%B5%8B%E5%92%8C%E8%87%AA%E5%8A%A8%E9%A9%BE%E9%A9%B6%E5%BA%94%E7%94%A8%E4%B8%AD%E7%9A%84%E7%A0%94%E7%A9%B6-%E5%88%98%E9%91%AB%E6%B3%A2-2020/" target="_blank">
+          对抗样本技术在恶意软件检测和自动驾驶应用中的研究_刘鑫波_2020
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/13/%E5%AF%B9%E6%8A%97%E6%A0%B7%E6%9C%AC%E6%8A%80%E6%9C%AF%E5%9C%A8%E6%81%B6%E6%84%8F%E8%BD%AF%E4%BB%B6%E6%A3%80%E6%B5%8B%E5%92%8C%E8%87%AA%E5%8A%A8%E9%A9%BE%E9%A9%B6%E5%BA%94%E7%94%A8%E4%B8%AD%E7%9A%84%E7%A0%94%E7%A9%B6-%E5%88%98%E9%91%AB%E6%B3%A2-2020/" target="_blank">
+        <div>
+          对抗样本技术在恶意软件检测和自动驾驶应用中的研究（更新中~） 2020年的刘鑫波的博士毕业论文。 0 摘要当前深度神经网络研究中出现的对抗样本技术带 来了人工智能研究领域中的新问题。对抗样本是指在原样本中通过人为增加某些少量的特定干扰，可以在人类无法准确分辨差异的情况下使得某些人工智能模型 产生错误的判定结果。这种误判现象对于人工智能研究领域却是灾难性的。特别 是针对应用较为广泛的人脸识别、无人驾
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-13 20:15" pubdate>
+              2023-12-13
+            </time>
+          </div>
+        
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2023/12/08/%E4%BD%BF%E7%94%A8%E8%87%AA%E7%BC%96%E7%A0%81%E5%99%A8%E8%BF%9B%E8%A1%8C%E5%9B%BE%E7%89%87%E6%A3%80%E7%B4%A2/" target="_blank">
+          使用自编码器进行图片检索
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/08/%E4%BD%BF%E7%94%A8%E8%87%AA%E7%BC%96%E7%A0%81%E5%99%A8%E8%BF%9B%E8%A1%8C%E5%9B%BE%E7%89%87%E6%A3%80%E7%B4%A2/" target="_blank">
+        <div>
+          1 自编码器简介自编码器最初提出的目的是为了学习到数据的主要规律，进行数据压缩，或特征提取，是一类无监督学习的算法。后续各种改进的算法，使得自编码器具有生成能力，例如变分自编码器（VAE）的图像生成能力。 本次放的代码都是线性版本，在我的仓库中还有cnn版本，毕竟线性版本只能处理一下这种mnist小数据集。地址：https://github.com/Guoxn1/ai。 2 线性自编码器自动编码器
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-08 09:39" pubdate>
+              2023-12-08
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89/" class="category-chain-item">计算机视觉</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89/%E7%94%9F%E6%88%90%E6%A8%A1%E5%9E%8B/" class="category-chain-item">生成模型</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89/">#计算机视觉</a>
+            
+              <a href="/tags/transformer/">#transformer</a>
+            
+              <a href="/tags/%E7%94%9F%E6%88%90%E6%A8%A1%E5%9E%8B/">#生成模型</a>
+            
+              <a href="/tags/cvae/">#cvae</a>
+            
+              <a href="/tags/KL%E6%95%A3%E5%BA%A6/">#KL散度</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2023/12/04/%E7%8E%B0%E4%BB%A3%E5%BE%AA%E7%8E%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/" target="_blank">
+          现代循环神经网络
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/04/%E7%8E%B0%E4%BB%A3%E5%BE%AA%E7%8E%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/" target="_blank">
+        <div>
+          1 简介循环神经网络被广泛运用于自然语言处理，但是他们都各有各的优缺点。 2 rnn循环神经网络，鼻祖。 RNN是最基本的循环神经网络形式，它通过将当前的输入与上一个时间步的隐藏状态相结合，来产生输出和更新隐藏状态。然而，传统的RNN存在梯度消失和梯度爆炸等问题，导致长期依赖关系难以捕捉。 产生梯度消失和爆炸主要是由于序列共用隐藏层，反向传播导致出现连乘，且激活函数在偏离原点时取值较小，容易出现梯
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-04 22:09" pubdate>
+              2023-12-04
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E8%87%AA%E7%84%B6%E8%AF%AD%E8%A8%80%E5%A4%84%E7%90%86/" class="category-chain-item">自然语言处理</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E8%87%AA%E7%84%B6%E8%AF%AD%E8%A8%80%E5%A4%84%E7%90%86/%E5%BE%AA%E7%8E%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/" class="category-chain-item">循环神经网络</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E8%87%AA%E7%84%B6%E8%AF%AD%E8%A8%80%E5%A4%84%E7%90%86/">#自然语言处理</a>
+            
+              <a href="/tags/%E5%BE%AA%E7%8E%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/">#循环神经网络</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2023/12/02/Deep-Residual-Learning-for-Image-Recognition/" target="_blank">
+          Deep Residual Learning for Image Recognition
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/02/Deep-Residual-Learning-for-Image-Recognition/" target="_blank">
+        <div>
+          题目：用于图像识别的深度残差学习 0 摘要上来先提出问题：更深的神经网络更难训练，所以作者提出了本文要介绍的残差网络，来解决这个事情。这样的模型不仅更深而且复杂度更低，取得了非常不错的效果。 1 介绍开头先说明深度卷积神经网络的贡献，深度是能进行很好分类的关键。提出第一个问题，梯度消失和梯度爆炸，这个问题已经被初始归一化和中间层归一化极大缓解；提出第二个问题，随着网络深度的增加，准确率会饱和然后迅
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-02 13:54" pubdate>
+              2023-12-02
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E8%AE%BA%E6%96%87%E8%AF%BB%E5%90%8E%E6%80%BB%E7%BB%93/" class="category-chain-item">论文读后总结</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E8%AE%BA%E6%96%87%E8%AF%BB%E5%90%8E%E6%80%BB%E7%BB%93/%E7%BB%8F%E5%85%B8%E6%A8%A1%E5%9E%8B%E7%B3%BB%E5%88%97/" class="category-chain-item">经典模型系列</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E8%AE%BA%E6%96%87%E8%AF%BB%E5%90%8E%E6%80%BB%E7%BB%93/">#论文读后总结</a>
+            
+              <a href="/tags/%E7%BB%8F%E5%85%B8%E6%A8%A1%E5%9E%8B%E7%B3%BB%E5%88%97/">#经典模型系列</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2023/12/01/ImageNet-Classification-with-Deep-Convolutional-Neural-Networks/" target="_blank">
+          ImageNet Classification with Deep Convolutional Neural Networks
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/01/ImageNet-Classification-with-Deep-Convolutional-Neural-Networks/" target="_blank">
+        <div>
+          题目：使用深度卷积神经网络对ImageNet进行分类 0 摘要作者训练了一个大型深度卷积神经网络来对ImageNet进行分类，效果比之前所有的效果都好。它包含5个卷积层，中间还有池化层，最后三个全连接层(softmax)，输出1000类的分类结果。为了训练更快，使用了非饱和神经元（其实是非饱和激活函数，也就是relu）和一个性能很好的gpu（现在已经不太行，当时确实不错）。为了减少全连接层的过拟合
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-01 19:13" pubdate>
+              2023-12-01
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E8%AE%BA%E6%96%87%E8%AF%BB%E5%90%8E%E6%80%BB%E7%BB%93/" class="category-chain-item">论文读后总结</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E8%AE%BA%E6%96%87%E8%AF%BB%E5%90%8E%E6%80%BB%E7%BB%93/%E7%BB%8F%E5%85%B8%E6%A8%A1%E5%9E%8B%E7%B3%BB%E5%88%97/" class="category-chain-item">经典模型系列</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E8%AE%BA%E6%96%87%E8%AF%BB%E5%90%8E%E6%80%BB%E7%BB%93/">#论文读后总结</a>
+            
+              <a href="/tags/%E7%BB%8F%E5%85%B8%E6%A8%A1%E5%9E%8B%E7%B3%BB%E5%88%97/">#经典模型系列</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2023/11/29/alexnet%E8%BF%9B%E8%A1%8C%E8%8A%B1%E6%9C%B5%E5%88%86%E7%B1%BB/" target="_blank">
+          alexnet进行花朵分类
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/11/29/alexnet%E8%BF%9B%E8%A1%8C%E8%8A%B1%E6%9C%B5%E5%88%86%E7%B1%BB/" target="_blank">
+        <div>
+          1 对花数据集进行分类原址：https://gitlab.diantouedu.cn/QY/test1/tree/master。 本文代码：https://github.com/Guoxn1/ai。 数据集需要自行从原址处下载。  大致如下，一共分为训练集和测试集，一共五种花。本文使用自构建的alexnet和pretrained的alexnet进行训练，对比效果。 2 自构建alexnet1234
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-11-29 09:22" pubdate>
+              2023-11-29
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89/" class="category-chain-item">计算机视觉</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89/%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/" class="category-chain-item">卷积神经网络</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89/">#计算机视觉</a>
+            
+              <a href="/tags/%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/">#卷积神经网络</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2023/11/28/%E7%BB%8F%E5%85%B8%E9%97%AE%E9%A2%98/" target="_blank">
+          神经网络经典问题
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/11/28/%E7%BB%8F%E5%85%B8%E9%97%AE%E9%A2%98/" target="_blank">
+        <div>
+          1 简介这里介绍一些在初学过程中可能碰到的一些常见的经典问题，其实还是蛮有意思的，就当成一种经验的积累。 这篇博客应该会一直更新，但是可能最后会很大，可能会分好几个，或者是分类一下。 2 预训练阶段2.1 神经网络参数的初始化方式有哪些，为什么不能把w都初始化成一个值？其实不同的初始化方式，就是来把w初始化成不同的随机值。首先说一下为什么不能把w初始成同一个值，尤其是0。如果全为0，那么在传播的时
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-11-28 17:27" pubdate>
+              2023-11-28
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80/" class="category-chain-item">深度学习基础</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80/%E7%BB%8F%E5%85%B8%E9%97%AE%E9%A2%98/" class="category-chain-item">经典问题</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/">#神经网络</a>
+            
+              <a href="/tags/%E7%BB%8F%E5%85%B8%E9%97%AE%E9%A2%98/">#经典问题</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2023/11/26/%E7%BB%8F%E5%85%B8%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E7%9A%84%E7%BB%93%E6%9E%84%E3%80%81%E5%8C%BA%E5%88%AB%E5%92%8C%E8%81%94%E7%B3%BB/" target="_blank">
+          经典卷积神经网络的结构、区别和联系
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/11/26/%E7%BB%8F%E5%85%B8%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E7%9A%84%E7%BB%93%E6%9E%84%E3%80%81%E5%8C%BA%E5%88%AB%E5%92%8C%E8%81%94%E7%B3%BB/" target="_blank">
+        <div>
+          1 简介在处理图像分类问题上，卷积操作有着多层感知机所不具备的能力。比如：减少了学习的参数，增加了平移不变性和局部性。并且卷积神经网络在gpu上有着不错的加速效果。 自alexnet提出后，卷积神经网络开始进入人们的视野。用它来处理一些图像问题，实在是不二的选择。这里总结从“初出茅庐”的lenet，到“思想启蒙”的alexnet，再到并行操作的“googlenet”，最后到更深的resnet，介绍
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-11-26 12:38" pubdate>
+              2023-11-26
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89/" class="category-chain-item">计算机视觉</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89/%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/" class="category-chain-item">卷积神经网络</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89/">#计算机视觉</a>
+            
+              <a href="/tags/%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/">#卷积神经网络</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2023/11/20/Prompt-Injection-Attacks-and-Defenses-in-LLM-Integrated-Applications/" target="_blank">
+          Prompt Injection Attacks and Defenses in LLM-Integrated Applications
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/11/20/Prompt-Injection-Attacks-and-Defenses-in-LLM-Integrated-Applications/" target="_blank">
+        <div>
+          Prompt Injection Attacks and Defenses in LLM-Integrated Applications1、背景大语言模型 ，Large Language Models（llms），比如gpt-3，gpt-4和palm2已经在自然语言处理方面达到了显著的进步和成就。由于它们的卓越的生成能力，llms已经被广泛的应用真实世界应用的后端，称为llm-集成应用。 比如，微
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-11-20 18:15" pubdate>
+              2023-11-20
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E8%AE%BA%E6%96%87%E8%AF%BB%E5%90%8E%E6%80%BB%E7%BB%93/" class="category-chain-item">论文读后总结</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E8%AE%BA%E6%96%87%E8%AF%BB%E5%90%8E%E6%80%BB%E7%BB%93/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%AE%89%E5%85%A8/" class="category-chain-item">大模型安全</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E8%AE%BA%E6%96%87%E8%AF%BB%E5%90%8E%E6%80%BB%E7%BB%93/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%AE%89%E5%85%A8/%E6%8F%90%E7%A4%BA%E8%AF%8D%E6%B3%A8%E5%85%A5/" class="category-chain-item">提示词注入</a>
+  
+  
+
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E8%AE%BA%E6%96%87%E8%AF%BB%E5%90%8E%E6%80%BB%E7%BB%93/">#论文读后总结</a>
+            
+              <a href="/tags/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%AE%89%E5%85%A8/">#大模型安全</a>
+            
+              <a href="/tags/%E6%8F%90%E7%A4%BA%E8%AF%8D%E6%B3%A8%E5%85%A5/">#提示词注入</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+
+
+  <nav aria-label="navigation">
+    <span class="pagination" id="pagination">
+      <span class="page-number current">1</span><a class="page-number" href="/page/2/#board">2</a><a class="page-number" href="/page/3/#board">3</a><a class="extend next" rel="next" href="/page/2/#board"><i class="iconfont icon-arrowright"></i></a>
+    </span>
+  </nav>
+
+
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
