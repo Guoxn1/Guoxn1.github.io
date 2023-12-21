@@ -71,7 +71,119 @@
 
 
   
-<meta name="generator" content="Hexo 6.3.0"></head>
+<meta name="generator" content="Hexo 6.3.0"><style>mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+.MathJax path {
+  stroke-width: 3;
+}
+
+mjx-container[display="true"] {
+  overflow: auto hidden;
+}
+
+mjx-container[display="true"] + br {
+  display: none;
+}
+</style></head>
 
 
 <body>
@@ -232,7 +344,7 @@
       
       <a class="index-excerpt index-excerpt__noimg" href="/2023/12/19/2023-1-A-Review-of-Adversarial-Attacks-in-Computer-Vision/" target="_blank">
         <div>
-          A Review of Adversarial Attacks in Computer Vision 综述一般都比较长，打算分几次来写，这部分打算写白盒攻击场景下的攻击方法。 这篇文章系列以A Review of Adversarial Attacks in Computer Vision为主，以其它参考文献和网上资料为辅写的内容，这里是第一部分。 1 介绍深度神经网络已经被广泛的使用到各种下游任
+          A Review of Adversarial Attacks in Computer Vision 综述一般都比较长，打算分几次来写，这部分打算写白盒攻击场景下的攻击方法。 这篇文章系列以A Review of Adversarial Attacks in Computer Vision为主，以其它参考文献和网上资料为辅写的内容，这里是第一部分。 1 介绍 深度神经网络已经被广泛的使用
         </div>
       </a>
 
@@ -311,7 +423,7 @@
       
       <a class="index-excerpt index-excerpt__noimg" href="/2023/12/17/Attenion-is-all-you-need/" target="_blank">
         <div>
-          0 摘要主流的序列转导模型是基于循环或者卷积神经网络，基本上是一个编码器和解码器。表现比较好的就是使用了注意力来连接编码器和解码器。并且，我们提出了一个新的架构叫做transformer，它完全基于注意力机制，省去了卷积和循环。 1 介绍循环神经网络已经被认为是序列模型转换问题的最佳解决办法，因此许多努力都在推动编码器-解码器的发展。 循环神经网络最大的限制就是没办法进行并行计算，这很吃内存和时间
+          0 摘要 主流的序列转导模型是基于循环或者卷积神经网络，基本上是一个编码器和解码器。表现比较好的就是使用了注意力来连接编码器和解码器。并且，我们提出了一个新的架构叫做transformer，它完全基于注意力机制，省去了卷积和循环。 1 介绍 循环神经网络已经被认为是序列模型转换问题的最佳解决办法，因此许多努力都在推动编码器-解码器的发展。 循环神经网络最大的限制就是没办法进行并行计算，这很
         </div>
       </a>
 
@@ -381,7 +493,7 @@
       
       <a class="index-excerpt index-excerpt__noimg" href="/2023/12/08/%E4%BD%BF%E7%94%A8%E8%87%AA%E7%BC%96%E7%A0%81%E5%99%A8%E8%BF%9B%E8%A1%8C%E5%9B%BE%E7%89%87%E6%A3%80%E7%B4%A2/" target="_blank">
         <div>
-          1 自编码器简介自编码器最初提出的目的是为了学习到数据的主要规律，进行数据压缩，或特征提取，是一类无监督学习的算法。后续各种改进的算法，使得自编码器具有生成能力，例如变分自编码器（VAE）的图像生成能力。 本次放的代码都是线性版本，在我的仓库中还有cnn版本，毕竟线性版本只能处理一下这种mnist小数据集。地址：https://github.com/Guoxn1/ai。 2 线性自编码器自动编码器
+          1 自编码器简介 自编码器最初提出的目的是为了学习到数据的主要规律，进行数据压缩，或特征提取，是一类无监督学习的算法。后续各种改进的算法，使得自编码器具有生成能力，例如变分自编码器（VAE）的图像生成能力。 本次放的代码都是线性版本，在我的仓库中还有cnn版本，毕竟线性版本只能处理一下这种mnist小数据集。地址：https://github.com/Guoxn1/ai。 2 线性自编码器
         </div>
       </a>
 
@@ -457,7 +569,7 @@
       
       <a class="index-excerpt index-excerpt__noimg" href="/2023/12/04/%E7%8E%B0%E4%BB%A3%E5%BE%AA%E7%8E%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/" target="_blank">
         <div>
-          1 简介循环神经网络被广泛运用于自然语言处理，但是他们都各有各的优缺点。 2 rnn循环神经网络，鼻祖。 RNN是最基本的循环神经网络形式，它通过将当前的输入与上一个时间步的隐藏状态相结合，来产生输出和更新隐藏状态。然而，传统的RNN存在梯度消失和梯度爆炸等问题，导致长期依赖关系难以捕捉。 产生梯度消失和爆炸主要是由于序列共用隐藏层，反向传播导致出现连乘，且激活函数在偏离原点时取值较小，容易出现梯
+          1 简介 循环神经网络被广泛运用于自然语言处理，但是他们都各有各的优缺点。 2 rnn 循环神经网络，鼻祖。 RNN是最基本的循环神经网络形式，它通过将当前的输入与上一个时间步的隐藏状态相结合，来产生输出和更新隐藏状态。然而，传统的RNN存在梯度消失和梯度爆炸等问题，导致长期依赖关系难以捕捉。 产生梯度消失和爆炸主要是由于序列共用隐藏层，反向传播导致出现连乘，且激活函数在偏离原点时取值较
         </div>
       </a>
 
@@ -527,7 +639,7 @@
       
       <a class="index-excerpt index-excerpt__noimg" href="/2023/12/02/Deep-Residual-Learning-for-Image-Recognition/" target="_blank">
         <div>
-          题目：用于图像识别的深度残差学习 0 摘要上来先提出问题：更深的神经网络更难训练，所以作者提出了本文要介绍的残差网络，来解决这个事情。这样的模型不仅更深而且复杂度更低，取得了非常不错的效果。 1 介绍开头先说明深度卷积神经网络的贡献，深度是能进行很好分类的关键。提出第一个问题，梯度消失和梯度爆炸，这个问题已经被初始归一化和中间层归一化极大缓解；提出第二个问题，随着网络深度的增加，准确率会饱和然后迅
+          题目：用于图像识别的深度残差学习 0 摘要 上来先提出问题：更深的神经网络更难训练，所以作者提出了本文要介绍的残差网络，来解决这个事情。这样的模型不仅更深而且复杂度更低，取得了非常不错的效果。 1 介绍 开头先说明深度卷积神经网络的贡献，深度是能进行很好分类的关键。提出第一个问题，梯度消失和梯度爆炸，这个问题已经被初始归一化和中间层归一化极大缓解；提出第二个问题，随着网络深度的增加，准确率
         </div>
       </a>
 
@@ -597,7 +709,7 @@
       
       <a class="index-excerpt index-excerpt__noimg" href="/2023/12/01/ImageNet-Classification-with-Deep-Convolutional-Neural-Networks/" target="_blank">
         <div>
-          题目：使用深度卷积神经网络对ImageNet进行分类 0 摘要作者训练了一个大型深度卷积神经网络来对ImageNet进行分类，效果比之前所有的效果都好。它包含5个卷积层，中间还有池化层，最后三个全连接层(softmax)，输出1000类的分类结果。为了训练更快，使用了非饱和神经元（其实是非饱和激活函数，也就是relu）和一个性能很好的gpu（现在已经不太行，当时确实不错）。为了减少全连接层的过拟合
+          题目：使用深度卷积神经网络对ImageNet进行分类 0 摘要 作者训练了一个大型深度卷积神经网络来对ImageNet进行分类，效果比之前所有的效果都好。它包含5个卷积层，中间还有池化层，最后三个全连接层(softmax)，输出1000类的分类结果。为了训练更快，使用了非饱和神经元（其实是非饱和激活函数，也就是relu）和一个性能很好的gpu（现在已经不太行，当时确实不错）。为了减少全连接层的
         </div>
       </a>
 
@@ -667,7 +779,7 @@
       
       <a class="index-excerpt index-excerpt__noimg" href="/2023/11/29/alexnet%E8%BF%9B%E8%A1%8C%E8%8A%B1%E6%9C%B5%E5%88%86%E7%B1%BB/" target="_blank">
         <div>
-          1 对花数据集进行分类原址：https://gitlab.diantouedu.cn/QY/test1/tree/master。 本文代码：https://github.com/Guoxn1/ai。 数据集需要自行从原址处下载。  大致如下，一共分为训练集和测试集，一共五种花。本文使用自构建的alexnet和pretrained的alexnet进行训练，对比效果。 2 自构建alexnet1234
+          1 对花数据集进行分类 原址：https://gitlab.diantouedu.cn/QY/test1/tree/master。 本文代码：https://github.com/Guoxn1/ai。 数据集需要自行从原址处下载。   image-20231129092517757  大致如下，一共分为训练集和测试集，一共五种花。本文使用自构建的alexnet和pretrained
         </div>
       </a>
 
@@ -737,7 +849,7 @@
       
       <a class="index-excerpt index-excerpt__noimg" href="/2023/11/28/%E7%BB%8F%E5%85%B8%E9%97%AE%E9%A2%98/" target="_blank">
         <div>
-          1 简介这里介绍一些在初学过程中可能碰到的一些常见的经典问题，其实还是蛮有意思的，就当成一种经验的积累。 这篇博客应该会一直更新，但是可能最后会很大，可能会分好几个，或者是分类一下。 2 预训练阶段2.1 神经网络参数的初始化方式有哪些，为什么不能把w都初始化成一个值？其实不同的初始化方式，就是来把w初始化成不同的随机值。首先说一下为什么不能把w初始成同一个值，尤其是0。如果全为0，那么在传播的时
+          1 简介 这里介绍一些在初学过程中可能碰到的一些常见的经典问题，其实还是蛮有意思的，就当成一种经验的积累。 这篇博客应该会一直更新，但是可能最后会很大，可能会分好几个，或者是分类一下。 2 预训练阶段 2.1 神经网络参数的初始化方式有哪些，为什么不能把w都初始化成一个值？ 其实不同的初始化方式，就是来把w初始化成不同的随机值。首先说一下为什么不能把w初始成同一个值，尤其是0。如果全为
         </div>
       </a>
 
@@ -807,7 +919,7 @@
       
       <a class="index-excerpt index-excerpt__noimg" href="/2023/11/26/%E7%BB%8F%E5%85%B8%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E7%9A%84%E7%BB%93%E6%9E%84%E3%80%81%E5%8C%BA%E5%88%AB%E5%92%8C%E8%81%94%E7%B3%BB/" target="_blank">
         <div>
-          1 简介在处理图像分类问题上，卷积操作有着多层感知机所不具备的能力。比如：减少了学习的参数，增加了平移不变性和局部性。并且卷积神经网络在gpu上有着不错的加速效果。 自alexnet提出后，卷积神经网络开始进入人们的视野。用它来处理一些图像问题，实在是不二的选择。这里总结从“初出茅庐”的lenet，到“思想启蒙”的alexnet，再到并行操作的“googlenet”，最后到更深的resnet，介绍
+          1 简介 在处理图像分类问题上，卷积操作有着多层感知机所不具备的能力。比如：减少了学习的参数，增加了平移不变性和局部性。并且卷积神经网络在gpu上有着不错的加速效果。 自alexnet提出后，卷积神经网络开始进入人们的视野。用它来处理一些图像问题，实在是不二的选择。这里总结从“初出茅庐”的lenet，到“思想启蒙”的alexnet，再到并行操作的“googlenet”，最后到更深的resnet
         </div>
       </a>
 
@@ -877,7 +989,7 @@
       
       <a class="index-excerpt index-excerpt__noimg" href="/2023/11/20/Prompt-Injection-Attacks-and-Defenses-in-LLM-Integrated-Applications/" target="_blank">
         <div>
-          Prompt Injection Attacks and Defenses in LLM-Integrated Applications1、背景大语言模型 ，Large Language Models（llms），比如gpt-3，gpt-4和palm2已经在自然语言处理方面达到了显著的进步和成就。由于它们的卓越的生成能力，llms已经被广泛的应用真实世界应用的后端，称为llm-集成应用。 比如，微
+          Prompt Injection Attacks and Defenses in LLM-Integrated Applications 1、背景 大语言模型 ，Large Language Models（llms），比如gpt-3，gpt-4和palm2已经在自然语言处理方面达到了显著的进步和成就。由于它们的卓越的生成能力，llms已经被广泛的应用真实世界应用的后端，称为llm-集成应
         </div>
       </a>
 

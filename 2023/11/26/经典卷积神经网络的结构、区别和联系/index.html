@@ -16,12 +16,12 @@
   <meta name="author" content="Guoxin">
   <meta name="keywords" content="">
   
-    <meta name="description" content="1 简介在处理图像分类问题上，卷积操作有着多层感知机所不具备的能力。比如：减少了学习的参数，增加了平移不变性和局部性。并且卷积神经网络在gpu上有着不错的加速效果。 自alexnet提出后，卷积神经网络开始进入人们的视野。用它来处理一些图像问题，实在是不二的选择。这里总结从“初出茅庐”的lenet，到“思想启蒙”的alexnet，再到并行操作的“googlenet”，最后到更深的resnet，介绍">
+    <meta name="description" content="1 简介 在处理图像分类问题上，卷积操作有着多层感知机所不具备的能力。比如：减少了学习的参数，增加了平移不变性和局部性。并且卷积神经网络在gpu上有着不错的加速效果。 自alexnet提出后，卷积神经网络开始进入人们的视野。用它来处理一些图像问题，实在是不二的选择。这里总结从“初出茅庐”的lenet，到“思想启蒙”的alexnet，再到并行操作的“googlenet”，最后到更深的resnet">
 <meta property="og:type" content="article">
 <meta property="og:title" content="经典卷积神经网络的结构、区别和联系">
 <meta property="og:url" content="http://example.com/2023/11/26/%E7%BB%8F%E5%85%B8%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E7%9A%84%E7%BB%93%E6%9E%84%E3%80%81%E5%8C%BA%E5%88%AB%E5%92%8C%E8%81%94%E7%B3%BB/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="1 简介在处理图像分类问题上，卷积操作有着多层感知机所不具备的能力。比如：减少了学习的参数，增加了平移不变性和局部性。并且卷积神经网络在gpu上有着不错的加速效果。 自alexnet提出后，卷积神经网络开始进入人们的视野。用它来处理一些图像问题，实在是不二的选择。这里总结从“初出茅庐”的lenet，到“思想启蒙”的alexnet，再到并行操作的“googlenet”，最后到更深的resnet，介绍">
+<meta property="og:description" content="1 简介 在处理图像分类问题上，卷积操作有着多层感知机所不具备的能力。比如：减少了学习的参数，增加了平移不变性和局部性。并且卷积神经网络在gpu上有着不错的加速效果。 自alexnet提出后，卷积神经网络开始进入人们的视野。用它来处理一些图像问题，实在是不二的选择。这里总结从“初出茅庐”的lenet，到“思想启蒙”的alexnet，再到并行操作的“googlenet”，最后到更深的resnet">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://example.com/2023/11/26/%E7%BB%8F%E5%85%B8%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E7%9A%84%E7%BB%93%E6%9E%84%E3%80%81%E5%8C%BA%E5%88%AB%E5%92%8C%E8%81%94%E7%B3%BB/image-20231125211240120.png">
 <meta property="og:image" content="http://example.com/2023/11/26/%E7%BB%8F%E5%85%B8%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E7%9A%84%E7%BB%93%E6%9E%84%E3%80%81%E5%8C%BA%E5%88%AB%E5%92%8C%E8%81%94%E7%B3%BB/lenet.svg">
@@ -99,7 +99,119 @@
 
 
   
-<meta name="generator" content="Hexo 6.3.0"></head>
+<meta name="generator" content="Hexo 6.3.0"><style>mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+.MathJax path {
+  stroke-width: 3;
+}
+
+mjx-container[display="true"] {
+  overflow: auto hidden;
+}
+
+mjx-container[display="true"] + br {
+  display: none;
+}
+</style></head>
 
 
 <body>
@@ -237,7 +349,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          7.2k 字
+          7.4k 字
         
       </span>
     
@@ -248,7 +360,7 @@
         
         
         
-          61 分钟
+          62 分钟
         
       </span>
     
@@ -290,85 +402,147 @@
             
               <div class="markdown-body">
                 
-                <h1 id="1-简介"><a href="#1-简介" class="headerlink" title="1 简介"></a>1 简介</h1><p>在处理图像分类问题上，卷积操作有着多层感知机所不具备的能力。比如：减少了学习的参数，增加了平移不变性和局部性。并且卷积神经网络在gpu上有着不错的加速效果。</p>
+                <h1 id="简介">1 简介</h1>
+<p>在处理图像分类问题上，卷积操作有着多层感知机所不具备的能力。比如：减少了学习的参数，增加了平移不变性和局部性。并且卷积神经网络在gpu上有着不错的加速效果。</p>
 <p>自alexnet提出后，卷积神经网络开始进入人们的视野。用它来处理一些图像问题，实在是不二的选择。这里总结从“初出茅庐”的lenet，到“思想启蒙”的alexnet，再到并行操作的“googlenet”，最后到更深的resnet，介绍它们之间的结构区别和联系，并且给出相关实现代码，所有的测试都是根据fashionminsit数据集来进行的。</p>
-<p>完整的可运行的代码存在我都仓库中。<a target="_blank" rel="noopener" href="https://github.com/Guoxn1/ai%E3%80%82">https://github.com/Guoxn1/ai。</a></p>
+<p>完整的可运行的代码存在我都仓库中。https://github.com/Guoxn1/ai。</p>
 <p>如果你只是想简单了解一下，那下面这个图就够了。</p>
-<img src="image-20231125211240120.png" srcset="/img/loading.gif" lazyload alt="image-20231125211240120">
-
-<h1 id="2-图像的基本操作及参数用途"><a href="#2-图像的基本操作及参数用途" class="headerlink" title="2 图像的基本操作及参数用途"></a>2 图像的基本操作及参数用途</h1><p>简单提一下，具体内容不再赘述，只列举和下面相关的。</p>
-<h2 id="2-1-卷积和池化"><a href="#2-1-卷积和池化" class="headerlink" title="2.1 卷积和池化"></a>2.1 卷积和池化</h2><p>最基本的两个操作，卷积用来提取特征，池化用来减少计算量，防止过拟合。</p>
-<p>卷积”操作的思想 采用一个较小的卷积核，例如 3×3 的矩阵，来对图像特征进行提取。这样做可以增加参数的共享，保留局部位置信息，平移不变性。</p>
+<p><img src="image-20231125211240120.png" srcset="/img/loading.gif" lazyload alt="image-20231125211240120"></p>
+<h1 id="图像的基本操作及参数用途">2 图像的基本操作及参数用途</h1>
+<p>简单提一下，具体内容不再赘述，只列举和下面相关的。</p>
+<h2 id="卷积和池化">2.1 卷积和池化</h2>
+<p>最基本的两个操作，卷积用来提取特征，池化用来减少计算量，防止过拟合。</p>
+<p>卷积”操作的思想 采用一个较小的卷积核，例如 3×3
+的矩阵，来对图像特征进行提取。这样做可以增加参数的共享，保留局部位置信息，平移不变性。</p>
 <p>池化对卷积层中提取的特征进行挑选，减少随着神经网络变深、结点数变多而带来的巨大计算量。</p>
-<h2 id="2-2-kernel-size"><a href="#2-2-kernel-size" class="headerlink" title="2.2 kernel_size"></a>2.2 kernel_size</h2><p>较小的kernel_size提取更小的特征，建议使用单数。</p>
-<h2 id="2-3-padding"><a href="#2-3-padding" class="headerlink" title="2.3 padding"></a>2.3 <strong>padding</strong></h2><p>（1）解决图像经过卷积操作后图像缩小的问题<br>（2）图像不进行padding的话，边缘处像素只会进行一次卷积操作，而中间的像素点则会进行多次卷积操作，这样边缘像素的信息就会有损失</p>
-<h2 id="2-4-stride"><a href="#2-4-stride" class="headerlink" title="2.4 stride"></a>2.4 stride</h2><p>设置的步长（Stride）来压缩一部分信息，或者使输出的尺寸小于输入的尺寸， 毕竟整个卷积的过程其实就是信息利用和信息损失的过程。</p>
-<h1 id="3-经典卷积神经网络结构、区别和联系"><a href="#3-经典卷积神经网络结构、区别和联系" class="headerlink" title="3 经典卷积神经网络结构、区别和联系"></a>3 经典卷积神经网络结构、区别和联系</h1><h2 id="3-1-lenet（卷积神经网络）"><a href="#3-1-lenet（卷积神经网络）" class="headerlink" title="3.1 lenet（卷积神经网络）"></a>3.1 lenet（卷积神经网络）</h2><p>都说alennet贡献很大，是兴起的源头，但是其实lenet比alexnet早了20年。主要还是算力没跟上，然后中间学术界和工业界更偏向于机器学习那一套。</p>
+<h2 id="kernel_size">2.2 kernel_size</h2>
+<p>较小的kernel_size提取更小的特征，建议使用单数。</p>
+<h2 id="padding">2.3 <strong>padding</strong></h2>
+<p>（1）解决图像经过卷积操作后图像缩小的问题
+（2）图像不进行padding的话，边缘处像素只会进行一次卷积操作，而中间的像素点则会进行多次卷积操作，这样边缘像素的信息就会有损失</p>
+<h2 id="stride">2.4 stride</h2>
+<p>设置的步长（Stride）来压缩一部分信息，或者使输出的尺寸小于输入的尺寸，
+毕竟整个卷积的过程其实就是信息利用和信息损失的过程。</p>
+<h1 id="经典卷积神经网络结构区别和联系">3
+经典卷积神经网络结构、区别和联系</h1>
+<h2 id="lenet卷积神经网络">3.1 lenet（卷积神经网络）</h2>
+<p>都说alennet贡献很大，是兴起的源头，但是其实lenet比alexnet早了20年。主要还是算力没跟上，然后中间学术界和工业界更偏向于机器学习那一套。</p>
 <p>lenet的结构：</p>
-<p><img src="lenet.svg" srcset="/img/loading.gif" lazyload alt="lenet"></p>
+<figure>
+<img src="lenet.svg" srcset="/img/loading.gif" lazyload alt="lenet">
+<figcaption aria-hidden="true">lenet</figcaption>
+</figure>
 <p>pytorch实现：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> torch<br><span class="hljs-keyword">from</span> torch <span class="hljs-keyword">import</span> nn<br><span class="hljs-keyword">from</span> d2l <span class="hljs-keyword">import</span> torch <span class="hljs-keyword">as</span> d2l<br><br>net = nn.Sequential(<br>    nn.Conv2d(<span class="hljs-number">1</span>, <span class="hljs-number">6</span>, kernel_size=<span class="hljs-number">5</span>, padding=<span class="hljs-number">2</span>), nn.Sigmoid(),<br>    nn.AvgPool2d(kernel_size=<span class="hljs-number">2</span>, stride=<span class="hljs-number">2</span>),<br>    nn.Conv2d(<span class="hljs-number">6</span>, <span class="hljs-number">16</span>, kernel_size=<span class="hljs-number">5</span>),nn.Sigmoid(),<br>    nn.AvgPool2d(kernel_size=<span class="hljs-number">2</span>, stride=<span class="hljs-number">2</span>),<br>    nn.Flatten(),<br>    nn.Linear(<span class="hljs-number">16</span> * <span class="hljs-number">5</span> * <span class="hljs-number">5</span>, <span class="hljs-number">120</span>), nn.ReLU(),<br>    nn.Linear(<span class="hljs-number">120</span>, <span class="hljs-number">84</span>), nn.ReLU(),<br>    nn.Linear(<span class="hljs-number">84</span>, <span class="hljs-number">10</span>)<br>    )<br><br></code></pre></td></tr></table></figure>
-
 <p>在fashionminsit的准确率和损失，以及每秒处理的图像：</p>
-<p><img src="image-20231125203045713.png" srcset="/img/loading.gif" lazyload alt="image-20231125203045713"></p>
-<p>我们主要关注这三个参数：train_loss,test_loss,examples&#x2F;sec。</p>
-<h2 id="3-2-alexnet（深度卷积神经网络）"><a href="#3-2-alexnet（深度卷积神经网络）" class="headerlink" title="3.2 alexnet（深度卷积神经网络）"></a>3.2 alexnet（深度卷积神经网络）</h2><p>把alexnet比作“文艺复兴”一点都不为过，当所有牛掰的基于核的算法对图像处理力不从心的时候，是alexnet站了出来。</p>
+<figure>
+<img src="image-20231125203045713.png" srcset="/img/loading.gif" lazyload alt="image-20231125203045713">
+<figcaption aria-hidden="true">image-20231125203045713</figcaption>
+</figure>
+<p>我们主要关注这三个参数：train_loss,test_loss,examples/sec。</p>
+<h2 id="alexnet深度卷积神经网络">3.2 alexnet（深度卷积神经网络）</h2>
+<p>把alexnet比作“文艺复兴”一点都不为过，当所有牛掰的基于核的算法对图像处理力不从心的时候，是alexnet站了出来。</p>
 <p>AlexNet和LeNet的设计理念非常相似，但也存在显著差异。</p>
-<ol>
+<ol type="1">
 <li>AlexNet比相对较小的LeNet5要深得多。AlexNet由八层组成：五个卷积层、两个全连接隐藏层和一个全连接输出层。</li>
 <li>AlexNet使用ReLU而不是sigmoid作为其激活函数。</li>
 <li>存在dropout函数来应对参数过多可能产生的过拟合</li>
 </ol>
-<p><img src="alexnet.svg" srcset="/img/loading.gif" lazyload alt="alexnet"></p>
+<figure>
+<img src="alexnet.svg" srcset="/img/loading.gif" lazyload alt="alexnet">
+<figcaption aria-hidden="true">alexnet</figcaption>
+</figure>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs python">net = nn.Sequential(<br>    <span class="hljs-comment"># 增大输出通道 这里的例子是fashion 所以输入通道是1</span><br>    nn.Conv2d(<span class="hljs-number">1</span>,<span class="hljs-number">96</span>,kernel_size=<span class="hljs-number">11</span>,stride=<span class="hljs-number">4</span>,padding=<span class="hljs-number">1</span>),nn.ReLU(),<br>    nn.MaxPool2d(kernel_size=<span class="hljs-number">3</span>,stride=<span class="hljs-number">2</span>),<br><br>    nn.Conv2d(<span class="hljs-number">96</span>,<span class="hljs-number">256</span>,kernel_size=<span class="hljs-number">5</span>,padding=<span class="hljs-number">2</span>),nn.ReLU(),<br>    nn.MaxPool2d(kernel_size=<span class="hljs-number">3</span>,stride=<span class="hljs-number">2</span>),<br>    <br>    nn.Conv2d(<span class="hljs-number">256</span>,<span class="hljs-number">384</span>,kernel_size=<span class="hljs-number">3</span>,padding=<span class="hljs-number">1</span>),nn.ReLU(),<br>    nn.Conv2d(<span class="hljs-number">384</span>,<span class="hljs-number">384</span>,kernel_size=<span class="hljs-number">3</span>,padding=<span class="hljs-number">1</span>),nn.ReLU(),<br>    nn.Conv2d(<span class="hljs-number">384</span>,<span class="hljs-number">256</span>,kernel_size=<span class="hljs-number">3</span>,padding=<span class="hljs-number">1</span>),nn.ReLU(),<br>    nn.MaxPool2d(kernel_size=<span class="hljs-number">3</span>,stride=<span class="hljs-number">2</span>),<br><br>    nn.Flatten(),<br>    nn.Linear(<span class="hljs-number">6400</span>,<span class="hljs-number">4096</span>),nn.ReLU(),<br>    nn.Dropout(p=<span class="hljs-number">0.5</span>),<br>    nn.Linear(<span class="hljs-number">4096</span>,<span class="hljs-number">4096</span>),nn.ReLU(),<br>    nn.Dropout(p=<span class="hljs-number">0.5</span>),<br>    nn.Linear(<span class="hljs-number">4096</span>,<span class="hljs-number">10</span>)<br>)<br></code></pre></td></tr></table></figure>
-
-
-
-<p><img src="image-20231125203505446.png" srcset="/img/loading.gif" lazyload alt="image-20231125203505446"></p>
+<figure>
+<img src="image-20231125203505446.png" srcset="/img/loading.gif" lazyload alt="image-20231125203505446">
+<figcaption aria-hidden="true">image-20231125203505446</figcaption>
+</figure>
 <p>处理的速度显著减少了，但是准确率确实上了一些，0.87。</p>
 <p>我这里是笔记本端的 4060，不同型号可能存在不同的差异。</p>
-<h2 id="3-3-vgg（使用块的网络）"><a href="#3-3-vgg（使用块的网络）" class="headerlink" title="3.3 vgg（使用块的网络）"></a>3.3 vgg（使用块的网络）</h2><p>与AlexNet、LeNet一样，VGG网络可以分为两部分：第一部分主要由卷积层和汇聚层组成，第二部分由全连接层组成。</p>
-<p><img src="vgg.svg" srcset="/img/loading.gif" lazyload alt="vgg"></p>
+<h2 id="vgg使用块的网络">3.3 vgg（使用块的网络）</h2>
+<p>与AlexNet、LeNet一样，VGG网络可以分为两部分：第一部分主要由卷积层和汇聚层组成，第二部分由全连接层组成。</p>
+<figure>
+<img src="vgg.svg" srcset="/img/loading.gif" lazyload alt="vgg">
+<figcaption aria-hidden="true">vgg</figcaption>
+</figure>
 <p>vggnet定义了一个块的东西，这个块实现了卷积和池化操作。</p>
 <p>并且这个块就是alexnet中3*3卷积层的封装，含有不同数目的块的vgg网络又被命名为vgg11，vgg16等，这里代码实现vgg11。</p>
 <p>VGG神经网络连接的几个VGG块（在<code>vgg_block</code>函数中定义）。其中有超参数变量<code>conv_arch</code>。该变量指定了每个VGG块里卷积层个数和输出通道数。全连接模块则与AlexNet中的相同。</p>
-<p>原始VGG网络有5个卷积块，其中前两个块各有一个卷积层，后三个块各包含两个卷积层。 第一个模块有64个输出通道，每个后续模块将输出通道数量翻倍，直到该数字达到512。由于该网络使用8个卷积层和3个全连接层，因此它通常被称为VGG-11。</p>
+<p>原始VGG网络有5个卷积块，其中前两个块各有一个卷积层，后三个块各包含两个卷积层。
+第一个模块有64个输出通道，每个后续模块将输出通道数量翻倍，直到该数字达到512。由于该网络使用8个卷积层和3个全连接层，因此它通常被称为VGG-11。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">vgg_block</span>(<span class="hljs-params">num_convs,in_channels,out_channels</span>):<br>    layers = []<br>    <span class="hljs-keyword">for</span> _ <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(num_convs):<br>        layers.append(nn.Conv2d(in_channels,out_channels,kernel_size=<span class="hljs-number">3</span>,padding=<span class="hljs-number">1</span>))<br>        layers.append(nn.ReLU())<br>        in_channels = out_channels<br>    layers.append(nn.MaxPool2d(kernel_size=<span class="hljs-number">2</span>,stride=<span class="hljs-number">2</span>))<br>    <span class="hljs-keyword">return</span> nn.Sequential(*layers)<br><br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">vgg</span>(<span class="hljs-params">conv_arch</span>):<br>    conv_blocks = []<br>    in_channels = <span class="hljs-number">1</span><br>    <span class="hljs-keyword">for</span> (num_arch,out_channels) <span class="hljs-keyword">in</span> conv_arch:<br>        conv_blocks.append(vgg_block(num_arch,in_channels,out_channels))<br>        in_channels = out_channels<br>    <span class="hljs-keyword">return</span> nn.Sequential(<br>        *conv_blocks,nn.Flatten(),<br>        nn.Linear(out_channels*<span class="hljs-number">7</span>*<span class="hljs-number">7</span>,<span class="hljs-number">4096</span>),nn.ReLU(),nn.Dropout(<span class="hljs-number">0.5</span>),<br>        nn.Linear(<span class="hljs-number">4096</span>,<span class="hljs-number">4096</span>),nn.ReLU(),nn.Dropout(<span class="hljs-number">0.5</span>),<br>        nn.Linear(<span class="hljs-number">4096</span>,<span class="hljs-number">10</span>)<br>    )<br>    <br>conv_arch = ((<span class="hljs-number">1</span>,<span class="hljs-number">64</span>),(<span class="hljs-number">1</span>,<span class="hljs-number">128</span>),(<span class="hljs-number">2</span>,<span class="hljs-number">256</span>),(<span class="hljs-number">2</span>,<span class="hljs-number">512</span>),(<span class="hljs-number">2</span>,<span class="hljs-number">512</span>))<br>net = vgg(conv_arch)<br></code></pre></td></tr></table></figure>
-
 <p>时间比原来多了，相对来说精度也不错，而且每秒处理图片数目明显减少了。</p>
-<p><img src="image-20231125210811761.png" srcset="/img/loading.gif" lazyload alt="image-20231125210811761"></p>
-<h2 id="3-4-nin（网络中的网络）"><a href="#3-4-nin（网络中的网络）" class="headerlink" title="3.4 nin（网络中的网络）"></a>3.4 nin（网络中的网络）</h2><p>LeNet、AlexNet和VGG都有一个共同的设计模式：通过一系列的卷积层与汇聚层来提取空间结构特征；然后通过全连接层对特征的表征进行处理。 AlexNet和VGG对LeNet的改进主要在于如何扩大和加深这两个模块。可以想象在这个过程的早期使用全连接层。然而，如果使用了全连接层，可能会完全放弃表征的空间结构。 <em>网络中的网络</em>（<em>NiN</em>）提供了一个非常简单的解决方案：在每个像素的通道上分别使用多层感知机。</p>
-<p>NiN的想法是在每个像素位置（针对每个高度和宽度）应用一个全连接层。 如果我们将权重连接到每个空间位置，我们可以将其视为1×1卷积层，或作为在每个像素位置上独立作用的全连接层。 从另一个角度看，即将空间维度中的每个像素视为单个样本，将通道维度视为不同特征（feature）。</p>
-<p> NiN块以一个普通卷积层开始，后面是两个1×1的卷积层。这两个1×1卷积层充当带有ReLU激活函数的逐像素全连接层。 第一层的卷积窗口形状通常由用户设置。 随后的卷积窗口形状固定为1×1。</p>
+<figure>
+<img src="image-20231125210811761.png" srcset="/img/loading.gif" lazyload alt="image-20231125210811761">
+<figcaption aria-hidden="true">image-20231125210811761</figcaption>
+</figure>
+<h2 id="nin网络中的网络">3.4 nin（网络中的网络）</h2>
+<p>LeNet、AlexNet和VGG都有一个共同的设计模式：通过一系列的卷积层与汇聚层来提取空间结构特征；然后通过全连接层对特征的表征进行处理。
+AlexNet和VGG对LeNet的改进主要在于如何扩大和加深这两个模块。可以想象在这个过程的早期使用全连接层。然而，如果使用了全连接层，可能会完全放弃表征的空间结构。
+<em>网络中的网络</em>（<em>NiN</em>）提供了一个非常简单的解决方案：在每个像素的通道上分别使用多层感知机。</p>
+<p>NiN的想法是在每个像素位置（针对每个高度和宽度）应用一个全连接层。
+如果我们将权重连接到每个空间位置，我们可以将其视为1×1卷积层，或作为在每个像素位置上独立作用的全连接层。
+从另一个角度看，即将空间维度中的每个像素视为单个样本，将通道维度视为不同特征（feature）。</p>
+<p>NiN块以一个普通卷积层开始，后面是两个1×1的卷积层。这两个1×1卷积层充当带有ReLU激活函数的逐像素全连接层。
+第一层的卷积窗口形状通常由用户设置。 随后的卷积窗口形状固定为1×1。</p>
 <p>简单来说，nin就是把之前所有的全连接层给摒弃了，直接采用了1×1的卷积层来充当全连接层。</p>
 <p>参数减少的原因是全连接层，假如有n×n图片输入，那么复杂度就是n^4，假如是应用1×1卷积层，一共输出k个通道的话，那么就是n*n*k,当然这种情况下可能这种卷积层比较多,假如是o个，那么复杂度就是n*n*k*o,显然要比原来的复杂度更低，但是损失的信息也会更多。</p>
-<p><img src="nin.svg" srcset="/img/loading.gif" lazyload alt="nin"></p>
+<figure>
+<img src="nin.svg" srcset="/img/loading.gif" lazyload alt="nin">
+<figcaption aria-hidden="true">nin</figcaption>
+</figure>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">nin_block</span>(<span class="hljs-params">in_channels,out_channels,kernel_size,strides,padding</span>):<br>    <span class="hljs-keyword">return</span> nn.Sequential(<br>        nn.Conv2d(in_channels,out_channels,kernel_size,strides,padding),<br>        nn.ReLU(),<br>        nn.Conv2d(out_channels,out_channels,kernel_size=<span class="hljs-number">1</span>),nn.ReLU(),<br>        nn.Conv2d(out_channels,out_channels,kernel_size=<span class="hljs-number">1</span>),nn.ReLU()<br>    )<br>    <br>net = nn.Sequential(<br>    nin_block(<span class="hljs-number">1</span>,<span class="hljs-number">96</span>,kernel_size=<span class="hljs-number">11</span>,strides=<span class="hljs-number">4</span>,padding=<span class="hljs-number">0</span>),<br>    nn.MaxPool2d(<span class="hljs-number">3</span>,stride=<span class="hljs-number">2</span>),<br>    nin_block(<span class="hljs-number">96</span>,<span class="hljs-number">256</span>,kernel_size=<span class="hljs-number">5</span>,strides=<span class="hljs-number">1</span>,padding=<span class="hljs-number">2</span>),<br>    nn.MaxPool2d(<span class="hljs-number">3</span>,stride=<span class="hljs-number">2</span>),<br>    nin_block(<span class="hljs-number">256</span>,<span class="hljs-number">384</span>,kernel_size=<span class="hljs-number">3</span>,strides=<span class="hljs-number">1</span>,padding=<span class="hljs-number">1</span>),<br>    nn.MaxPool2d(<span class="hljs-number">3</span>,stride=<span class="hljs-number">2</span>),<br>    nn.Dropout(<span class="hljs-number">0.5</span>),<br>    <span class="hljs-comment">#最后的全连接层也要干掉</span><br>    nin_block(<span class="hljs-number">384</span>,<span class="hljs-number">10</span>,kernel_size=<span class="hljs-number">3</span>,strides=<span class="hljs-number">1</span>,padding=<span class="hljs-number">1</span>),<br>    <span class="hljs-comment"># 进行全局平均池化</span><br>    nn.AdaptiveAvgPool2d((<span class="hljs-number">1</span>,<span class="hljs-number">1</span>)),<br>    nn.Flatten()<br>)<br></code></pre></td></tr></table></figure>
-
 <p>这里面的结构和层数也是alexnet里面的，基本上照抄吧。</p>
-<p><img src="image-20231125213053363.png" srcset="/img/loading.gif" lazyload alt="image-20231125213053363"></p>
+<figure>
+<img src="image-20231125213053363.png" srcset="/img/loading.gif" lazyload alt="image-20231125213053363">
+<figcaption aria-hidden="true">image-20231125213053363</figcaption>
+</figure>
 <p>速度提了一些，但是准确率也下去了，基本和alexnet差不多。</p>
 <p>听说在更复杂的数据集上有比较好的效果。</p>
-<h2 id="3-5-googlenet（含并行连结的网络）"><a href="#3-5-googlenet（含并行连结的网络）" class="headerlink" title="3.5 googlenet（含并行连结的网络）"></a>3.5 googlenet（含并行连结的网络）</h2><p>v1: 9个inception块,每个inception块用四条有不同超参数的卷积层和池化层来抽取不同的信息。</p>
+<h2 id="googlenet含并行连结的网络">3.5
+googlenet（含并行连结的网络）</h2>
+<p>v1:
+9个inception块,每个inception块用四条有不同超参数的卷积层和池化层来抽取不同的信息。</p>
 <p>v2:加入了batch normalization</p>
-<p>v3:修改了inception块，替换5×5到3×3 、替换5×5为两个1×7和7×1，替换3×3为1×3和3×1</p>
+<p>v3:修改了inception块，替换5×5到3×3
+、替换5×5为两个1×7和7×1，替换3×3为1×3和3×1</p>
 <p>v4:使用残差连接</p>
-<p>GoogLeNet一共使用9个Inception块和全局平均汇聚层的堆叠来生成其估计值。Inception块之间的最大汇聚层可降低维度。 第一个模块类似于AlexNet和LeNet，Inception块的组合从VGG继承，全局平均汇聚层避免了在最后使用全连接层。</p>
+<p>GoogLeNet一共使用9个Inception块和全局平均汇聚层的堆叠来生成其估计值。Inception块之间的最大汇聚层可降低维度。
+第一个模块类似于AlexNet和LeNet，Inception块的组合从VGG继承，全局平均汇聚层避免了在最后使用全连接层。</p>
 <p>结构更深也更加并行：</p>
-<p><img src="inception.svg" srcset="/img/loading.gif" lazyload alt="inception"></p>
-<p><img src="inception-full.svg" srcset="/img/loading.gif" lazyload alt="inception-full"></p>
+<figure>
+<img src="inception.svg" srcset="/img/loading.gif" lazyload alt="inception">
+<figcaption aria-hidden="true">inception</figcaption>
+</figure>
+<figure>
+<img src="inception-full.svg" srcset="/img/loading.gif" lazyload alt="inception-full">
+<figcaption aria-hidden="true">inception-full</figcaption>
+</figure>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Inception</span>(nn.Module):<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self, in_channels,c1,c2,c3,c4,**kwargs</span>):<br>        <span class="hljs-built_in">super</span>(Inception,self).__init__(**kwargs)<br><br>        <span class="hljs-comment"># 线路1  单个1×1卷积层</span><br>        self.p1_1 = nn.Conv2d(in_channels,c1,kernel_size=<span class="hljs-number">1</span>)<br>        <span class="hljs-comment"># 线路2 1×1后接5×5</span><br>        self.p2_1 = nn.Conv2d(in_channels,c2[<span class="hljs-number">0</span>],kernel_size=<span class="hljs-number">1</span>)<br>        self.p2_2 = nn.Conv2d(c2[<span class="hljs-number">0</span>],c2[<span class="hljs-number">1</span>],kernel_size=<span class="hljs-number">3</span>,padding=<span class="hljs-number">1</span>)<br>        <span class="hljs-comment"># 线路三 1×1后 接 3×3</span><br>        self.p3_1 = nn.Conv2d(in_channels,c3[<span class="hljs-number">0</span>],kernel_size=<span class="hljs-number">1</span>)<br>        self.p3_2 = nn.Conv2d(c3[<span class="hljs-number">0</span>],c3[<span class="hljs-number">1</span>],kernel_size=<span class="hljs-number">5</span>,padding=<span class="hljs-number">2</span>)<br>        <span class="hljs-comment"># 线路四 3×3最大池化后接1×1卷积层</span><br>        self.p4_1 = nn.MaxPool2d(kernel_size=<span class="hljs-number">3</span>,stride=<span class="hljs-number">1</span>,padding=<span class="hljs-number">1</span>)<br>        self.p4_2 = nn.Conv2d(in_channels,c4,kernel_size=<span class="hljs-number">1</span>)<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">forward</span>(<span class="hljs-params">self,x</span>):<br>        p1 = F.relu(self.p1_1(x))<br>        p2 = F.relu(self.p2_2(F.relu(self.p2_1(x))))<br>        p3 = F.relu(self.p3_2(F.relu(self.p3_1(x))))<br>        p4 = F.relu(self.p4_2(self.p4_1(x)))<br><br>        <span class="hljs-keyword">return</span> torch.cat((p1,p2,p3,p4),dim=<span class="hljs-number">1</span>)<br><br>    <br>b1 = nn.Sequential(nn.Conv2d(<span class="hljs-number">1</span>, <span class="hljs-number">64</span>, kernel_size=<span class="hljs-number">7</span>, stride=<span class="hljs-number">2</span>, padding=<span class="hljs-number">3</span>),<br>                   nn.ReLU(),<br>                   nn.MaxPool2d(kernel_size=<span class="hljs-number">3</span>, stride=<span class="hljs-number">2</span>, padding=<span class="hljs-number">1</span>))<br>b2 = nn.Sequential(nn.Conv2d(<span class="hljs-number">64</span>, <span class="hljs-number">64</span>, kernel_size=<span class="hljs-number">1</span>),<br>                   nn.ReLU(),<br>                   nn.Conv2d(<span class="hljs-number">64</span>, <span class="hljs-number">192</span>, kernel_size=<span class="hljs-number">3</span>, padding=<span class="hljs-number">1</span>),<br>                   nn.ReLU(),<br>                   nn.MaxPool2d(kernel_size=<span class="hljs-number">3</span>, stride=<span class="hljs-number">2</span>, padding=<span class="hljs-number">1</span>))<br>b3 = nn.Sequential(Inception(<span class="hljs-number">192</span>, <span class="hljs-number">64</span>, (<span class="hljs-number">96</span>, <span class="hljs-number">128</span>), (<span class="hljs-number">16</span>, <span class="hljs-number">32</span>), <span class="hljs-number">32</span>),<br>                   Inception(<span class="hljs-number">256</span>, <span class="hljs-number">128</span>, (<span class="hljs-number">128</span>, <span class="hljs-number">192</span>), (<span class="hljs-number">32</span>, <span class="hljs-number">96</span>), <span class="hljs-number">64</span>),<br>                   nn.MaxPool2d(kernel_size=<span class="hljs-number">3</span>, stride=<span class="hljs-number">2</span>, padding=<span class="hljs-number">1</span>))<br>b4 = nn.Sequential(Inception(<span class="hljs-number">480</span>, <span class="hljs-number">192</span>, (<span class="hljs-number">96</span>, <span class="hljs-number">208</span>), (<span class="hljs-number">16</span>, <span class="hljs-number">48</span>), <span class="hljs-number">64</span>),<br>                   Inception(<span class="hljs-number">512</span>, <span class="hljs-number">160</span>, (<span class="hljs-number">112</span>, <span class="hljs-number">224</span>), (<span class="hljs-number">24</span>, <span class="hljs-number">64</span>), <span class="hljs-number">64</span>),<br>                   Inception(<span class="hljs-number">512</span>, <span class="hljs-number">128</span>, (<span class="hljs-number">128</span>, <span class="hljs-number">256</span>), (<span class="hljs-number">24</span>, <span class="hljs-number">64</span>), <span class="hljs-number">64</span>),<br>                   Inception(<span class="hljs-number">512</span>, <span class="hljs-number">112</span>, (<span class="hljs-number">144</span>, <span class="hljs-number">288</span>), (<span class="hljs-number">32</span>, <span class="hljs-number">64</span>), <span class="hljs-number">64</span>),<br>                   Inception(<span class="hljs-number">528</span>, <span class="hljs-number">256</span>, (<span class="hljs-number">160</span>, <span class="hljs-number">320</span>), (<span class="hljs-number">32</span>, <span class="hljs-number">128</span>), <span class="hljs-number">128</span>),<br>                   nn.MaxPool2d(kernel_size=<span class="hljs-number">3</span>, stride=<span class="hljs-number">2</span>, padding=<span class="hljs-number">1</span>))<br>b5 = nn.Sequential(Inception(<span class="hljs-number">832</span>, <span class="hljs-number">256</span>, (<span class="hljs-number">160</span>, <span class="hljs-number">320</span>), (<span class="hljs-number">32</span>, <span class="hljs-number">128</span>), <span class="hljs-number">128</span>),<br>                   Inception(<span class="hljs-number">832</span>, <span class="hljs-number">384</span>, (<span class="hljs-number">192</span>, <span class="hljs-number">384</span>), (<span class="hljs-number">48</span>, <span class="hljs-number">128</span>), <span class="hljs-number">128</span>),<br>                   nn.AdaptiveAvgPool2d((<span class="hljs-number">1</span>,<span class="hljs-number">1</span>)),<br>                   nn.Flatten())<br><br>net = nn.Sequential(b1, b2, b3, b4, b5, nn.Linear(<span class="hljs-number">1024</span>, <span class="hljs-number">10</span>))<br></code></pre></td></tr></table></figure>
-
 <p>结果：</p>
-<p><img src="image-20231126113016326.png" srcset="/img/loading.gif" lazyload alt="image-20231126113016326"></p>
+<figure>
+<img src="image-20231126113016326.png" srcset="/img/loading.gif" lazyload alt="image-20231126113016326">
+<figcaption aria-hidden="true">image-20231126113016326</figcaption>
+</figure>
 <p>最后可能出现了一点点过拟合了，总体的话正确率和alexnet和vgg差不多，速度是比他们要快一点，因为使用了很多结构来代替原来堆积的块。过拟合可能数据集还是太简单导致的，可能。</p>
-<h2 id="3-6-resnet（残差网络）"><a href="#3-6-resnet（残差网络）" class="headerlink" title="3.6 resnet（残差网络）"></a>3.6 resnet（残差网络）</h2><p>我觉得残差没有差啊，应该翻译成相加网络感觉更通俗一点。</p>
-<p>和vgg有点像，和google也有点像，GoogLeNet在后面接了4个由Inception块组成的模块。 ResNet则使用4个由残差块组成的模块。</p>
+<h2 id="resnet残差网络">3.6 resnet（残差网络）</h2>
+<p>我觉得残差没有差啊，应该翻译成相加网络感觉更通俗一点。</p>
+<p>和vgg有点像，和google也有点像，GoogLeNet在后面接了4个由Inception块组成的模块。
+ResNet则使用4个由残差块组成的模块。</p>
 <p>然后后面都是用的nin的全局池化代替全连接层。</p>
-<p><img src="resnet-block.svg" srcset="/img/loading.gif" lazyload alt="resnet-block"></p>
-<p><img src="resnet18.svg" srcset="/img/loading.gif" lazyload alt="resnet18"></p>
+<figure>
+<img src="resnet-block.svg" srcset="/img/loading.gif" lazyload alt="resnet-block">
+<figcaption aria-hidden="true">resnet-block</figcaption>
+</figure>
+<figure>
+<img src="resnet18.svg" srcset="/img/loading.gif" lazyload alt="resnet18">
+<figcaption aria-hidden="true">resnet18</figcaption>
+</figure>
 <p>速度很快啊，而且训练集居然达到了99，哈哈哈，测试集没上来，可能是欠拟合了。</p>
-<p><img src="image-20231126171857044.png" srcset="/img/loading.gif" lazyload alt="image-20231126171857044"></p>
+<figure>
+<img src="image-20231126171857044.png" srcset="/img/loading.gif" lazyload alt="image-20231126171857044">
+<figcaption aria-hidden="true">image-20231126171857044</figcaption>
+</figure>
 <p>总的来说吧，所有后面的网络都和alexnet有点关系，可以说alexnet是这次人工智能潮流的兴起点，然后后面改进的都各有千秋，从串联相加的vgg，到考虑使用1×1池化和全局池化来代替全连接层的nin，再到并行网络googlenet，最后到考虑历史效果，使得网络能更深且不产生梯度消失并且效果很不错的resnet。现在主流的应该就是googlenet-v3和resnet-34或resnet-50了，可以看开始的图，综合来看这两三个速度快，准确率高。</p>
 
                 

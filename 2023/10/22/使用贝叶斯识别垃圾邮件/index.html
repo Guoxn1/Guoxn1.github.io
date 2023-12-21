@@ -16,12 +16,12 @@
   <meta name="author" content="Guoxin">
   <meta name="keywords" content="">
   
-    <meta name="description" content="1 简介垃圾邮件或者垃圾短信通常让网络运营商和用户十分头疼，尤其是如今大数据时代，每个人都被分析分类的很准确，而且个人信息比如邮箱，电话泄露的机会也越来越大，广告商更愿意在此做手脚，达到广告定点投放的任务。并且由于这些广告和自身的信息又十分紧密，或者常常携带一些“正常消息”来蒙混过关，因此，能够对垃圾邮件做分类并尽可能地隔离这些邮件，显得越来越重要。 本文将用到朴素贝叶斯的方法，使用python，">
+    <meta name="description" content="1 简介 垃圾邮件或者垃圾短信通常让网络运营商和用户十分头疼，尤其是如今大数据时代，每个人都被分析分类的很准确，而且个人信息比如邮箱，电话泄露的机会也越来越大，广告商更愿意在此做手脚，达到广告定点投放的任务。并且由于这些广告和自身的信息又十分紧密，或者常常携带一些“正常消息”来蒙混过关，因此，能够对垃圾邮件做分类并尽可能地隔离这些邮件，显得越来越重要。 本文将用到朴素贝叶斯的方法，使用pyth">
 <meta property="og:type" content="article">
 <meta property="og:title" content="使用贝叶斯识别垃圾邮件分类">
 <meta property="og:url" content="http://example.com/2023/10/22/%E4%BD%BF%E7%94%A8%E8%B4%9D%E5%8F%B6%E6%96%AF%E8%AF%86%E5%88%AB%E5%9E%83%E5%9C%BE%E9%82%AE%E4%BB%B6/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="1 简介垃圾邮件或者垃圾短信通常让网络运营商和用户十分头疼，尤其是如今大数据时代，每个人都被分析分类的很准确，而且个人信息比如邮箱，电话泄露的机会也越来越大，广告商更愿意在此做手脚，达到广告定点投放的任务。并且由于这些广告和自身的信息又十分紧密，或者常常携带一些“正常消息”来蒙混过关，因此，能够对垃圾邮件做分类并尽可能地隔离这些邮件，显得越来越重要。 本文将用到朴素贝叶斯的方法，使用python，">
+<meta property="og:description" content="1 简介 垃圾邮件或者垃圾短信通常让网络运营商和用户十分头疼，尤其是如今大数据时代，每个人都被分析分类的很准确，而且个人信息比如邮箱，电话泄露的机会也越来越大，广告商更愿意在此做手脚，达到广告定点投放的任务。并且由于这些广告和自身的信息又十分紧密，或者常常携带一些“正常消息”来蒙混过关，因此，能够对垃圾邮件做分类并尽可能地隔离这些邮件，显得越来越重要。 本文将用到朴素贝叶斯的方法，使用pyth">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://example.com/2023/10/22/%E4%BD%BF%E7%94%A8%E8%B4%9D%E5%8F%B6%E6%96%AF%E8%AF%86%E5%88%AB%E5%9E%83%E5%9C%BE%E9%82%AE%E4%BB%B6/image-20231026214256839.png">
 <meta property="article:published_time" content="2023-10-22T12:05:25.000Z">
@@ -87,7 +87,119 @@
 
 
   
-<meta name="generator" content="Hexo 6.3.0"></head>
+<meta name="generator" content="Hexo 6.3.0"><style>mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+.MathJax path {
+  stroke-width: 3;
+}
+
+mjx-container[display="true"] {
+  overflow: auto hidden;
+}
+
+mjx-container[display="true"] + br {
+  display: none;
+}
+</style></head>
 
 
 <body>
@@ -225,7 +337,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          5k 字
+          4.7k 字
         
       </span>
     
@@ -236,7 +348,7 @@
         
         
         
-          42 分钟
+          40 分钟
         
       </span>
     
@@ -278,48 +390,47 @@
             
               <div class="markdown-body">
                 
-                <h1 id="1-简介"><a href="#1-简介" class="headerlink" title="1 简介"></a>1 简介</h1><p>垃圾邮件或者垃圾短信通常让网络运营商和用户十分头疼，尤其是如今大数据时代，每个人都被分析分类的很准确，而且个人信息比如邮箱，电话泄露的机会也越来越大，广告商更愿意在此做手脚，达到广告定点投放的任务。并且由于这些广告和自身的信息又十分紧密，或者常常携带一些“正常消息”来蒙混过关，因此，能够对垃圾邮件做分类并尽可能地隔离这些邮件，显得越来越重要。</p>
+                <h1 id="简介">1 简介</h1>
+<p>垃圾邮件或者垃圾短信通常让网络运营商和用户十分头疼，尤其是如今大数据时代，每个人都被分析分类的很准确，而且个人信息比如邮箱，电话泄露的机会也越来越大，广告商更愿意在此做手脚，达到广告定点投放的任务。并且由于这些广告和自身的信息又十分紧密，或者常常携带一些“正常消息”来蒙混过关，因此，能够对垃圾邮件做分类并尽可能地隔离这些邮件，显得越来越重要。</p>
 <p>本文将用到朴素贝叶斯的方法，使用python，实现对英文垃圾邮件的分类。</p>
-<p>所有代码及数据集放在我的仓库中，<a target="_blank" rel="noopener" href="https://github.com/Guoxn1/ai%EF%BC%8C%E6%A0%B9%E6%8D%AE%E6%96%87%E7%AB%A0%E7%B1%BB%E5%88%AB%E5%92%8C%E5%90%8D%E7%A7%B0%E5%B0%B1%E5%8F%AF%E4%BB%A5%E6%89%BE%E5%88%B0%E4%BA%86%E3%80%82%E5%A6%82%E6%9E%9C%E7%BB%99%E5%88%B0%E6%82%A8%E5%B8%AE%E5%8A%A9%EF%BC%8C%E8%AF%B7%E7%BB%99%E6%88%91%E7%9A%84%E4%BB%93%E5%BA%93%E4%B8%80%E4%B8%AAstar%EF%BC%8C%E8%BF%99%E5%B0%86%E6%98%AF%E6%88%91%E6%8C%81%E7%BB%AD%E5%88%9B%E4%BD%9C%E7%9A%84%E5%8A%A8%E5%8A%9B%E3%80%82">https://github.com/Guoxn1/ai，根据文章类别和名称就可以找到了。如果给到您帮助，请给我的仓库一个star，这将是我持续创作的动力。</a></p>
+<p>所有代码及数据集放在我的仓库中，https://github.com/Guoxn1/ai，根据文章类别和名称就可以找到了。如果给到您帮助，请给我的仓库一个star，这将是我持续创作的动力。</p>
 <p>和原来不一样的地方：</p>
 <p>1.数据在data目录下，下面有三个文件夹，其中ham存储正常邮件，spam存储垃圾邮件，test是测试用例。其中test和前面两个文件夹内容不重复（已做处理）。</p>
 <p>2.这节还会用到sklearn的英文停用词，以此来提高准确率。</p>
 <p>3.计算词频的时候，原作者用的是计算正常邮件中的词在正常邮件中出现的词频和垃圾邮件中的词在正常邮件中出现的词频。本文是正常邮件中的词在所有邮件中出现的词频和垃圾邮件中的词在所有邮件中出现的词频。好处就是宽容性更好，因为有了更大的词汇数，可以对“未知词”进行处理，缺点是可能导致很多词用到拉普拉斯平滑，从而降低准确率。</p>
-<h1 id="2-朴素贝叶斯分类原理"><a href="#2-朴素贝叶斯分类原理" class="headerlink" title="2 朴素贝叶斯分类原理"></a>2 朴素贝叶斯分类原理</h1><p>P(Y|X) &#x3D; (P(X|Y) * P(Y)) &#x2F; P(X)</p>
+<h1 id="朴素贝叶斯分类原理">2 朴素贝叶斯分类原理</h1>
+<p>P(Y|X) = (P(X|Y) * P(Y)) / P(X)</p>
 <p>通俗来说，判断一个邮件是不是垃圾邮件，就对其中每个词进行判断，看其在垃圾邮件和正常邮件的概率（词频），由于是朴素贝叶斯，直接相乘就行，最后看概率，谁大就是哪种情况。</p>
 <p>如何看一个词在垃圾邮件和正常邮件的概率呢，就需要用到贝叶斯公式。贝叶斯公式的左侧就表示一个词X在状态Y下的概率，右侧是Y状态下X出现的概率和Y出现的概率相乘再除以X出现的概率。</p>
 <p>举个例子：</p>
 <p>hello在正常邮件中出现的概率就是正常邮件中X的概率*正常邮件出现的概率。这里不再除以分母，因为不管是正常邮件还是垃圾邮件分母都一样，比较时可以不看分母。</p>
 <p>有了一个词的概率，就可以算整个文章所有词的概率，因为这里我们假设所有词出现是独立的，所以概率就是相乘状态，为了避免数值过小导致截断，改为log（概率），也就是概率相加，后面在代码中会体现。</p>
-<h1 id="3-数据预处理"><a href="#3-数据预处理" class="headerlink" title="3 数据预处理"></a>3 数据预处理</h1><h2 id="3-1-删除不想关的数据"><a href="#3-1-删除不想关的数据" class="headerlink" title="3.1 删除不想关的数据"></a>3.1 删除不想关的数据</h2><p>比如，停用词，标点，数字。</p>
-<h2 id="3-2-调整英文单词都是大写"><a href="#3-2-调整英文单词都是大写" class="headerlink" title="3.2 调整英文单词都是大写"></a>3.2 调整英文单词都是大写</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> os<br><span class="hljs-keyword">import</span> re<br><span class="hljs-keyword">from</span> sklearn.feature_extraction.text <span class="hljs-keyword">import</span> ENGLISH_STOP_WORDS<br><br><span class="hljs-comment"># 定义一个函数，对文件中的内容进行预处理，比如删除一些值</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">clear_content</span>(<span class="hljs-params">content</span>):<br>    <span class="hljs-comment"># 只保留英文字符</span><br>    filtered_content = re.sub(<span class="hljs-string">r&#x27;[^a-zA-Z\s]&#x27;</span>, <span class="hljs-string">&#x27;&#x27;</span>, content)<br>    filtered_content = filtered_content.lower()<br>    <span class="hljs-comment"># 根据换行，将其分成一个一个列表  或者把其中换行 制表符 改为空格</span><br>    filtered_content = filtered_content.replace(<span class="hljs-string">&quot;\n&quot;</span>,<span class="hljs-string">&quot; &quot;</span>)<br>    filtered_content = filtered_content.replace(<span class="hljs-string">&quot;\t&quot;</span>,<span class="hljs-string">&quot; &quot;</span>)<br>    <span class="hljs-comment"># 切分成单词</span><br>    filtered_content_list = filtered_content.split(<span class="hljs-string">&quot; &quot;</span>)<br>    filtered_content_without_stopwords = [word <span class="hljs-keyword">for</span> word <span class="hljs-keyword">in</span> filtered_content_list <span class="hljs-keyword">if</span> word <span class="hljs-keyword">not</span> <span class="hljs-keyword">in</span> <span class="hljs-built_in">list</span>(ENGLISH_STOP_WORDS)]<br>    filtered_content_without_stopwords = [word <span class="hljs-keyword">for</span> word <span class="hljs-keyword">in</span> filtered_content_without_stopwords <span class="hljs-keyword">if</span> word.strip() != <span class="hljs-string">&quot;&quot;</span>]<br>    <span class="hljs-keyword">return</span> filtered_content_without_stopwords<br><br><br><span class="hljs-comment"># 定义一个函数，对输入的文件夹的文件进行遍历</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">preprocess</span>(<span class="hljs-params">folderpath</span>):<br>    folderpath = folderpath<br><br>    email_list = []<br>    <span class="hljs-keyword">for</span> filename <span class="hljs-keyword">in</span> os.listdir(folderpath):<br>        content = <span class="hljs-string">&quot;&quot;</span><br>        file_path = os.path.join(folderpath,filename)<br>        <span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(file_path,mode=<span class="hljs-string">&quot;r&quot;</span>,encoding=<span class="hljs-string">&quot;gbk&quot;</span>) <span class="hljs-keyword">as</span> f:<br>            content = f.read()<br>        content = clear_content(content)<br>        <br>        email_list.append(content)<br>    <span class="hljs-keyword">return</span> email_list<br><br><br></code></pre></td></tr></table></figure>
-
+<h1 id="数据预处理">3 数据预处理</h1>
+<h2 id="删除不想关的数据">3.1 删除不想关的数据</h2>
+<p>比如，停用词，标点，数字。</p>
+<h2 id="调整英文单词都是大写">3.2 调整英文单词都是大写</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> os<br><span class="hljs-keyword">import</span> re<br><span class="hljs-keyword">from</span> sklearn.feature_extraction.text <span class="hljs-keyword">import</span> ENGLISH_STOP_WORDS<br><br><span class="hljs-comment"># 定义一个函数，对文件中的内容进行预处理，比如删除一些值</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">clear_content</span>(<span class="hljs-params">content</span>):<br>    <span class="hljs-comment"># 只保留英文字符</span><br>    filtered_content = re.sub(<span class="hljs-string">r'[^a-zA-Z\s]'</span>, <span class="hljs-string">''</span>, content)<br>    filtered_content = filtered_content.lower()<br>    <span class="hljs-comment"># 根据换行，将其分成一个一个列表  或者把其中换行 制表符 改为空格</span><br>    filtered_content = filtered_content.replace(<span class="hljs-string">"\n"</span>,<span class="hljs-string">" "</span>)<br>    filtered_content = filtered_content.replace(<span class="hljs-string">"\t"</span>,<span class="hljs-string">" "</span>)<br>    <span class="hljs-comment"># 切分成单词</span><br>    filtered_content_list = filtered_content.split(<span class="hljs-string">" "</span>)<br>    filtered_content_without_stopwords = [word <span class="hljs-keyword">for</span> word <span class="hljs-keyword">in</span> filtered_content_list <span class="hljs-keyword">if</span> word <span class="hljs-keyword">not</span> <span class="hljs-keyword">in</span> <span class="hljs-built_in">list</span>(ENGLISH_STOP_WORDS)]<br>    filtered_content_without_stopwords = [word <span class="hljs-keyword">for</span> word <span class="hljs-keyword">in</span> filtered_content_without_stopwords <span class="hljs-keyword">if</span> word.strip() != <span class="hljs-string">""</span>]<br>    <span class="hljs-keyword">return</span> filtered_content_without_stopwords<br><br><br><span class="hljs-comment"># 定义一个函数，对输入的文件夹的文件进行遍历</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">preprocess</span>(<span class="hljs-params">folderpath</span>):<br>    folderpath = folderpath<br><br>    email_list = []<br>    <span class="hljs-keyword">for</span> filename <span class="hljs-keyword">in</span> os.listdir(folderpath):<br>        content = <span class="hljs-string">""</span><br>        file_path = os.path.join(folderpath,filename)<br>        <span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(file_path,mode=<span class="hljs-string">"r"</span>,encoding=<span class="hljs-string">"gbk"</span>) <span class="hljs-keyword">as</span> f:<br>            content = f.read()<br>        content = clear_content(content)<br>        <br>        email_list.append(content)<br>    <span class="hljs-keyword">return</span> email_list<br><br><br></code></pre></td></tr></table></figure>
 <p>获得所有email的单词的列表（二维的）。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python">ham_email_list = preprocess(<span class="hljs-string">&quot;data/ham&quot;</span>)<br>spam_email_list = preprocess(<span class="hljs-string">&quot;data/spam&quot;</span>)<br><span class="hljs-built_in">print</span>(spam_email_list)<br></code></pre></td></tr></table></figure>
-
-
-
-<h1 id="4-数据处理-构建词频字典"><a href="#4-数据处理-构建词频字典" class="headerlink" title="4 数据处理-构建词频字典"></a>4 数据处理-构建词频字典</h1><p>构建正常的：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python">ham_email_list = preprocess(<span class="hljs-string">"data/ham"</span>)<br>spam_email_list = preprocess(<span class="hljs-string">"data/spam"</span>)<br><span class="hljs-built_in">print</span>(spam_email_list)<br></code></pre></td></tr></table></figure>
+<h1 id="数据处理-构建词频字典">4 数据处理-构建词频字典</h1>
+<p>构建正常的：</p>
 <p>所有的邮件包括正常和垃圾邮件的单词，在正常邮件出现的次数。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">get_ham_dic</span>(<span class="hljs-params">ham_email_list,spam_email_list</span>):<br>    word_set = <span class="hljs-built_in">set</span>()<br><br>    <span class="hljs-comment"># 记录所有种类的单词，正常邮件和垃圾邮件种类的单词</span><br><br>    <span class="hljs-keyword">for</span> email <span class="hljs-keyword">in</span> ham_email_list:<br>        <span class="hljs-keyword">for</span> word <span class="hljs-keyword">in</span> email:<br>            word_set.add(word)<br>    <span class="hljs-keyword">for</span> email <span class="hljs-keyword">in</span> spam_email_list:<br>        <span class="hljs-keyword">for</span> word <span class="hljs-keyword">in</span> email:<br>            word_set.add(word)<br>    <span class="hljs-comment"># 计算每个词在正常邮件出现的次数</span><br><br>    word_dict = &#123;&#125;<br><br>    <span class="hljs-keyword">for</span> word <span class="hljs-keyword">in</span> word_set:<br>        word_dict[word] = <span class="hljs-number">0</span><br><br>        <span class="hljs-keyword">for</span> email <span class="hljs-keyword">in</span> ham_email_list:<br>            <span class="hljs-keyword">for</span> word1 <span class="hljs-keyword">in</span> email:<br>                <span class="hljs-keyword">if</span> (word==word1):<br>                    <br>                    word_dict[word]+=<span class="hljs-number">1</span><br>                    <span class="hljs-keyword">break</span><br>    <span class="hljs-keyword">return</span> word_dict<br><br>ham_w_dict = get_ham_dic(ham_email_list,spam_email_list)<br><span class="hljs-built_in">print</span>(ham_w_dict)<br><br><br></code></pre></td></tr></table></figure>
-
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">get_ham_dic</span>(<span class="hljs-params">ham_email_list,spam_email_list</span>):<br>    word_set = <span class="hljs-built_in">set</span>()<br><br>    <span class="hljs-comment"># 记录所有种类的单词，正常邮件和垃圾邮件种类的单词</span><br><br>    <span class="hljs-keyword">for</span> email <span class="hljs-keyword">in</span> ham_email_list:<br>        <span class="hljs-keyword">for</span> word <span class="hljs-keyword">in</span> email:<br>            word_set.add(word)<br>    <span class="hljs-keyword">for</span> email <span class="hljs-keyword">in</span> spam_email_list:<br>        <span class="hljs-keyword">for</span> word <span class="hljs-keyword">in</span> email:<br>            word_set.add(word)<br>    <span class="hljs-comment"># 计算每个词在正常邮件出现的次数</span><br><br>    word_dict = {}<br><br>    <span class="hljs-keyword">for</span> word <span class="hljs-keyword">in</span> word_set:<br>        word_dict[word] = <span class="hljs-number">0</span><br><br>        <span class="hljs-keyword">for</span> email <span class="hljs-keyword">in</span> ham_email_list:<br>            <span class="hljs-keyword">for</span> word1 <span class="hljs-keyword">in</span> email:<br>                <span class="hljs-keyword">if</span> (word==word1):<br>                    <br>                    word_dict[word]+=<span class="hljs-number">1</span><br>                    <span class="hljs-keyword">break</span><br>    <span class="hljs-keyword">return</span> word_dict<br><br>ham_w_dict = get_ham_dic(ham_email_list,spam_email_list)<br><span class="hljs-built_in">print</span>(ham_w_dict)<br><br><br></code></pre></td></tr></table></figure>
 <p>字典中每个key代表所有所有邮件的一个词，value代表它在正常邮件出现的次数。</p>
 <p>所有的邮件包括正常和垃圾邮件的单词，在垃圾邮件出现的次数。</p>
 <p>构建垃圾邮件的：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">get_spam_dic</span>(<span class="hljs-params">ham_email_list,spam_email_list</span>):<br>    all_words = []<br>    word_set = <span class="hljs-built_in">set</span>()<br>    <span class="hljs-comment"># 记录所有种类的单词，正常邮件和垃圾邮件种类的单词</span><br>    <span class="hljs-keyword">for</span> email <span class="hljs-keyword">in</span> ham_email_list:<br>        <span class="hljs-keyword">for</span> word <span class="hljs-keyword">in</span> email:<br>            word_set.add(word)<br>    <span class="hljs-keyword">for</span> email <span class="hljs-keyword">in</span> spam_email_list:<br>        <span class="hljs-keyword">for</span> word <span class="hljs-keyword">in</span> email:<br>            word_set.add(word)<br>    <br>    <span class="hljs-comment"># 计算每个词在垃圾邮件出现的次数</span><br><br>    word_dict = &#123;&#125;<br><br>    <span class="hljs-keyword">for</span> word <span class="hljs-keyword">in</span> word_set:<br>        word_dict[word] = <span class="hljs-number">0</span><br><br>        <span class="hljs-keyword">for</span> email <span class="hljs-keyword">in</span> spam_email_list:<br>            <span class="hljs-keyword">for</span> word1 <span class="hljs-keyword">in</span> email:<br>                <span class="hljs-keyword">if</span> (word==word1):<br>                    <br>                    word_dict[word]+=<span class="hljs-number">1</span><br>                    <span class="hljs-keyword">break</span><br>    <span class="hljs-keyword">return</span> word_dict<br><br>spam_w_dict = get_spam_dic(ham_email_list,spam_email_list)<br><span class="hljs-built_in">print</span>(spam_w_dict)<br><br><br></code></pre></td></tr></table></figure>
-
-<p> 字典中每个key代表所有所有邮件的一个词，value代表它在垃圾邮件出现的次数。</p>
-<h1 id="5-数据处理-计算概率"><a href="#5-数据处理-计算概率" class="headerlink" title="5 数据处理-计算概率"></a>5 数据处理-计算概率</h1><p>计算一个文档在正常邮件中的概率。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 计算在正常邮件中出现的概率</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">get_ham_rate</span>(<span class="hljs-params">filename,ham_w_dict</span>):<br>    <span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(filename,mode=<span class="hljs-string">&quot;r&quot;</span>) <span class="hljs-keyword">as</span> f:<br>        content = f.read()<br>        content = clear_content(content)<br>    test_set = <span class="hljs-built_in">set</span>()<br>    <span class="hljs-keyword">for</span> word <span class="hljs-keyword">in</span> content:<br>        test_set.add(word)<br>    <br>    ham_email_num = <span class="hljs-built_in">len</span>(os.listdir(<span class="hljs-string">f&quot;data/ham&quot;</span>))<br>    <span class="hljs-comment"># 记录每个词的数目</span><br>    ham_num = []<br>    <span class="hljs-keyword">for</span> x <span class="hljs-keyword">in</span> test_set:<br>        <span class="hljs-keyword">for</span> w <span class="hljs-keyword">in</span> ham_w_dict:<br>            <span class="hljs-keyword">if</span> x==w:<br>                ham_num.append(ham_w_dict[w])<br>    <br>    <span class="hljs-comment"># 拉普拉斯平滑</span><br>    laplasi = <span class="hljs-number">1</span><br>    <span class="hljs-comment"># 这里采用了加法，因为乘法会过小，相当于用到了log，后面会有体现</span><br>    <span class="hljs-keyword">for</span> num <span class="hljs-keyword">in</span> ham_num:<br>        laplasi += num<br>    ham_rate = laplasi/(ham_email_num+<span class="hljs-number">2</span>)<br>    <span class="hljs-keyword">return</span> ham_rate<br> <br><br><br><br></code></pre></td></tr></table></figure>
-
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">get_spam_dic</span>(<span class="hljs-params">ham_email_list,spam_email_list</span>):<br>    all_words = []<br>    word_set = <span class="hljs-built_in">set</span>()<br>    <span class="hljs-comment"># 记录所有种类的单词，正常邮件和垃圾邮件种类的单词</span><br>    <span class="hljs-keyword">for</span> email <span class="hljs-keyword">in</span> ham_email_list:<br>        <span class="hljs-keyword">for</span> word <span class="hljs-keyword">in</span> email:<br>            word_set.add(word)<br>    <span class="hljs-keyword">for</span> email <span class="hljs-keyword">in</span> spam_email_list:<br>        <span class="hljs-keyword">for</span> word <span class="hljs-keyword">in</span> email:<br>            word_set.add(word)<br>    <br>    <span class="hljs-comment"># 计算每个词在垃圾邮件出现的次数</span><br><br>    word_dict = {}<br><br>    <span class="hljs-keyword">for</span> word <span class="hljs-keyword">in</span> word_set:<br>        word_dict[word] = <span class="hljs-number">0</span><br><br>        <span class="hljs-keyword">for</span> email <span class="hljs-keyword">in</span> spam_email_list:<br>            <span class="hljs-keyword">for</span> word1 <span class="hljs-keyword">in</span> email:<br>                <span class="hljs-keyword">if</span> (word==word1):<br>                    <br>                    word_dict[word]+=<span class="hljs-number">1</span><br>                    <span class="hljs-keyword">break</span><br>    <span class="hljs-keyword">return</span> word_dict<br><br>spam_w_dict = get_spam_dic(ham_email_list,spam_email_list)<br><span class="hljs-built_in">print</span>(spam_w_dict)<br><br><br></code></pre></td></tr></table></figure>
+<p>字典中每个key代表所有所有邮件的一个词，value代表它在垃圾邮件出现的次数。</p>
+<h1 id="数据处理-计算概率">5 数据处理-计算概率</h1>
+<p>计算一个文档在正常邮件中的概率。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 计算在正常邮件中出现的概率</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">get_ham_rate</span>(<span class="hljs-params">filename,ham_w_dict</span>):<br>    <span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(filename,mode=<span class="hljs-string">"r"</span>) <span class="hljs-keyword">as</span> f:<br>        content = f.read()<br>        content = clear_content(content)<br>    test_set = <span class="hljs-built_in">set</span>()<br>    <span class="hljs-keyword">for</span> word <span class="hljs-keyword">in</span> content:<br>        test_set.add(word)<br>    <br>    ham_email_num = <span class="hljs-built_in">len</span>(os.listdir(<span class="hljs-string">f"data/ham"</span>))<br>    <span class="hljs-comment"># 记录每个词的数目</span><br>    ham_num = []<br>    <span class="hljs-keyword">for</span> x <span class="hljs-keyword">in</span> test_set:<br>        <span class="hljs-keyword">for</span> w <span class="hljs-keyword">in</span> ham_w_dict:<br>            <span class="hljs-keyword">if</span> x==w:<br>                ham_num.append(ham_w_dict[w])<br>    <br>    <span class="hljs-comment"># 拉普拉斯平滑</span><br>    laplasi = <span class="hljs-number">1</span><br>    <span class="hljs-comment"># 这里采用了加法，因为乘法会过小，相当于用到了log，后面会有体现</span><br>    <span class="hljs-keyword">for</span> num <span class="hljs-keyword">in</span> ham_num:<br>        laplasi += num<br>    ham_rate = laplasi/(ham_email_num+<span class="hljs-number">2</span>)<br>    <span class="hljs-keyword">return</span> ham_rate<br> <br><br><br><br></code></pre></td></tr></table></figure>
 <p>计算一个文档在垃圾邮件中的概率。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 计算在垃圾邮件中出现的概率</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">get_spam_rate</span>(<span class="hljs-params">filename,spam_w_dict</span>):<br>    <span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(filename,mode=<span class="hljs-string">&quot;r&quot;</span>) <span class="hljs-keyword">as</span> f:<br>        content = f.read()<br>        content = clear_content(content)<br>    test_set = <span class="hljs-built_in">set</span>()<br>    <span class="hljs-keyword">for</span> word <span class="hljs-keyword">in</span> content:<br>        test_set.add(word)<br>    <br>    spam_email_num = <span class="hljs-built_in">len</span>(os.listdir(<span class="hljs-string">f&quot;data/spam&quot;</span>))<br>    <span class="hljs-comment"># 记录每个词的数目</span><br>    spam_num = []<br>    <span class="hljs-keyword">for</span> x <span class="hljs-keyword">in</span> test_set:<br>        <span class="hljs-keyword">for</span> w <span class="hljs-keyword">in</span> spam_w_dict:<br>            <span class="hljs-keyword">if</span> x==w:<br>                spam_num.append(spam_w_dict[w])<br>    <br>    <span class="hljs-comment"># 拉普拉斯平滑</span><br>    laplasi = <span class="hljs-number">1</span><br>    <span class="hljs-comment"># 这里采用了加法，因为乘法会过小，相当于用到了log，后面会有体现</span><br>    <span class="hljs-keyword">for</span> num <span class="hljs-keyword">in</span> spam_num:<br>        laplasi += num<br>    spam_rate = laplasi/(spam_email_num+<span class="hljs-number">2</span>)<br>    <span class="hljs-keyword">return</span> spam_rate<br> <br>    <br><br></code></pre></td></tr></table></figure>
-
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs python">~~~<br><br>~~~python<br><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np<br><span class="hljs-keyword">def</span> <span class="hljs-title function_">email_divide</span>(<span class="hljs-params">folderpath</span>):<br><br>    <span class="hljs-keyword">for</span> filename <span class="hljs-keyword">in</span> os.listdir(folderpath):<br>        file_path = os.path.join(folderpath,filename)<br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;<span class="hljs-subst">&#123;file_path&#125;</span>&quot;</span>)<br>        ham = get_ham_rate(file_path,ham_w_dict)+ np.log(<span class="hljs-number">1</span> / <span class="hljs-number">2</span>)<br>        spam = get_spam_rate(file_path,spam_w_dict)+ np.log(<span class="hljs-number">1</span> / <span class="hljs-number">2</span>)<br>        <span class="hljs-keyword">if</span> spam &gt; ham:<br>            <span class="hljs-built_in">print</span>(<span class="hljs-string">&#x27;p1&gt;p2，所以是垃圾邮件.&#x27;</span>)<br>        <span class="hljs-keyword">else</span>:<br>            <span class="hljs-built_in">print</span>(<span class="hljs-string">&#x27;p1&lt;p2，所以是正常邮件.&#x27;</span>)<br>email_divide(<span class="hljs-string">&quot;data/test&quot;</span>)<br></code></pre></td></tr></table></figure>
-
-
-
-<p><img src="image-20231026214256839.png" srcset="/img/loading.gif" lazyload alt="image-20231026214256839"></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 计算在垃圾邮件中出现的概率</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">get_spam_rate</span>(<span class="hljs-params">filename,spam_w_dict</span>):<br>    <span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(filename,mode=<span class="hljs-string">"r"</span>) <span class="hljs-keyword">as</span> f:<br>        content = f.read()<br>        content = clear_content(content)<br>    test_set = <span class="hljs-built_in">set</span>()<br>    <span class="hljs-keyword">for</span> word <span class="hljs-keyword">in</span> content:<br>        test_set.add(word)<br>    <br>    spam_email_num = <span class="hljs-built_in">len</span>(os.listdir(<span class="hljs-string">f"data/spam"</span>))<br>    <span class="hljs-comment"># 记录每个词的数目</span><br>    spam_num = []<br>    <span class="hljs-keyword">for</span> x <span class="hljs-keyword">in</span> test_set:<br>        <span class="hljs-keyword">for</span> w <span class="hljs-keyword">in</span> spam_w_dict:<br>            <span class="hljs-keyword">if</span> x==w:<br>                spam_num.append(spam_w_dict[w])<br>    <br>    <span class="hljs-comment"># 拉普拉斯平滑</span><br>    laplasi = <span class="hljs-number">1</span><br>    <span class="hljs-comment"># 这里采用了加法，因为乘法会过小，相当于用到了log，后面会有体现</span><br>    <span class="hljs-keyword">for</span> num <span class="hljs-keyword">in</span> spam_num:<br>        laplasi += num<br>    spam_rate = laplasi/(spam_email_num+<span class="hljs-number">2</span>)<br>    <span class="hljs-keyword">return</span> spam_rate<br> <br>    <br><br></code></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs python">~~~<br><br>~~~python<br><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np<br><span class="hljs-keyword">def</span> <span class="hljs-title function_">email_divide</span>(<span class="hljs-params">folderpath</span>):<br><br>    <span class="hljs-keyword">for</span> filename <span class="hljs-keyword">in</span> os.listdir(folderpath):<br>        file_path = os.path.join(folderpath,filename)<br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">f"<span class="hljs-subst">{file_path}</span>"</span>)<br>        ham = get_ham_rate(file_path,ham_w_dict)+ np.log(<span class="hljs-number">1</span> / <span class="hljs-number">2</span>)<br>        spam = get_spam_rate(file_path,spam_w_dict)+ np.log(<span class="hljs-number">1</span> / <span class="hljs-number">2</span>)<br>        <span class="hljs-keyword">if</span> spam &gt; ham:<br>            <span class="hljs-built_in">print</span>(<span class="hljs-string">'p1&gt;p2，所以是垃圾邮件.'</span>)<br>        <span class="hljs-keyword">else</span>:<br>            <span class="hljs-built_in">print</span>(<span class="hljs-string">'p1&lt;p2，所以是正常邮件.'</span>)<br>email_divide(<span class="hljs-string">"data/test"</span>)<br></code></pre></td></tr></table></figure>
+<figure>
+<img src="image-20231026214256839.png" srcset="/img/loading.gif" lazyload alt="image-20231026214256839">
+<figcaption aria-hidden="true">image-20231026214256839</figcaption>
+</figure>
 <p>最后的结果还是较为准确的。</p>
 
                 

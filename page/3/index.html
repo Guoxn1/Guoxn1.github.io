@@ -71,7 +71,119 @@
 
 
   
-<meta name="generator" content="Hexo 6.3.0"></head>
+<meta name="generator" content="Hexo 6.3.0"><style>mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+.MathJax path {
+  stroke-width: 3;
+}
+
+mjx-container[display="true"] {
+  overflow: auto hidden;
+}
+
+mjx-container[display="true"] + br {
+  display: none;
+}
+</style></head>
 
 
 <body>
@@ -232,7 +344,7 @@
       
       <a class="index-excerpt index-excerpt__noimg" href="/2023/10/08/AAAI%E4%BC%9A%E8%AE%AE%E8%AE%BA%E6%96%87%E8%81%9A%E7%B1%BB%E5%88%86%E6%9E%90/" target="_blank">
         <div>
-          1 简介这次需要面对的会议数据和之前“sklearn基于降维聚类可视化”那一篇的原理几乎一样，但是数据格式略有不同。 原出处：https://gitlab.diantouedu.cn/QY/test1/tree/master/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E7%B3%BB%E7%BB%9F%E5%AE%9E%E6%88%98%E7%AC%AC%E4%B8
+          1 简介 这次需要面对的会议数据和之前“sklearn基于降维聚类可视化”那一篇的原理几乎一样，但是数据格式略有不同。 原出处：https://gitlab.diantouedu.cn/QY/test1/tree/master/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E7%B3%BB%E7%BB%9F%E5%AE%9E%E6%88%98%E7%AC%AC%E4
         </div>
       </a>
 
@@ -280,9 +392,9 @@
             
               <a href="/tags/python%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/">#python数据分析</a>
             
-              <a href="/tags/%E8%81%9A%E7%B1%BB/">#聚类</a>
-            
               <a href="/tags/%E9%99%8D%E7%BB%B4/">#降维</a>
+            
+              <a href="/tags/%E8%81%9A%E7%B1%BB/">#聚类</a>
             
               <a href="/tags/%E6%96%87%E6%9C%AC%E8%BD%AC%E5%90%91%E9%87%8F/">#文本转向量</a>
             
@@ -306,7 +418,7 @@
       
       <a class="index-excerpt index-excerpt__noimg" href="/2023/10/02/%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BASVM%E5%8E%9F%E7%90%86%E5%8F%8Asklearn%E5%AE%9E%E7%8E%B0/" target="_blank">
         <div>
-          1 SVM基本原理1.1 svm简介支持向量机是在深度学习流行起来之前效果最好的模型，据说流行的时候是05年左右。 基本原理是二分类线性分类器，但现在也可以解决多分类问题，非线性问题和回归问题。 说实话感觉在学完其它主流分类之后比如决策树、贝叶斯，再来学习svm会好一点。因为确实数学理论相对来说比较复杂。我这里也打算做一个简单的介绍，推理啥的就不搞了，主要说一些结论。 svm的全称是support
+          1 SVM基本原理 1.1 svm简介 支持向量机是在深度学习流行起来之前效果最好的模型，据说流行的时候是05年左右。 基本原理是二分类线性分类器，但现在也可以解决多分类问题，非线性问题和回归问题。 说实话感觉在学完其它主流分类之后比如决策树、贝叶斯，再来学习svm会好一点。因为确实数学理论相对来说比较复杂。我这里也打算做一个简单的介绍，推理啥的就不搞了，主要说一些结论。 svm的全称是
         </div>
       </a>
 
@@ -380,7 +492,7 @@
       
       <a class="index-excerpt index-excerpt__noimg" href="/2023/09/26/sklearn%E5%9F%BA%E4%BA%8E%E9%99%8D%E7%BB%B4%E8%81%9A%E7%B1%BB%E5%8F%AF%E8%A7%86%E5%8C%96/" target="_blank">
         <div>
-          1 简介我们对数据进行分析前，比如对数据进行分类、聚类之前，为了避免后续处理过程中维度爆炸，也为了过滤一些噪声数据，可视化数据，对数据进行适当降维是有必要的。常见的降维算法有：pca和t-sne，前者适用于线性多维度，后者适用于非线性的多维度。而且大多数情况来看，如果维度越高，线性程度越不明显，所以维度高的情况下还是用t-sne效果会好。 数据集和代码原出处：https://gitlab.dian
+          1 简介 我们对数据进行分析前，比如对数据进行分类、聚类之前，为了避免后续处理过程中维度爆炸，也为了过滤一些噪声数据，可视化数据，对数据进行适当降维是有必要的。常见的降维算法有：pca和t-sne，前者适用于线性多维度，后者适用于非线性的多维度。而且大多数情况来看，如果维度越高，线性程度越不明显，所以维度高的情况下还是用t-sne效果会好。 数据集和代码原出处：https://gitlab.d
         </div>
       </a>
 
@@ -428,9 +540,9 @@
             
               <a href="/tags/python%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/">#python数据分析</a>
             
-              <a href="/tags/%E8%81%9A%E7%B1%BB/">#聚类</a>
-            
               <a href="/tags/%E9%99%8D%E7%BB%B4/">#降维</a>
+            
+              <a href="/tags/%E8%81%9A%E7%B1%BB/">#聚类</a>
             
           </div>
         
@@ -452,7 +564,7 @@
       
       <a class="index-excerpt index-excerpt__noimg" href="/2023/09/24/%E7%88%B1%E5%B0%94%E5%85%B0%E6%9D%80%E8%8F%8C%E5%89%82%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/" target="_blank">
         <div>
-          1. 简介这次主要是对数据进行分析，主要是预处理阶段，会用到pandas,matplotlib等库。 所用的数据集是爱尔兰杀菌剂。出处：https://gitlab.diantouedu.cn/QY/test1。 除了本就有的内容，还有一些自己的思考和代码的更改、补充。 数据集和完整代码我放在这里，在我的仓库中也可以找到。链接：https://github.com/Guoxn1/ai。 这篇博客对
+          1. 简介 这次主要是对数据进行分析，主要是预处理阶段，会用到pandas,matplotlib等库。 所用的数据集是爱尔兰杀菌剂。出处：https://gitlab.diantouedu.cn/QY/test1。 除了本就有的内容，还有一些自己的思考和代码的更改、补充。 数据集和完整代码我放在这里，在我的仓库中也可以找到。链接：https://github.com/Guoxn1/ai。
         </div>
       </a>
 

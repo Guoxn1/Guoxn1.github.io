@@ -16,12 +16,12 @@
   <meta name="author" content="Guoxin">
   <meta name="keywords" content="">
   
-    <meta name="description" content="1 简介循环神经网络被广泛运用于自然语言处理，但是他们都各有各的优缺点。 2 rnn循环神经网络，鼻祖。 RNN是最基本的循环神经网络形式，它通过将当前的输入与上一个时间步的隐藏状态相结合，来产生输出和更新隐藏状态。然而，传统的RNN存在梯度消失和梯度爆炸等问题，导致长期依赖关系难以捕捉。 产生梯度消失和爆炸主要是由于序列共用隐藏层，反向传播导致出现连乘，且激活函数在偏离原点时取值较小，容易出现梯">
+    <meta name="description" content="1 简介 循环神经网络被广泛运用于自然语言处理，但是他们都各有各的优缺点。 2 rnn 循环神经网络，鼻祖。 RNN是最基本的循环神经网络形式，它通过将当前的输入与上一个时间步的隐藏状态相结合，来产生输出和更新隐藏状态。然而，传统的RNN存在梯度消失和梯度爆炸等问题，导致长期依赖关系难以捕捉。 产生梯度消失和爆炸主要是由于序列共用隐藏层，反向传播导致出现连乘，且激活函数在偏离原点时取值较">
 <meta property="og:type" content="article">
 <meta property="og:title" content="现代循环神经网络">
 <meta property="og:url" content="http://example.com/2023/12/04/%E7%8E%B0%E4%BB%A3%E5%BE%AA%E7%8E%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="1 简介循环神经网络被广泛运用于自然语言处理，但是他们都各有各的优缺点。 2 rnn循环神经网络，鼻祖。 RNN是最基本的循环神经网络形式，它通过将当前的输入与上一个时间步的隐藏状态相结合，来产生输出和更新隐藏状态。然而，传统的RNN存在梯度消失和梯度爆炸等问题，导致长期依赖关系难以捕捉。 产生梯度消失和爆炸主要是由于序列共用隐藏层，反向传播导致出现连乘，且激活函数在偏离原点时取值较小，容易出现梯">
+<meta property="og:description" content="1 简介 循环神经网络被广泛运用于自然语言处理，但是他们都各有各的优缺点。 2 rnn 循环神经网络，鼻祖。 RNN是最基本的循环神经网络形式，它通过将当前的输入与上一个时间步的隐藏状态相结合，来产生输出和更新隐藏状态。然而，传统的RNN存在梯度消失和梯度爆炸等问题，导致长期依赖关系难以捕捉。 产生梯度消失和爆炸主要是由于序列共用隐藏层，反向传播导致出现连乘，且激活函数在偏离原点时取值较">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://example.com/2023/12/04/%E7%8E%B0%E4%BB%A3%E5%BE%AA%E7%8E%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/image-20231206101425573.png">
 <meta property="og:image" content="http://example.com/2023/12/04/%E7%8E%B0%E4%BB%A3%E5%BE%AA%E7%8E%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/image-20231206102217785.png">
@@ -87,7 +87,119 @@
 
 
   
-<meta name="generator" content="Hexo 6.3.0"></head>
+<meta name="generator" content="Hexo 6.3.0"><style>mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+.MathJax path {
+  stroke-width: 3;
+}
+
+mjx-container[display="true"] {
+  overflow: auto hidden;
+}
+
+mjx-container[display="true"] + br {
+  display: none;
+}
+</style></head>
 
 
 <body>
@@ -236,7 +348,7 @@
         
         
         
-          16 分钟
+          17 分钟
         
       </span>
     
@@ -278,25 +390,35 @@
             
               <div class="markdown-body">
                 
-                <h1 id="1-简介"><a href="#1-简介" class="headerlink" title="1 简介"></a>1 简介</h1><p>循环神经网络被广泛运用于自然语言处理，但是他们都各有各的优缺点。</p>
-<h1 id="2-rnn"><a href="#2-rnn" class="headerlink" title="2 rnn"></a>2 rnn</h1><p>循环神经网络，鼻祖。</p>
+                <h1 id="简介">1 简介</h1>
+<p>循环神经网络被广泛运用于自然语言处理，但是他们都各有各的优缺点。</p>
+<h1 id="rnn">2 rnn</h1>
+<p>循环神经网络，鼻祖。</p>
 <p>RNN是最基本的循环神经网络形式，它通过将当前的输入与上一个时间步的隐藏状态相结合，来产生输出和更新隐藏状态。然而，传统的RNN存在梯度消失和梯度爆炸等问题，导致长期依赖关系难以捕捉。</p>
 <p>产生梯度消失和爆炸主要是由于序列共用隐藏层，反向传播导致出现连乘，且激活函数在偏离原点时取值较小，容易出现梯度消失。</p>
-<p><img src="image-20231206101425573.png" srcset="/img/loading.gif" lazyload alt="image-20231206101425573"></p>
+<figure>
+<img src="image-20231206101425573.png" srcset="/img/loading.gif" lazyload alt="image-20231206101425573">
+<figcaption aria-hidden="true">image-20231206101425573</figcaption>
+</figure>
 <p>贴一个实现的代码：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># rnn函数定义了如何在一个时间步内计算隐状态和输出</span><br><span class="hljs-comment"># 前向传播函数</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">rnn</span>(<span class="hljs-params">inputs,state,params</span>):<br>    W_xh,W_hh,b_h,W_hq,b_q = params<br>    H, = state<br>    <span class="hljs-comment"># inputs的形状：(时间步数量，批量大小，词表大小)</span><br>    outputs = []<br><br>    <span class="hljs-comment"># 对时间序列进行遍历</span><br>    <span class="hljs-keyword">for</span> X <span class="hljs-keyword">in</span> inputs:<br>        H = torch.tanh(torch.mm(X,W_xh)+torch.mm(H,W_hh)+b_h)<br>        Y = torch.mm(H,W_hq)+b_q<br>        outputs.append(Y)<br>    <span class="hljs-comment"># 这里要保存一下H，后面要用到</span><br>    <span class="hljs-built_in">print</span>(Y.shape)<br>    <span class="hljs-keyword">return</span> torch.cat(outputs,dim=<span class="hljs-number">0</span>),(H,)<br></code></pre></td></tr></table></figure>
-
 <p>对上面情形的描述，相当于时前向传播函数。</p>
-<h1 id="3-lstm"><a href="#3-lstm" class="headerlink" title="3 lstm"></a>3 lstm</h1><p>lstm和gru的提出用来解决梯度消失和梯度爆炸，而且还创新性的引入了“选择门”，对过去的消息和现在的消息进行选择性遗忘或记住。</p>
-<p><img src="image-20231206102217785.png" srcset="/img/loading.gif" lazyload alt="image-20231206102217785"></p>
+<h1 id="lstm">3 lstm</h1>
+<p>lstm和gru的提出用来解决梯度消失和梯度爆炸，而且还创新性的引入了“选择门”，对过去的消息和现在的消息进行选择性遗忘或记住。</p>
+<figure>
+<img src="image-20231206102217785.png" srcset="/img/loading.gif" lazyload alt="image-20231206102217785">
+<figcaption aria-hidden="true">image-20231206102217785</figcaption>
+</figure>
 <p>其中sigmoid函数出来的用来进行选择，和过去的组合形成遗忘门，和现在的知识组合形成候选记忆门，然后候选记忆和遗忘门相加后输出。隐状态需要输出和一个选择门相乘来更新。</p>
 <p>这里的相乘都是对位相乘。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">lstm</span>(<span class="hljs-params">inputs, state, params</span>):<br>    [W_xi, W_hi, b_i, W_xf, W_hf, b_f, W_xo, W_ho, b_o, W_xc, W_hc, b_c,<br>     W_hq, b_q] = params<br>    (H, C) = state<br>    outputs = []<br>    <span class="hljs-keyword">for</span> X <span class="hljs-keyword">in</span> inputs:<br>        I = torch.sigmoid((X @ W_xi) + (H @ W_hi) + b_i)<br>        F = torch.sigmoid((X @ W_xf) + (H @ W_hf) + b_f)<br>        O = torch.sigmoid((X @ W_xo) + (H @ W_ho) + b_o)<br>        C_tilda = torch.tanh((X @ W_xc) + (H @ W_hc) + b_c)<br>        C = F * C + I * C_tilda<br>        H = O * torch.tanh(C)<br>        Y = (H @ W_hq) + b_q<br>        outputs.append(Y)<br>    <span class="hljs-keyword">return</span> torch.cat(outputs, dim=<span class="hljs-number">0</span>), (H, C)<br></code></pre></td></tr></table></figure>
-
-<h1 id="4-gru"><a href="#4-gru" class="headerlink" title="4 gru"></a>4 gru</h1><p>gru和lstm结构上很像，都是由选择门和其他门组成，但是gru门更少，参数更少。</p>
-<p><img src="image-20231206102514957.png" srcset="/img/loading.gif" lazyload alt="image-20231206102514957"></p>
+<h1 id="gru">4 gru</h1>
+<p>gru和lstm结构上很像，都是由选择门和其他门组成，但是gru门更少，参数更少。</p>
+<figure>
+<img src="image-20231206102514957.png" srcset="/img/loading.gif" lazyload alt="image-20231206102514957">
+<figcaption aria-hidden="true">image-20231206102514957</figcaption>
+</figure>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">gru</span>(<span class="hljs-params">inputs, state, params</span>):<br>    W_xz, W_hz, b_z, W_xr, W_hr, b_r, W_xh, W_hh, b_h, W_hq, b_q = params<br>    H, = state<br>    outputs = []<br>    <span class="hljs-keyword">for</span> X <span class="hljs-keyword">in</span> inputs:<br>        Z = torch.sigmoid((X @ W_xz) + (H @ W_hz) + b_z)<br>        R = torch.sigmoid((X @ W_xr) + (H @ W_hr) + b_r)<br>        H_tilda = torch.tanh((X @ W_xh) + ((R * H) @ W_hh) + b_h)<br>        H = Z * H + (<span class="hljs-number">1</span> - Z) * H_tilda<br>        Y = H @ W_hq + b_q<br>        outputs.append(Y)<br>    <span class="hljs-keyword">return</span> torch.cat(outputs, dim=<span class="hljs-number">0</span>), (H,)<br></code></pre></td></tr></table></figure>
-
 <p>最大的区别就是输出变成了一个，直接输出结果，结果就是隐状态，不再记忆隐状态，而是变成了一个候选隐状态。具体来说，输出由过去的记忆变为了隐状态。主要的结构是一个重置门和一个更新门。重置门由当前的x和过去隐状态经过sigmoid后组成选择门，也即重置门，之所以叫重置门，是因为它作用的对象是上一个隐状态。再和上一个隐状态相乘后再经过和当前X相乘，再tanh激活函数称为候选隐状态。更新门和重置门的结构类似，也是用来选择的，但是此次作用的对象是过去的隐状态和当前的候选状态，并且两者的比例是由更新门决定的。最后Y就是由H经过全连接层输出。</p>
 <p>本质上是lstm的门进行了调整，选择门的结构是一样的，都是由过去和当前进行sigmoid激活进行选择。重置门的作用也比较丰富，同时选择了过去和当前。更新门调整选择的比例，最后输出。</p>
 

@@ -71,7 +71,119 @@
 
 
   
-<meta name="generator" content="Hexo 6.3.0"></head>
+<meta name="generator" content="Hexo 6.3.0"><style>mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+.MathJax path {
+  stroke-width: 3;
+}
+
+mjx-container[display="true"] {
+  overflow: auto hidden;
+}
+
+mjx-container[display="true"] + br {
+  display: none;
+}
+</style></head>
 
 
 <body>
@@ -232,7 +344,7 @@
       
       <a class="index-excerpt index-excerpt__noimg" href="/2023/11/13/%E5%9F%BA%E4%BA%8E%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0%E9%A2%84%E6%B5%8B%E6%9F%90%E7%B1%BB%E9%97%AF%E5%85%B3%E6%B8%B8%E6%88%8F%E7%94%A8%E6%88%B7%E6%B5%81%E5%A4%B1/" target="_blank">
         <div>
-          1 简介新用户流失的问题在这些游戏中依然严重，大量新用户在试玩不久后就选择放弃。如果能在用户彻底卸载游戏之前对可能流失的用户进行有效干预，比如赠送游戏道具或发送鼓励的消息，就有可能挽留住他们，进而提升游戏的活跃度和公司的潜在利润。因此，预测用户流失已经成为一个极具挑战性的重要问题。 我们将以真实游戏的非结构化日志数据为出发点，构建一个用户流失预测模型，并根据已有知识设计合适的算法来解决实际问题。
+          1 简介 新用户流失的问题在这些游戏中依然严重，大量新用户在试玩不久后就选择放弃。如果能在用户彻底卸载游戏之前对可能流失的用户进行有效干预，比如赠送游戏道具或发送鼓励的消息，就有可能挽留住他们，进而提升游戏的活跃度和公司的潜在利润。因此，预测用户流失已经成为一个极具挑战性的重要问题。 我们将以真实游戏的非结构化日志数据为出发点，构建一个用户流失预测模型，并根据已有知识设计合适的算法来解决实际问
         </div>
       </a>
 
@@ -280,11 +392,11 @@
             
               <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">#机器学习</a>
             
+              <a href="/tags/%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B/">#特征工程</a>
+            
               <a href="/tags/boosting/">#boosting</a>
             
               <a href="/tags/bagging/">#bagging</a>
-            
-              <a href="/tags/%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B/">#特征工程</a>
             
           </div>
         
@@ -306,7 +418,7 @@
       
       <a class="index-excerpt index-excerpt__noimg" href="/2023/11/07/%E5%9F%BA%E4%BA%8E%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0%E7%9A%84%E4%BA%9A%E9%A9%AC%E9%80%8A%E7%94%A8%E6%88%B7%E8%AF%84%E8%AE%BA%E9%A2%84%E6%B5%8B/" target="_blank">
         <div>
-          1 简介集成学习（ensemble learning），并不是一个单独的机器学习算法，而是通过构建并结合多个机器学习器（基学习器，Base learner）来完成学习任务。 一般来说，集成学习的构建方法可以分为两类：  平行方法：   构建多个独立的学习器，取他们的预测结果的平均 个体学习器之间不存在强依赖关系，一系列个体学习器可以并行生成 通常是同质的弱学习器 代表算法是Bagging和随机森林
+          1 简介 集成学习（ensemble learning），并不是一个单独的机器学习算法，而是通过构建并结合多个机器学习器（基学习器，Base learner）来完成学习任务。 一般来说，集成学习的构建方法可以分为两类：  平行方法：  构建多个独立的学习器，取他们的预测结果的平均 个体学习器之间不存在强依赖关系，一系列个体学习器可以并行生成 通常是同质的弱学习器 代表算法是B
         </div>
       </a>
 
@@ -378,7 +490,7 @@
       
       <a class="index-excerpt index-excerpt__noimg" href="/2023/10/29/%E5%9F%BA%E4%BA%8E%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E7%9A%84%E9%B8%BE%E5%B0%BE%E8%8A%B1%E5%88%86%E7%B1%BB/" target="_blank">
         <div>
-          1 简介神经网络，看起来像各种各样堆叠在一起的函数，然后根据损失函数运用梯度下降算法和链式法则，对参数进行更新，使得神经网络能尽可能的拟合我们给出的数据。 为了防止欠拟合，可以添加尽可能多的函数的数量和种类；为了防止过拟合，则尽可能减少函数的数量和种类。 为了使神经网络拟合各种各样的情况（主要是非线性情况），加入了各式各样的激活函数。 还提出正则化，标准化等方法。 这次处理一个鸾尾花数据集，这个数
+          1 简介 神经网络，看起来像各种各样堆叠在一起的函数，然后根据损失函数运用梯度下降算法和链式法则，对参数进行更新，使得神经网络能尽可能的拟合我们给出的数据。 为了防止欠拟合，可以添加尽可能多的函数的数量和种类；为了防止过拟合，则尽可能减少函数的数量和种类。 为了使神经网络拟合各种各样的情况（主要是非线性情况），加入了各式各样的激活函数。 还提出正则化，标准化等方法。 这次处理一个鸾尾花数
         </div>
       </a>
 
@@ -448,7 +560,7 @@
       
       <a class="index-excerpt index-excerpt__noimg" href="/2023/10/28/%E5%9F%BA%E4%BA%8E%E5%86%B3%E7%AD%96%E6%A0%91%E7%9A%84%E6%B8%B8%E6%88%8F%E8%83%9C%E8%B4%9F%E9%A2%84%E6%B5%8B/" target="_blank">
         <div>
-          1 简介 本数据集来自Kaggle，包含了9879场钻一到大师段位的单双排对局，对局双方几乎是同一水平。每条数据是前10分钟的对局情况，每支队伍有19个特征，红蓝双方共38个特征。这些特征包括英雄击杀、死亡，金钱、经验、等级情况等等。一局游戏一般会持续30至40分钟，但是实际前10分钟的局面很大程度上影响了之后胜负的走向。 项目源地址：https://gitlab.diantouedu.cn/QY
+          1 简介 本数据集来自Kaggle，包含了9879场钻一到大师段位的单双排对局，对局双方几乎是同一水平。每条数据是前10分钟的对局情况，每支队伍有19个特征，红蓝双方共38个特征。这些特征包括英雄击杀、死亡，金钱、经验、等级情况等等。一局游戏一般会持续30至40分钟，但是实际前10分钟的局面很大程度上影响了之后胜负的走向。 项目源地址：https://gitlab.diantouedu.cn/
         </div>
       </a>
 
@@ -520,7 +632,7 @@
       
       <a class="index-excerpt index-excerpt__noimg" href="/2023/10/22/%E4%BD%BF%E7%94%A8%E8%B4%9D%E5%8F%B6%E6%96%AF%E8%AF%86%E5%88%AB%E5%9E%83%E5%9C%BE%E9%82%AE%E4%BB%B6/" target="_blank">
         <div>
-          1 简介垃圾邮件或者垃圾短信通常让网络运营商和用户十分头疼，尤其是如今大数据时代，每个人都被分析分类的很准确，而且个人信息比如邮箱，电话泄露的机会也越来越大，广告商更愿意在此做手脚，达到广告定点投放的任务。并且由于这些广告和自身的信息又十分紧密，或者常常携带一些“正常消息”来蒙混过关，因此，能够对垃圾邮件做分类并尽可能地隔离这些邮件，显得越来越重要。 本文将用到朴素贝叶斯的方法，使用python，
+          1 简介 垃圾邮件或者垃圾短信通常让网络运营商和用户十分头疼，尤其是如今大数据时代，每个人都被分析分类的很准确，而且个人信息比如邮箱，电话泄露的机会也越来越大，广告商更愿意在此做手脚，达到广告定点投放的任务。并且由于这些广告和自身的信息又十分紧密，或者常常携带一些“正常消息”来蒙混过关，因此，能够对垃圾邮件做分类并尽可能地隔离这些邮件，显得越来越重要。 本文将用到朴素贝叶斯的方法，使用pyth
         </div>
       </a>
 
@@ -594,7 +706,7 @@
       
       <a class="index-excerpt index-excerpt__noimg" href="/2023/10/21/%E7%8E%B0%E6%9C%89%E6%A8%A1%E5%9E%8B%E7%9A%84%E4%BD%BF%E7%94%A8%E5%92%8C%E4%BF%AE%E6%94%B9/" target="_blank">
         <div>
-          1 现有模型的下载和使用我们很多工作都要基于前人的工作，所以使用前人的模型是必要的，光使用也不够，还需要调参和修改模型。 123456789import torchvisionimport osos.environ[&#x27;TORCH_HOME&#x27;]=r&#x27;E:\VScodes\ipython\深度学习基础\神经网络\现有模型的使用和修改&#x27;vgg16_false =
+          1 现有模型的下载和使用 我们很多工作都要基于前人的工作，所以使用前人的模型是必要的，光使用也不够，还需要调参和修改模型。 123456789import torchvisionimport osos.environ['TORCH_HOME']=r'E:\VScodes\ipython\深度学习基础\神经网络\现有模型的使用和修改'vgg16_false = torchvision.model
         </div>
       </a>
 
@@ -664,7 +776,7 @@
       
       <a class="index-excerpt index-excerpt__noimg" href="/2023/10/21/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E7%9A%84%E5%9F%BA%E6%9C%AC%E9%AA%A8%E6%9E%B6/" target="_blank">
         <div>
-          1 简介本文就是简单介绍一下各个层次，并给出一个小demo，最后会以CIFAR10数据集为例构建一个简单的神经网络。 所有代码均放在我的仓库中，如果需要请访问：https://github.com/Guoxn1/ai 如果给到您帮助，请给我一个star，这将成为我持续创作的动力。 2 卷积层卷积操作，对CIFAR10的测试集图片进行了卷积操作，另外使用tensorboard展示出来。 卷积层主要用
+          1 简介 本文就是简单介绍一下各个层次，并给出一个小demo，最后会以CIFAR10数据集为例构建一个简单的神经网络。 所有代码均放在我的仓库中，如果需要请访问：https://github.com/Guoxn1/ai 如果给到您帮助，请给我一个star，这将成为我持续创作的动力。 2 卷积层 卷积操作，对CIFAR10的测试集图片进行了卷积操作，另外使用tensorboard展示出来。
         </div>
       </a>
 
@@ -734,7 +846,7 @@
       
       <a class="index-excerpt index-excerpt__noimg" href="/2023/10/17/%E5%9F%BA%E4%BA%8EK-%E8%BF%91%E9%82%BB%E7%9A%84%E8%BD%A6%E7%89%8C%E5%8F%B7%E7%A0%81%E8%AF%86%E5%88%AB/" target="_blank">
         <div>
-          1 简介1.1 背景简介图像的智能处理一直是人工智能领域广受关注的一类技术，在人工智能落地的进程中发挥着重要作用。其中车牌号识别作为一个早期应用场景，已经融入日常生活中，为我们提供了诸多便利，在各地的停车场和出入口都能看到它的身影。车牌号识别往往分为字符划分和字符识别两个子任务，本案例我们将关注字符识别的任务。 在原任务的基础上：  对method1和method2图像增强方式进行了更改，其中me
+          1 简介 1.1 背景简介 图像的智能处理一直是人工智能领域广受关注的一类技术，在人工智能落地的进程中发挥着重要作用。其中车牌号识别作为一个早期应用场景，已经融入日常生活中，为我们提供了诸多便利，在各地的停车场和出入口都能看到它的身影。车牌号识别往往分为字符划分和字符识别两个子任务，本案例我们将关注字符识别的任务。 在原任务的基础上：  对method1和method2图像增强方式进行了
         </div>
       </a>
 
@@ -808,7 +920,7 @@
       
       <a class="index-excerpt index-excerpt__noimg" href="/2023/10/16/%E9%93%B6%E8%A1%8C%E5%8D%A1%E5%8F%B7%E8%AF%86%E5%88%AB/" target="_blank">
         <div>
-          1 图像基本操作在我的仓库中，有相关的代码操作。仓库：https://github.com/Guoxn1/ai。 我也是从bilibili学了一点，关于cv2的操作。链接：https://www.bilibili.com/video/BV1PV411774y/。 2 银行卡号识别简介 数据如上，其中有5个银行卡照片，和一个标准数字集图片。 最后做到的效果如下：  可运行的代码和数据集存在我的仓库中
+          1 图像基本操作 在我的仓库中，有相关的代码操作。仓库：https://github.com/Guoxn1/ai。 我也是从bilibili学了一点，关于cv2的操作。链接：https://www.bilibili.com/video/BV1PV411774y/。 2 银行卡号识别简介   image-20231016161723638  数据如上，其中有5个银行卡照片，和一个标准
         </div>
       </a>
 
@@ -878,7 +990,7 @@
       
       <a class="index-excerpt index-excerpt__noimg" href="/2023/10/15/%E5%9F%BA%E4%BA%8E%E5%9B%9E%E5%BD%92%E5%88%86%E6%9E%90%E7%9A%84%E5%A4%A7%E5%AD%A6%E5%BE%97%E5%88%86%E9%A2%84%E6%B5%8B/" target="_blank">
         <div>
-          1 简介1.1 背景简介大学排名的问题具有显著的重要性，同时也充满了挑战和争议。一所大学的全方位能力包括科研、师资和学生等多个因素。在本项目中，我们将依据CWUR提供的全球知名大学的各项排名（包括师资和科研等）来进行工作。一方面，我们将通过数据可视化来探究各个大学的独特性。另一方面，我们希望利用机器学习模型（例如线性回归）来预测大学的综合得分。 源地址：https://gitlab.diantou
+          1 简介 1.1 背景简介 大学排名的问题具有显著的重要性，同时也充满了挑战和争议。一所大学的全方位能力包括科研、师资和学生等多个因素。在本项目中，我们将依据CWUR提供的全球知名大学的各项排名（包括师资和科研等）来进行工作。一方面，我们将通过数据可视化来探究各个大学的独特性。另一方面，我们希望利用机器学习模型（例如线性回归）来预测大学的综合得分。 源地址：https://gitlab.di
         </div>
       </a>
 
