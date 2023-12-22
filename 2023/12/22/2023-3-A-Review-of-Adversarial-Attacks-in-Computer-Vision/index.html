@@ -1,0 +1,878 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Guoxin">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="基于转换的攻击，本综述系列的第三部分。看的迷迷糊糊的，主要是很多都不懂，先大致了解，以后用到了再补。 1 添加动量到迭代中 为了提高对抗样本的迁移能力，提出将基于优化的攻击与多种手段相结合。 1.1 MI-FGSM 在迭代过程中添加动量，比如 MI-FGSM攻击。动量法可以更快的收敛和更少的震荡。MI-FGSM算法可以被写出如下形式:   image-202312221425002">
+<meta property="og:type" content="article">
+<meta property="og:title" content="2023-3-A-Review-of-Adversarial-Attacks-in-Computer-Vision">
+<meta property="og:url" content="http://example.com/2023/12/22/2023-3-A-Review-of-Adversarial-Attacks-in-Computer-Vision/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="基于转换的攻击，本综述系列的第三部分。看的迷迷糊糊的，主要是很多都不懂，先大致了解，以后用到了再补。 1 添加动量到迭代中 为了提高对抗样本的迁移能力，提出将基于优化的攻击与多种手段相结合。 1.1 MI-FGSM 在迭代过程中添加动量，比如 MI-FGSM攻击。动量法可以更快的收敛和更少的震荡。MI-FGSM算法可以被写出如下形式:   image-202312221425002">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2023/12/22/2023-3-A-Review-of-Adversarial-Attacks-in-Computer-Vision/image-20231222142500206.png">
+<meta property="og:image" content="http://example.com/2023/12/22/2023-3-A-Review-of-Adversarial-Attacks-in-Computer-Vision/image-20231222142419635.png">
+<meta property="og:image" content="http://example.com/2023/12/22/2023-3-A-Review-of-Adversarial-Attacks-in-Computer-Vision/image-20231222150601360.png">
+<meta property="og:image" content="http://example.com/2023/12/22/2023-3-A-Review-of-Adversarial-Attacks-in-Computer-Vision/image-20231222161913914.png">
+<meta property="article:published_time" content="2023-12-22T02:26:28.000Z">
+<meta property="article:modified_time" content="2023-12-22T08:38:42.790Z">
+<meta property="article:author" content="Guoxin">
+<meta property="article:tag" content="论文读后总结">
+<meta property="article:tag" content="对抗样本">
+<meta property="article:tag" content="综述系列">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/2023/12/22/2023-3-A-Review-of-Adversarial-Attacks-in-Computer-Vision/image-20231222142500206.png">
+  
+  
+  
+  <title>2023-3-A-Review-of-Adversarial-Attacks-in-Computer-Vision - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.5","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"><style>mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+.MathJax path {
+  stroke-width: 3;
+}
+
+mjx-container[display="true"] {
+  overflow: auto hidden;
+}
+
+mjx-container[display="true"] + br {
+  display: none;
+}
+</style></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Guoxin</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="2023-3-A-Review-of-Adversarial-Attacks-in-Computer-Vision"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-12-22 10:26" pubdate>
+          2023年12月22日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.3k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          20 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">2023-3-A-Review-of-Adversarial-Attacks-in-Computer-Vision</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>基于转换的攻击，本综述系列的第三部分。看的迷迷糊糊的，主要是很多都不懂，先大致了解，以后用到了再补。</p>
+<h1 id="添加动量到迭代中">1 添加动量到迭代中</h1>
+<p>为了提高对抗样本的迁移能力，提出将基于优化的攻击与多种手段相结合。</p>
+<h2 id="mi-fgsm">1.1 MI-FGSM</h2>
+<p>在迭代过程中添加动量，比如
+MI-FGSM攻击。动量法可以更快的收敛和更少的震荡。MI-FGSM算法可以被写出如下形式:</p>
+<figure>
+<img src="image-20231222142500206.png" srcset="/img/loading.gif" lazyload alt="image-20231222142500206">
+<figcaption aria-hidden="true">image-20231222142500206</figcaption>
+</figure>
+<p>g就是动量，u为动量的衰减因子。由于每次迭代得到的动量大小不相同，所以对每次迭代得到的梯度进行归一化处理。</p>
+<p>由于在黑盒条件下，生成的对抗样本能力不强。所以又提出了NI-FGSM方法。</p>
+<h2 id="ni-fgsm">1.2 NI-FGSM</h2>
+<p>NI-FGSM是NAG和I-FGSM的结合。NAG是常见的梯度下降法的一种变体，可以加速训练过程并提高收敛。</p>
+<p>NAG可以写成：</p>
+<p><img src="image-20231222142419635.png" srcset="/img/loading.gif" lazyload alt="image-20231222142419635" style="zoom:67%;"></p>
+<p>g表示迭代t时的累计梯度，u表示衰减因子。每次迭代之前，NI-FGSM在前一个方向上累计梯度，然后对其更新。以前是对x求导，现在是对上一次迭代的x求导。</p>
+<h1 id="迭代过程中考虑输入变换">2 迭代过程中考虑输入变换</h1>
+<p>是一种数据扩展方法，包括旋转放大缩小。这不仅可以防止对抗性样本对模型的过拟合，而且可以提高对抗性样本的可移植性。白盒下只需要对一个样本进行优化，因为识别区域高度相关。但是黑盒条件下，可能有不同的识别区域，从而使得对抗样本很难保持对抗性。</p>
+<p>我们希望的是对抗样本对被攻击的白盒模型的识别区域不敏感。对抗样本对被攻击的白盒模型的识别区域不敏感意味着对抗样本在不同的输入区域都能够成功地干扰模型的预测，而不仅仅是在特定的输入区域有效。</p>
+<h2 id="tim">2.1 TIM</h2>
+<p>为了生成这样的样本，需要计算集合中所有图像的梯度，这是大量的计算。为了提高效率，文献中提出，在一定的假设下，对未转移图像进行卷积梯度法，其中卷积核是预定的。该方法可以与任何基于梯度的攻击方法（如FGSM等）相结合。来生成更多可转移和对抗性的样本。</p>
+<p><img src="image-20231222150601360.png" srcset="/img/loading.gif" lazyload alt="image-20231222150601360" style="zoom:67%;"></p>
+<p>W是高斯卷积核。</p>
+<h2 id="dim">2.2 DIM</h2>
+<p>一种多样化的输入思想，他采用数据增强的思想，在将图像输入进模型之前，对输入样本进行随机变换。</p>
+<h2 id="sim">2.3 SIM</h2>
+<p>优化还有另一种扩展模型的方法，因为dnn还有尺度不变性，所以相同的图像上原始图像和缩放图像的损失是相似的，缩放可以作为模型的扩展方法。</p>
+<p>SIM基于尺度不变性，提出通过缩放输入图像来优化对抗性扰动，提高可转移性。</p>
+<h1 id="训练附加分类器">3 训练附加分类器</h1>
+<p>几乎所有的对抗攻击都依赖于网络输出层的信息，该攻击基于对类划分和层划分的深度特征分布的建模和开发，称为FDA。</p>
+<h2 id="fda">3.1 FDA</h2>
+<p>基本思想是，计算FDA在层l的对抗扰动，首先需要使用截断的白盒模型和对应层的辅助模型g。g可以捕获逐层和逐类特征分布，对l层相对于c类特征分布的概率进行建模。损失函数为二元交叉熵，计算预测p和l。因此，在损失函数最小化的方向上扰动输入图像，使得p最大化，来生成对抗样本。</p>
+<p>即：如果样本在中间特征空间的某个层具有与c类特征分布一致的特征，则它可能被分为c类。</p>
+<p><img src="image-20231222161913914.png" srcset="/img/loading.gif" lazyload alt="image-20231222161913914" style="zoom:67%;"></p>
+<p>FDA利用了中间特征分布，这些特征分布并没有隐含描述精确边界。</p>
+<p>不懂，跳了。</p>
+<h1 id="基于生成的对抗转移">4 基于生成的对抗转移</h1>
+<p>研究表明，扰动存在于大的连续区域中，而不是分散在多个不连续的小口袋中。此产生扰动时最重要的是考虑扰动的方向，而不是空间中的特定点。为了去捕捉未知的对抗性扰动，作者引入类似于Gan的生成模型。该方法成功地训练生成器网络来捕获未知的目标分布，而不需要任何训练样本。由此产生的模型几乎立即产生了针对迁移攻击的具有较大多样性的对抗性扰动，并且该方法可以有效地模拟同时欺骗多个深度模型的扰动。</p>
+<p>只使用生成器来生成对抗性样本，以适应输入样本的扰动，这避免了迭代梯度计算的需要，并允许我们快速生成扰动，除了使用生成模型来创建对抗性扰动之外，还允许我们进一步训练更复杂的模型。此外，该研究还证明了由此产生的扰动可以在不同的模型中转移，这是一种迁移攻击。</p>
+<h1 id="通用对抗扰动">5 通用对抗扰动</h1>
+<p>找到一个一般的扰动v，使得对于大多数图像x。</p>
+<p>深度神经网络非常容易受到这种扰动的影响，尽管人眼无法区分。本文通过Deep
+fool生成一般扰动。该算法的目的是找到最小扰动v，使得Xi+v移出正确的分类区域Ri。该算法可以方便地计算VGG、Google
+LeNet、ResNet等不同模型的相应扰动，文章论证了这些一般扰动的存在性。</p>
+<p>通过欺骗在没有数据的多个网络层中学习的特征，从而误导CNN，有效地生成通用扰动。这些扰动具有很好的推广性。Fast
+feature
+fool用于在不依赖数据的情况下生成通用扰动，通过超饱和多层学习的特征（取代“翻转标签”目标）来愚弄CNN，即通过向输入添加扰动，破坏每一层的特征来误导后续层的特征。沿着网络层次结构的累积干扰将使网络无法区分原始输入，从而在最后一层产生大量的预测误差。其实质是在目标cnn不提供任何数据的情况下，寻找一个能够在每一层产生最大假激活的扰动。</p>
+<p>实验表明，数据相关性差的反而攻击效果好。</p>
+<p>GD-UAP</p>
+<p>作者将该方法应用于目标检测、语义分割等任务中，实现了多种攻击。本文证明了该扰动是无数据的。作者对提出的目标进行了全面的分析，包括：彻底比较GD-UAP方法与相关数据的相反部分，以及在存在各种防御机制的情况下评估UAP的实力。它将UAP攻击扩展到图像分类以外的视觉任务，并提出了一种目标模型，用于在最小先验信息下训练数据分布，以产生更强的干扰。</p>
+<p>RHP</p>
+<p>出了梯度Transformer模块来获得区域均匀对抗样本。其原理是增加同一区域内像素的相关性，从而造成区域均匀性扰动。基于这一观察，研究人员提出了一种变换范式和一个梯度Transformer模块来生成专门用于攻击防御的区域均匀扰动（RHP），研究人员通过攻击一系列防御模型的实验，证明了区域均匀扰动的有效性。使用语义分割任务来攻击和测试目标检测任务，证明了RHP的跨任务可移植性。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E8%AE%BA%E6%96%87%E8%AF%BB%E5%90%8E%E6%80%BB%E7%BB%93/" class="category-chain-item">论文读后总结</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E8%AE%BA%E6%96%87%E8%AF%BB%E5%90%8E%E6%80%BB%E7%BB%93/%E5%AF%B9%E6%8A%97%E6%A0%B7%E6%9C%AC/" class="category-chain-item">对抗样本</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E8%AE%BA%E6%96%87%E8%AF%BB%E5%90%8E%E6%80%BB%E7%BB%93/%E5%AF%B9%E6%8A%97%E6%A0%B7%E6%9C%AC/%E7%BB%BC%E8%BF%B0%E7%B3%BB%E5%88%97/" class="category-chain-item">综述系列</a>
+  
+  
+
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E8%AE%BA%E6%96%87%E8%AF%BB%E5%90%8E%E6%80%BB%E7%BB%93/" class="print-no-link">#论文读后总结</a>
+      
+        <a href="/tags/%E5%AF%B9%E6%8A%97%E6%A0%B7%E6%9C%AC/" class="print-no-link">#对抗样本</a>
+      
+        <a href="/tags/%E7%BB%BC%E8%BF%B0%E7%B3%BB%E5%88%97/" class="print-no-link">#综述系列</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>2023-3-A-Review-of-Adversarial-Attacks-in-Computer-Vision</div>
+      <div>http://example.com/2023/12/22/2023-3-A-Review-of-Adversarial-Attacks-in-Computer-Vision/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Guoxin</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年12月22日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/12/21/2023-2-A-Review-of-Adversarial-Attacks-in-Computer-Vision/" title="2023-2-A-Review-of-Adversarial-Attacks-in-Computer-Vision">
+                        <span class="hidden-mobile">2023-2-A-Review-of-Adversarial-Attacks-in-Computer-Vision</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
