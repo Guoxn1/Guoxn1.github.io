@@ -16,29 +16,24 @@
   <meta name="author" content="Guoxin">
   <meta name="keywords" content="">
   
-    <meta name="description" content="基于转换的攻击，本综述系列的第三部分。看的迷迷糊糊的，主要是很多都不懂，先大致了解，以后用到了再补。 1 添加动量到迭代中 为了提高对抗样本的迁移能力，提出将基于优化的攻击与多种手段相结合。 1.1 MI-FGSM 在迭代过程中添加动量，比如 MI-FGSM攻击。动量法可以更快的收敛和更少的震荡。MI-FGSM算法可以被写出如下形式:   image-202312221425002">
+    <meta name="description" content="这篇是这篇综述的最后一个部分，讲对抗样本在目标检测和语义分割中的应用。 1 目标检测 尽管目标检测发展迅速，但最近的研究表明，目标检测在安全性上存在不足，容易被对抗性样本欺骗。 1234论文 ：25. Kong Z, Xue J, Wang Y, et al. A Survey on Adversarial Attack inthe Age of Artificial Intelligenc">
 <meta property="og:type" content="article">
-<meta property="og:title" content="2023-3-A-Review-of-Adversarial-Attacks-in-Computer-Vision">
-<meta property="og:url" content="http://example.com/2023/12/22/2023-3-A-Review-of-Adversarial-Attacks-in-Computer-Vision/index.html">
+<meta property="og:title" content="2023-4-A-Review-of-Adversarial-Attacks-in-Computer-Vision">
+<meta property="og:url" content="http://example.com/2023/12/23/2023-4-A-Review-of-Adversarial-Attacks-in-Computer-Vision/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="基于转换的攻击，本综述系列的第三部分。看的迷迷糊糊的，主要是很多都不懂，先大致了解，以后用到了再补。 1 添加动量到迭代中 为了提高对抗样本的迁移能力，提出将基于优化的攻击与多种手段相结合。 1.1 MI-FGSM 在迭代过程中添加动量，比如 MI-FGSM攻击。动量法可以更快的收敛和更少的震荡。MI-FGSM算法可以被写出如下形式:   image-202312221425002">
+<meta property="og:description" content="这篇是这篇综述的最后一个部分，讲对抗样本在目标检测和语义分割中的应用。 1 目标检测 尽管目标检测发展迅速，但最近的研究表明，目标检测在安全性上存在不足，容易被对抗性样本欺骗。 1234论文 ：25. Kong Z, Xue J, Wang Y, et al. A Survey on Adversarial Attack inthe Age of Artificial Intelligenc">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://example.com/2023/12/22/2023-3-A-Review-of-Adversarial-Attacks-in-Computer-Vision/image-20231222142500206.png">
-<meta property="og:image" content="http://example.com/2023/12/22/2023-3-A-Review-of-Adversarial-Attacks-in-Computer-Vision/image-20231222142419635.png">
-<meta property="og:image" content="http://example.com/2023/12/22/2023-3-A-Review-of-Adversarial-Attacks-in-Computer-Vision/image-20231222150601360.png">
-<meta property="og:image" content="http://example.com/2023/12/22/2023-3-A-Review-of-Adversarial-Attacks-in-Computer-Vision/image-20231222161913914.png">
-<meta property="article:published_time" content="2023-12-22T02:26:28.000Z">
-<meta property="article:modified_time" content="2023-12-22T08:38:42.790Z">
+<meta property="article:published_time" content="2023-12-23T09:28:23.000Z">
+<meta property="article:modified_time" content="2023-12-24T07:30:34.115Z">
 <meta property="article:author" content="Guoxin">
 <meta property="article:tag" content="论文读后总结">
 <meta property="article:tag" content="对抗样本">
 <meta property="article:tag" content="综述系列">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://example.com/2023/12/22/2023-3-A-Review-of-Adversarial-Attacks-in-Computer-Vision/image-20231222142500206.png">
   
   
   
-  <title>2023-3-A-Review-of-Adversarial-Attacks-in-Computer-Vision - Hexo</title>
+  <title>2023-4-A-Review-of-Adversarial-Attacks-in-Computer-Vision - Hexo</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -316,7 +311,7 @@ mjx-container[display="true"] + br {
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="2023-3-A-Review-of-Adversarial-Attacks-in-Computer-Vision"></span>
+            <span id="subtitle" data-typed-text="2023-4-A-Review-of-Adversarial-Attacks-in-Computer-Vision"></span>
           
         </div>
 
@@ -327,8 +322,8 @@ mjx-container[display="true"] + br {
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2023-12-22 10:26" pubdate>
-          2023年12月22日 上午
+        <time datetime="2023-12-23 17:28" pubdate>
+          2023年12月23日 下午
         </time>
       </span>
     
@@ -339,7 +334,7 @@ mjx-container[display="true"] + br {
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          2.3k 字
+          3.3k 字
         
       </span>
     
@@ -350,7 +345,7 @@ mjx-container[display="true"] + br {
         
         
         
-          20 分钟
+          28 分钟
         
       </span>
     
@@ -387,64 +382,68 @@ mjx-container[display="true"] + br {
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">2023-3-A-Review-of-Adversarial-Attacks-in-Computer-Vision</h1>
+            <h1 id="seo-header">2023-4-A-Review-of-Adversarial-Attacks-in-Computer-Vision</h1>
             
             
               <div class="markdown-body">
                 
-                <p>基于转换的攻击，本综述系列的第三部分。看的迷迷糊糊的，主要是很多都不懂，先大致了解，以后用到了再补。</p>
-<h1 id="添加动量到迭代中">1 添加动量到迭代中</h1>
-<p>为了提高对抗样本的迁移能力，提出将基于优化的攻击与多种手段相结合。</p>
-<h2 id="mi-fgsm">1.1 MI-FGSM</h2>
-<p>在迭代过程中添加动量，比如
-MI-FGSM攻击。动量法可以更快的收敛和更少的震荡。MI-FGSM算法可以被写出如下形式:</p>
-<figure>
-<img src="image-20231222142500206.png" srcset="/img/loading.gif" lazyload alt="image-20231222142500206">
-<figcaption aria-hidden="true">image-20231222142500206</figcaption>
-</figure>
-<p>g就是动量，u为动量的衰减因子。由于每次迭代得到的动量大小不相同，所以对每次迭代得到的梯度进行归一化处理。</p>
-<p>由于在黑盒条件下，生成的对抗样本能力不强。所以又提出了NI-FGSM方法。</p>
-<h2 id="ni-fgsm">1.2 NI-FGSM</h2>
-<p>NI-FGSM是NAG和I-FGSM的结合。NAG是常见的梯度下降法的一种变体，可以加速训练过程并提高收敛。</p>
-<p>NAG可以写成：</p>
-<p><img src="image-20231222142419635.png" srcset="/img/loading.gif" lazyload alt="image-20231222142419635" style="zoom:67%;"></p>
-<p>g表示迭代t时的累计梯度，u表示衰减因子。每次迭代之前，NI-FGSM在前一个方向上累计梯度，然后对其更新。以前是对x求导，现在是对上一次迭代的x求导。</p>
-<h1 id="迭代过程中考虑输入变换">2 迭代过程中考虑输入变换</h1>
-<p>是一种数据扩展方法，包括旋转放大缩小。这不仅可以防止对抗性样本对模型的过拟合，而且可以提高对抗性样本的可移植性。白盒下只需要对一个样本进行优化，因为识别区域高度相关。但是黑盒条件下，可能有不同的识别区域，从而使得对抗样本很难保持对抗性。</p>
-<p>我们希望的是对抗样本对被攻击的白盒模型的识别区域不敏感。对抗样本对被攻击的白盒模型的识别区域不敏感意味着对抗样本在不同的输入区域都能够成功地干扰模型的预测，而不仅仅是在特定的输入区域有效。</p>
-<h2 id="tim">2.1 TIM</h2>
-<p>为了生成这样的样本，需要计算集合中所有图像的梯度，这是大量的计算。为了提高效率，文献中提出，在一定的假设下，对未转移图像进行卷积梯度法，其中卷积核是预定的。该方法可以与任何基于梯度的攻击方法（如FGSM等）相结合。来生成更多可转移和对抗性的样本。</p>
-<p><img src="image-20231222150601360.png" srcset="/img/loading.gif" lazyload alt="image-20231222150601360" style="zoom:67%;"></p>
-<p>W是高斯卷积核。</p>
-<h2 id="dim">2.2 DIM</h2>
-<p>一种多样化的输入思想，他采用数据增强的思想，在将图像输入进模型之前，对输入样本进行随机变换。</p>
-<h2 id="sim">2.3 SIM</h2>
-<p>优化还有另一种扩展模型的方法，因为dnn还有尺度不变性，所以相同的图像上原始图像和缩放图像的损失是相似的，缩放可以作为模型的扩展方法。</p>
-<p>SIM基于尺度不变性，提出通过缩放输入图像来优化对抗性扰动，提高可转移性。</p>
-<h1 id="训练附加分类器">3 训练附加分类器</h1>
-<p>几乎所有的对抗攻击都依赖于网络输出层的信息，该攻击基于对类划分和层划分的深度特征分布的建模和开发，称为FDA。</p>
-<h2 id="fda">3.1 FDA</h2>
-<p>基本思想是，计算FDA在层l的对抗扰动，首先需要使用截断的白盒模型和对应层的辅助模型g。g可以捕获逐层和逐类特征分布，对l层相对于c类特征分布的概率进行建模。损失函数为二元交叉熵，计算预测p和l。因此，在损失函数最小化的方向上扰动输入图像，使得p最大化，来生成对抗样本。</p>
-<p>即：如果样本在中间特征空间的某个层具有与c类特征分布一致的特征，则它可能被分为c类。</p>
-<p><img src="image-20231222161913914.png" srcset="/img/loading.gif" lazyload alt="image-20231222161913914" style="zoom:67%;"></p>
-<p>FDA利用了中间特征分布，这些特征分布并没有隐含描述精确边界。</p>
-<p>不懂，跳了。</p>
-<h1 id="基于生成的对抗转移">4 基于生成的对抗转移</h1>
-<p>研究表明，扰动存在于大的连续区域中，而不是分散在多个不连续的小口袋中。此产生扰动时最重要的是考虑扰动的方向，而不是空间中的特定点。为了去捕捉未知的对抗性扰动，作者引入类似于Gan的生成模型。该方法成功地训练生成器网络来捕获未知的目标分布，而不需要任何训练样本。由此产生的模型几乎立即产生了针对迁移攻击的具有较大多样性的对抗性扰动，并且该方法可以有效地模拟同时欺骗多个深度模型的扰动。</p>
-<p>只使用生成器来生成对抗性样本，以适应输入样本的扰动，这避免了迭代梯度计算的需要，并允许我们快速生成扰动，除了使用生成模型来创建对抗性扰动之外，还允许我们进一步训练更复杂的模型。此外，该研究还证明了由此产生的扰动可以在不同的模型中转移，这是一种迁移攻击。</p>
-<h1 id="通用对抗扰动">5 通用对抗扰动</h1>
-<p>找到一个一般的扰动v，使得对于大多数图像x。</p>
-<p>深度神经网络非常容易受到这种扰动的影响，尽管人眼无法区分。本文通过Deep
-fool生成一般扰动。该算法的目的是找到最小扰动v，使得Xi+v移出正确的分类区域Ri。该算法可以方便地计算VGG、Google
-LeNet、ResNet等不同模型的相应扰动，文章论证了这些一般扰动的存在性。</p>
-<p>通过欺骗在没有数据的多个网络层中学习的特征，从而误导CNN，有效地生成通用扰动。这些扰动具有很好的推广性。Fast
-feature
-fool用于在不依赖数据的情况下生成通用扰动，通过超饱和多层学习的特征（取代“翻转标签”目标）来愚弄CNN，即通过向输入添加扰动，破坏每一层的特征来误导后续层的特征。沿着网络层次结构的累积干扰将使网络无法区分原始输入，从而在最后一层产生大量的预测误差。其实质是在目标cnn不提供任何数据的情况下，寻找一个能够在每一层产生最大假激活的扰动。</p>
-<p>实验表明，数据相关性差的反而攻击效果好。</p>
-<p>GD-UAP</p>
-<p>作者将该方法应用于目标检测、语义分割等任务中，实现了多种攻击。本文证明了该扰动是无数据的。作者对提出的目标进行了全面的分析，包括：彻底比较GD-UAP方法与相关数据的相反部分，以及在存在各种防御机制的情况下评估UAP的实力。它将UAP攻击扩展到图像分类以外的视觉任务，并提出了一种目标模型，用于在最小先验信息下训练数据分布，以产生更强的干扰。</p>
-<p>RHP</p>
-<p>出了梯度Transformer模块来获得区域均匀对抗样本。其原理是增加同一区域内像素的相关性，从而造成区域均匀性扰动。基于这一观察，研究人员提出了一种变换范式和一个梯度Transformer模块来生成专门用于攻击防御的区域均匀扰动（RHP），研究人员通过攻击一系列防御模型的实验，证明了区域均匀扰动的有效性。使用语义分割任务来攻击和测试目标检测任务，证明了RHP的跨任务可移植性。</p>
+                <p>这篇是这篇综述的最后一个部分，讲对抗样本在目标检测和语义分割中的应用。</p>
+<h1 id="目标检测">1 目标检测</h1>
+<p>尽管目标检测发展迅速，但最近的研究表明，目标检测在安全性上存在不足，容易被对抗性样本欺骗。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs tec">论文 ：<br>25. Kong Z, Xue J, Wang Y, et al. A Survey on Adversarial Attack in<br>the Age of Artificial Intelligence[J]. Wireless Communications and<br>Mobile Computing, 2021, 2021: 1–22.<br></code></pre></td></tr></table></figure>
+<h2 id="two-stage-network-attack">1.1 Two-stage network attack</h2>
+<p>DAG对两级网络RPN组件上生成的目标候选集进行攻击，为每个目标候选区域分配一个对抗标签，并执行梯度上升策略，直到候选区域被成功预测。它是目标检测中最经典的攻击方法之一，在实际攻击中，DAG的效果较好，但由于需要对每个候选盒进行迭代攻击，因此耗时较长。</p>
+<p>Shapeshifter [28]是Chen等人提出的第一个针对Faster
+R-CNN的有针对性的攻击方法，借鉴了图像分类中的对抗性攻击方法CW和变换期望（EOT）。</p>
+<p>停止符号攻击生成的对抗性样本成功欺骗了Faster
+R-CNN，但攻击需要以高成本修改整个停止符号。Li等人提出了一种对两阶段网络的RAP攻击。</p>
+<p>在攻击中，通过设计一个分类损失和位置损失相结合的损失函数，与DAG方法相比，Li的方法利用目标检测的位置信息进行攻击，攻击方法新颖，但实际攻击新能力较一般，针对RPN的攻击机动性较差。</p>
+<p>Zhang et
+al（Cap）在以往攻击方法的基础上，充分利用上下文信息，提取图像中目标对象的上下文信息并破坏这些区域，同时提高背景区域分值以增加攻击强度，在PASCAL
+VOC和MS COCO数据集上取得了较好的实验结果。</p>
+<h2 id="one-stage-network-attack">1.2 One-stage network attack</h2>
+<p>在一阶网络模型上，song等人收到图像分类中RP2的启发，在原始RP2中添加了一个额外的对抗损失函数，通过梯度下降法成功欺骗了YOLOV2检测器。</p>
+<p>王通过对非最大值抑制进行攻击，使得yolo产生虚警漏报。</p>
+<p>liao等在单机网络中寻找图像中重要像素，利用高层语义信息对检测器进行类别攻击。CenterNet模型被使用用来提取热谱图，其中得分大于阈值的像素点被定义为重要像素区域及其预测类别。在攻击过程中，对这些重要像素点进行攻击，使其偏离原始类别，得到的对抗样本不仅可以攻击无锚模型，还可以成功迁移到传统的一阶段和两阶段目标检测模型。</p>
+<h2 id="both-detectors-can-be-attacked两个探测器都可以被攻击">1.3 Both
+detectors can be attacked（两个探测器都可以被攻击）</h2>
+<p>UEA方法，来解决目标检测对抗样本时间开销大和迁移性差的问题，将GAN与高级分类损失和低级特征损失相结合，训练GAN生成对抗样本。实验证明，训练好的GAN网络能够实时生成对抗样本，实现了对视频的实时攻击，生成的对抗样本对单相网络中的SSD和YOLO具有较高的攻击成功率。</p>
+<p>Wu提出了G-UAP模型。选择一批图片对数据集进行攻击，同时对每一张图片进行攻击，以及通过降低图片中前景物体的置信度，增加背景的置信度，可以得到相应的扰动，最后，所有的扰动被聚合为网络的特征图，这样我们就可以从这批图像中学习一般的扰动来欺骗更多的图像。</p>
+<p>Chow提出一种迭代TOG方法，可以同时攻击两级和一级目标检测器，根据最终的攻击效果，TOG方法可以分为三类：目标消失，伪造标签，分类错误，在迭代生成过程中，通过对集合损失函数执行梯度下降直到攻击被成功或达到迭代次数。TOG对白色盒子的攻击成功率接近百分之百，但机动性差。</p>
+<h2 id="local-adversarial-jamming局部对抗干扰">1.4 Local
+adversarial-jamming（局部对抗干扰）</h2>
+<p>Li等人首次提出了BPatch方法，用于对两阶段检测器进行局部对抗干扰攻击。在该方法中，通过在图像目标外的背景中添加干扰块来攻击目标检测器。BPatch也是对RPN（区域提议网络）的攻击，RPN是两相检测器的独特部分。由于RPN网络生成大量包含候选框的候选字段，下一阶段的网络将根据置信度为RPN网络排列候选框，置信度阈值以上的候选框被选择用于下一阶段的分类和位置回归。</p>
+<p>BPatch提出了一种基于Re-RPN网络过滤机制的攻击方法，通过降低RPN层得到的高置信度候选框的置信度，使最终进入下一层网络的候选框中几乎不包含或不包含前景目标，从而实现对RPN网络过滤机制的攻击。</p>
+<p>在图片中添加一个补丁，并将补丁视为GT（Ground
+Truth）复选框。反向传播导致网络直接优化补丁，使最终检测器受到补丁的影响，从而导致检测错误。</p>
+<p>Wang等人[42]提出了一种粒子群优化目标检测黑箱攻击EA，它使用自然优化算法来引导干扰生成到位，但这种方法很耗时。</p>
+<p>创建了一个对抗性块来欺骗YOLOv 2检测器，以便YOLOv
+2检测器在人携带对抗性块后无法检测到人的存在。</p>
+<h1 id="语义分割">2 语义分割</h1>
+<h2 id="攻击性研究">2.1 攻击性研究</h2>
+<p>作为分类的一种扩展，对抗性攻击也广泛应用于语义分割领域。</p>
+<p>最先进的语义分割模型通常基于标准的图像分类体系，并由扩展卷积、专用池、跳过连接、条件随机场和/或多尺度处理、但它们对稳健性的影响从未被彻底研究过。</p>
+<p>DAG是一种贪婪算法，它同时考虑所有目标，并通过简单地为每个目标指定一个对抗标签来优化整体损失函数，并迭代地执行梯度反向传播以获得累积扰动，但并不最小化考虑的范式的数量。为了解决这个问题，Cisse等人提出了针对包括语义分割在内的几个任务的Houdini
+attack。</p>
+<p>这种方法的目标是最大化给定扰动预算的替代损失（即，对L∞范数的约束），因此不会产生最小扰动，并且通过直接制定针对组合不可行任务损失的对抗样本，可以实现欺骗任何基于梯度的学习机。</p>
+<p>还有人通过优化目标损失生成了一个“对抗补丁”，这个小补丁可以使目标躲避对象的AI检测器。</p>
+<p>还有人提出了一种基于EOT的攻击，该攻击使用CARLA驾驶模拟器来提高基于EOT的攻击在真实的3D环境中的可转移性。</p>
+<p>还有人设计了一个可以攻击远离patch的图像区域的损失函数，它包含了几个不包含patch像素的独立的损失项，目的是逐渐将欺骗的重点从增加误分类像素的数量转移到增加对误分类像素的patch的对抗强度，以提高攻击者诱导像素误分类的能力。</p>
+<p>还有人提出了一种分割攻击方法“segPGD”，实验结果表明其收敛速度更快，优于PGD。</p>
+<h2 id="鲁棒性研究">2.2 鲁棒性研究</h2>
+<p>对对抗攻击下语义分割的鲁棒性研究也越来越多。</p>
+<p>通过调用最后一个--Kurakin等人提出的一种可能的方法，并将像素中的每个像素误分类为最接近的类，以获得更自然的效果，以便分析如何对抗扰动影响语义分割。</p>
+<p>有人通过“让网络产生固定的目标分割作为输出”和“除了删除指定的目标类之外保持分割恒定”来产生通用扰动，以使网络产生期望的目标分割作为输出，这可以以近乎任意的方式改变图像的语义分割。</p>
+<p>有人通过使用端到端的生成模型而不是迭代算法来创建通用攻击和图像相关攻击，在生成和推理时间上有显着改善。</p>
+<p>局部扰动是由噪声函数和中间变量间接产生的扰动，使像素的梯度无限传播。</p>
+<p>上述工作大多使用FGSM [61] (Fast Gradient Sign
+Attack，快速梯度符号攻击)或其导数模型，这些模型提供了粗糙的鲁棒性评估，而不是最小化攻击。[62]提出了一种基于近似划分的白盒攻击，以产生L1、L2或L∞-范数较小的对抗扰动。该攻击可以通过扩充拉格朗日方法、自适应约束缩放和掩蔽策略来处理非凸最小化框架内的大量约束。</p>
+<p>对于某些针对分类问题设计的对抗攻击，特别是那些不依赖于投射到估计决策边界的攻击(如DeepFool或FAB[63])，它们也可以应用于分割领域，如PGD、DDN[64]、FMN[65]、PDGD和PDPGD[66]，以及ALMA
+[67]，其中，PDPGD[66]虽然依赖于近似分区，但它使用AdaProx算法[68]。adaProx在计算近似算子时引入了梯度步长的尺度与步长不匹配的问题，该算法在非凸情况下的收敛性值得研究。</p>
+<hr>
+<h1 id="基于目标检测的对抗样本代码实现">3
+基于目标检测的对抗样本代码实现</h1>
+<p>暂未实现，等待更新。</p>
 
                 
               </div>
@@ -508,8 +507,8 @@ fool用于在不依赖数据的情况下生成通用扰动，通过超饱和多�
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>2023-3-A-Review-of-Adversarial-Attacks-in-Computer-Vision</div>
-      <div>http://example.com/2023/12/22/2023-3-A-Review-of-Adversarial-Attacks-in-Computer-Vision/</div>
+      <div>2023-4-A-Review-of-Adversarial-Attacks-in-Computer-Vision</div>
+      <div>http://example.com/2023/12/23/2023-4-A-Review-of-Adversarial-Attacks-in-Computer-Vision/</div>
     </div>
     <div class="license-meta">
       
@@ -521,7 +520,7 @@ fool用于在不依赖数据的情况下生成通用扰动，通过超饱和多�
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2023年12月22日</div>
+          <div>2023年12月23日</div>
         </div>
       
       
@@ -553,18 +552,12 @@ fool用于在不依赖数据的情况下生成通用扰动，通过超饱和多�
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2023/12/23/%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B%E5%88%9D%E6%8E%A2/" title="目标检测初探">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">目标检测初探</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2023/12/21/2023-2-A-Review-of-Adversarial-Attacks-in-Computer-Vision/" title="2023-2-A-Review-of-Adversarial-Attacks-in-Computer-Vision">
-                        <span class="hidden-mobile">2023-2-A-Review-of-Adversarial-Attacks-in-Computer-Vision</span>
+                      <a href="/2023/12/23/%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B%E5%88%9D%E6%8E%A2/" title="目标检测初探">
+                        <span class="hidden-mobile">目标检测初探</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

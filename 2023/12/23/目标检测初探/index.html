@@ -16,29 +16,34 @@
   <meta name="author" content="Guoxin">
   <meta name="keywords" content="">
   
-    <meta name="description" content="基于转换的攻击，本综述系列的第三部分。看的迷迷糊糊的，主要是很多都不懂，先大致了解，以后用到了再补。 1 添加动量到迭代中 为了提高对抗样本的迁移能力，提出将基于优化的攻击与多种手段相结合。 1.1 MI-FGSM 在迭代过程中添加动量，比如 MI-FGSM攻击。动量法可以更快的收敛和更少的震荡。MI-FGSM算法可以被写出如下形式:   image-202312221425002">
+    <meta name="description" content="0 目标检测算法 在图像分类任务中，我们假设图像中只有一个主要物体对象，我们只关注如何识别其类别。 然而，很多时候图像里有多个我们感兴趣的目标，我们不仅想知道它们的类别，还想得到它们在图像中的具体位置。 在计算机视觉里，我们将这类任务称为目标检测（object detection）或目标识别（object recognition）。 1 基本概念 1.1 锚框和边缘框 目标检测算法通">
 <meta property="og:type" content="article">
-<meta property="og:title" content="2023-3-A-Review-of-Adversarial-Attacks-in-Computer-Vision">
-<meta property="og:url" content="http://example.com/2023/12/22/2023-3-A-Review-of-Adversarial-Attacks-in-Computer-Vision/index.html">
+<meta property="og:title" content="目标检测初探">
+<meta property="og:url" content="http://example.com/2023/12/23/%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B%E5%88%9D%E6%8E%A2/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="基于转换的攻击，本综述系列的第三部分。看的迷迷糊糊的，主要是很多都不懂，先大致了解，以后用到了再补。 1 添加动量到迭代中 为了提高对抗样本的迁移能力，提出将基于优化的攻击与多种手段相结合。 1.1 MI-FGSM 在迭代过程中添加动量，比如 MI-FGSM攻击。动量法可以更快的收敛和更少的震荡。MI-FGSM算法可以被写出如下形式:   image-202312221425002">
+<meta property="og:description" content="0 目标检测算法 在图像分类任务中，我们假设图像中只有一个主要物体对象，我们只关注如何识别其类别。 然而，很多时候图像里有多个我们感兴趣的目标，我们不仅想知道它们的类别，还想得到它们在图像中的具体位置。 在计算机视觉里，我们将这类任务称为目标检测（object detection）或目标识别（object recognition）。 1 基本概念 1.1 锚框和边缘框 目标检测算法通">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://example.com/2023/12/22/2023-3-A-Review-of-Adversarial-Attacks-in-Computer-Vision/image-20231222142500206.png">
-<meta property="og:image" content="http://example.com/2023/12/22/2023-3-A-Review-of-Adversarial-Attacks-in-Computer-Vision/image-20231222142419635.png">
-<meta property="og:image" content="http://example.com/2023/12/22/2023-3-A-Review-of-Adversarial-Attacks-in-Computer-Vision/image-20231222150601360.png">
-<meta property="og:image" content="http://example.com/2023/12/22/2023-3-A-Review-of-Adversarial-Attacks-in-Computer-Vision/image-20231222161913914.png">
-<meta property="article:published_time" content="2023-12-22T02:26:28.000Z">
-<meta property="article:modified_time" content="2023-12-22T08:38:42.790Z">
+<meta property="og:image" content="http://example.com/2023/12/23/%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B%E5%88%9D%E6%8E%A2/image-20231223160041069.png">
+<meta property="og:image" content="http://example.com/2023/12/23/%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B%E5%88%9D%E6%8E%A2/image-20231223160054826.png">
+<meta property="og:image" content="http://example.com/2023/12/23/%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B%E5%88%9D%E6%8E%A2/image-20231223160350350.png">
+<meta property="og:image" content="http://example.com/2023/12/23/%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B%E5%88%9D%E6%8E%A2/image-20231224124205480.png">
+<meta property="og:image" content="http://example.com/2023/12/23/%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B%E5%88%9D%E6%8E%A2/image-20231224124155035.png">
+<meta property="og:image" content="http://example.com/2023/12/23/%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B%E5%88%9D%E6%8E%A2/image-20231224124317205.png">
+<meta property="og:image" content="http://example.com/2023/12/23/%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B%E5%88%9D%E6%8E%A2/image-20231224124350201.png">
+<meta property="og:image" content="http://example.com/2023/12/23/%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B%E5%88%9D%E6%8E%A2/image-20231224124440291.png">
+<meta property="og:image" content="http://example.com/2023/12/23/%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B%E5%88%9D%E6%8E%A2/image-20231224124659975.png">
+<meta property="og:image" content="http://example.com/2023/12/23/%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B%E5%88%9D%E6%8E%A2/image-20231224172640653.png">
+<meta property="article:published_time" content="2023-12-23T07:38:57.000Z">
+<meta property="article:modified_time" content="2023-12-24T09:34:56.777Z">
 <meta property="article:author" content="Guoxin">
-<meta property="article:tag" content="论文读后总结">
-<meta property="article:tag" content="对抗样本">
-<meta property="article:tag" content="综述系列">
+<meta property="article:tag" content="计算机视觉">
+<meta property="article:tag" content="目标检测">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://example.com/2023/12/22/2023-3-A-Review-of-Adversarial-Attacks-in-Computer-Vision/image-20231222142500206.png">
+<meta name="twitter:image" content="http://example.com/2023/12/23/%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B%E5%88%9D%E6%8E%A2/image-20231223160041069.png">
   
   
   
-  <title>2023-3-A-Review-of-Adversarial-Attacks-in-Computer-Vision - Hexo</title>
+  <title>目标检测初探 - Hexo</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -316,7 +321,7 @@ mjx-container[display="true"] + br {
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="2023-3-A-Review-of-Adversarial-Attacks-in-Computer-Vision"></span>
+            <span id="subtitle" data-typed-text="目标检测初探"></span>
           
         </div>
 
@@ -327,8 +332,8 @@ mjx-container[display="true"] + br {
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2023-12-22 10:26" pubdate>
-          2023年12月22日 上午
+        <time datetime="2023-12-23 15:38" pubdate>
+          2023年12月23日 下午
         </time>
       </span>
     
@@ -339,7 +344,7 @@ mjx-container[display="true"] + br {
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          2.3k 字
+          2.9k 字
         
       </span>
     
@@ -350,7 +355,7 @@ mjx-container[display="true"] + br {
         
         
         
-          20 分钟
+          25 分钟
         
       </span>
     
@@ -387,64 +392,121 @@ mjx-container[display="true"] + br {
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">2023-3-A-Review-of-Adversarial-Attacks-in-Computer-Vision</h1>
+            <h1 id="seo-header">目标检测初探</h1>
             
             
               <div class="markdown-body">
                 
-                <p>基于转换的攻击，本综述系列的第三部分。看的迷迷糊糊的，主要是很多都不懂，先大致了解，以后用到了再补。</p>
-<h1 id="添加动量到迭代中">1 添加动量到迭代中</h1>
-<p>为了提高对抗样本的迁移能力，提出将基于优化的攻击与多种手段相结合。</p>
-<h2 id="mi-fgsm">1.1 MI-FGSM</h2>
-<p>在迭代过程中添加动量，比如
-MI-FGSM攻击。动量法可以更快的收敛和更少的震荡。MI-FGSM算法可以被写出如下形式:</p>
+                <h1 id="目标检测算法">0 目标检测算法</h1>
+<p>在图像分类任务中，我们假设图像中只有一个主要物体对象，我们只关注如何识别其类别。
+然而，很多时候图像里有多个我们感兴趣的目标，我们不仅想知道它们的类别，还想得到它们在图像中的具体位置。
+在计算机视觉里，我们将这类任务称为<em>目标检测</em>（object
+detection）或<em>目标识别</em>（object recognition）。</p>
+<h1 id="基本概念">1 基本概念</h1>
+<h2 id="锚框和边缘框">1.1 锚框和边缘框</h2>
+<p>目标检测算法通常会在输入图像中采样大量的区域，然后判断这些区域中是否包含我们感兴趣的目标，并调整区域边界从而更准确地预测目标的<em>真实边界框</em>（ground-truth
+bounding box）。 不同的模型使用的区域采样方法可能不同。
+这里我们介绍其中的一种方法：以每个像素为中心，生成多个缩放比和宽高比（aspect
+ratio）不同的边界框。 这些边界框被称为<em>锚框</em>（anchor box）。</p>
+<p>在目标检测中，我们通常使用<em>边界框</em>（bounding
+box）来描述对象的空间位置。
+边界框是矩形的，由矩形左上角的以及右下角的x和y坐标决定。
+另一种常用的边界框表示方法是边界框中心的(x,y)轴坐标以及框的宽度和高度。</p>
+<p>直白点：锚框是预测物体的位置，边缘框是物体实际的位置，都是用长方形进行框住。坐标有常见的表示方式，比如：左上角坐标和右下角坐标、左上角坐标和高宽、中间坐标和高宽等。</p>
+<h2 id="交并比-iou">1.2 交并比 （IOU）</h2>
+<p>我们刚刚提到某个锚框“较好地”覆盖了图像中的狗。
+如果已知目标的真实边界框，那么这里的“好”该如何如何量化呢？
+直观地说，可以衡量锚框和真实边界框之间的相似性。
+<em>杰卡德系数</em>（Jaccard）可以衡量两组之间的相似性。
+给定集合A和B，他们的杰卡德系数是他们交集的大小除以他们并集的大小：</p>
 <figure>
-<img src="image-20231222142500206.png" srcset="/img/loading.gif" lazyload alt="image-20231222142500206">
-<figcaption aria-hidden="true">image-20231222142500206</figcaption>
+<img src="image-20231223160041069.png" srcset="/img/loading.gif" lazyload alt="image-20231223160041069">
+<figcaption aria-hidden="true">image-20231223160041069</figcaption>
 </figure>
-<p>g就是动量，u为动量的衰减因子。由于每次迭代得到的动量大小不相同，所以对每次迭代得到的梯度进行归一化处理。</p>
-<p>由于在黑盒条件下，生成的对抗样本能力不强。所以又提出了NI-FGSM方法。</p>
-<h2 id="ni-fgsm">1.2 NI-FGSM</h2>
-<p>NI-FGSM是NAG和I-FGSM的结合。NAG是常见的梯度下降法的一种变体，可以加速训练过程并提高收敛。</p>
-<p>NAG可以写成：</p>
-<p><img src="image-20231222142419635.png" srcset="/img/loading.gif" lazyload alt="image-20231222142419635" style="zoom:67%;"></p>
-<p>g表示迭代t时的累计梯度，u表示衰减因子。每次迭代之前，NI-FGSM在前一个方向上累计梯度，然后对其更新。以前是对x求导，现在是对上一次迭代的x求导。</p>
-<h1 id="迭代过程中考虑输入变换">2 迭代过程中考虑输入变换</h1>
-<p>是一种数据扩展方法，包括旋转放大缩小。这不仅可以防止对抗性样本对模型的过拟合，而且可以提高对抗性样本的可移植性。白盒下只需要对一个样本进行优化，因为识别区域高度相关。但是黑盒条件下，可能有不同的识别区域，从而使得对抗样本很难保持对抗性。</p>
-<p>我们希望的是对抗样本对被攻击的白盒模型的识别区域不敏感。对抗样本对被攻击的白盒模型的识别区域不敏感意味着对抗样本在不同的输入区域都能够成功地干扰模型的预测，而不仅仅是在特定的输入区域有效。</p>
-<h2 id="tim">2.1 TIM</h2>
-<p>为了生成这样的样本，需要计算集合中所有图像的梯度，这是大量的计算。为了提高效率，文献中提出，在一定的假设下，对未转移图像进行卷积梯度法，其中卷积核是预定的。该方法可以与任何基于梯度的攻击方法（如FGSM等）相结合。来生成更多可转移和对抗性的样本。</p>
-<p><img src="image-20231222150601360.png" srcset="/img/loading.gif" lazyload alt="image-20231222150601360" style="zoom:67%;"></p>
-<p>W是高斯卷积核。</p>
-<h2 id="dim">2.2 DIM</h2>
-<p>一种多样化的输入思想，他采用数据增强的思想，在将图像输入进模型之前，对输入样本进行随机变换。</p>
-<h2 id="sim">2.3 SIM</h2>
-<p>优化还有另一种扩展模型的方法，因为dnn还有尺度不变性，所以相同的图像上原始图像和缩放图像的损失是相似的，缩放可以作为模型的扩展方法。</p>
-<p>SIM基于尺度不变性，提出通过缩放输入图像来优化对抗性扰动，提高可转移性。</p>
-<h1 id="训练附加分类器">3 训练附加分类器</h1>
-<p>几乎所有的对抗攻击都依赖于网络输出层的信息，该攻击基于对类划分和层划分的深度特征分布的建模和开发，称为FDA。</p>
-<h2 id="fda">3.1 FDA</h2>
-<p>基本思想是，计算FDA在层l的对抗扰动，首先需要使用截断的白盒模型和对应层的辅助模型g。g可以捕获逐层和逐类特征分布，对l层相对于c类特征分布的概率进行建模。损失函数为二元交叉熵，计算预测p和l。因此，在损失函数最小化的方向上扰动输入图像，使得p最大化，来生成对抗样本。</p>
-<p>即：如果样本在中间特征空间的某个层具有与c类特征分布一致的特征，则它可能被分为c类。</p>
-<p><img src="image-20231222161913914.png" srcset="/img/loading.gif" lazyload alt="image-20231222161913914" style="zoom:67%;"></p>
-<p>FDA利用了中间特征分布，这些特征分布并没有隐含描述精确边界。</p>
-<p>不懂，跳了。</p>
-<h1 id="基于生成的对抗转移">4 基于生成的对抗转移</h1>
-<p>研究表明，扰动存在于大的连续区域中，而不是分散在多个不连续的小口袋中。此产生扰动时最重要的是考虑扰动的方向，而不是空间中的特定点。为了去捕捉未知的对抗性扰动，作者引入类似于Gan的生成模型。该方法成功地训练生成器网络来捕获未知的目标分布，而不需要任何训练样本。由此产生的模型几乎立即产生了针对迁移攻击的具有较大多样性的对抗性扰动，并且该方法可以有效地模拟同时欺骗多个深度模型的扰动。</p>
-<p>只使用生成器来生成对抗性样本，以适应输入样本的扰动，这避免了迭代梯度计算的需要，并允许我们快速生成扰动，除了使用生成模型来创建对抗性扰动之外，还允许我们进一步训练更复杂的模型。此外，该研究还证明了由此产生的扰动可以在不同的模型中转移，这是一种迁移攻击。</p>
-<h1 id="通用对抗扰动">5 通用对抗扰动</h1>
-<p>找到一个一般的扰动v，使得对于大多数图像x。</p>
-<p>深度神经网络非常容易受到这种扰动的影响，尽管人眼无法区分。本文通过Deep
-fool生成一般扰动。该算法的目的是找到最小扰动v，使得Xi+v移出正确的分类区域Ri。该算法可以方便地计算VGG、Google
-LeNet、ResNet等不同模型的相应扰动，文章论证了这些一般扰动的存在性。</p>
-<p>通过欺骗在没有数据的多个网络层中学习的特征，从而误导CNN，有效地生成通用扰动。这些扰动具有很好的推广性。Fast
-feature
-fool用于在不依赖数据的情况下生成通用扰动，通过超饱和多层学习的特征（取代“翻转标签”目标）来愚弄CNN，即通过向输入添加扰动，破坏每一层的特征来误导后续层的特征。沿着网络层次结构的累积干扰将使网络无法区分原始输入，从而在最后一层产生大量的预测误差。其实质是在目标cnn不提供任何数据的情况下，寻找一个能够在每一层产生最大假激活的扰动。</p>
-<p>实验表明，数据相关性差的反而攻击效果好。</p>
-<p>GD-UAP</p>
-<p>作者将该方法应用于目标检测、语义分割等任务中，实现了多种攻击。本文证明了该扰动是无数据的。作者对提出的目标进行了全面的分析，包括：彻底比较GD-UAP方法与相关数据的相反部分，以及在存在各种防御机制的情况下评估UAP的实力。它将UAP攻击扩展到图像分类以外的视觉任务，并提出了一种目标模型，用于在最小先验信息下训练数据分布，以产生更强的干扰。</p>
-<p>RHP</p>
-<p>出了梯度Transformer模块来获得区域均匀对抗样本。其原理是增加同一区域内像素的相关性，从而造成区域均匀性扰动。基于这一观察，研究人员提出了一种变换范式和一个梯度Transformer模块来生成专门用于攻击防御的区域均匀扰动（RHP），研究人员通过攻击一系列防御模型的实验，证明了区域均匀扰动的有效性。使用语义分割任务来攻击和测试目标检测任务，证明了RHP的跨任务可移植性。</p>
+<p><img src="image-20231223160054826.png" srcset="/img/loading.gif" lazyload alt="image-20231223160054826" style="zoom:67%;"></p>
+<h2 id="训练数据中标注锚框">1.3 训练数据中标注锚框</h2>
+<p><img src="image-20231223160350350.png" srcset="/img/loading.gif" lazyload alt="image-20231223160350350" style="zoom:67%;"></p>
+<h2 id="非极大抑制">1.4 非极大抑制</h2>
+<p>当有许多锚框时，可能会输出许多相似的具有明显重叠的预测边界框，都围绕着同一目标。
+为了简化输出，我们可以使用<em>非极大值抑制</em>（non-maximum
+suppression，NMS）合并属于同一目标的类似的预测边界框。</p>
+<p>代码就看李沐的。</p>
+<h1 id="r-cnn区域卷积神经网络">2 R-CNN（区域卷积神经网络）</h1>
+<ol type="1">
+<li>对输入图像使用<em>选择性搜索</em>来选取多个高质量的提议区域 (<a target="_blank" rel="noopener" href="https://zh-v2.d2l.ai/chapter_references/zreferences.html#id172">Uijlings
+<em>et al.</em>,
+2013</a>)。这些提议区域通常是在多个尺度下选取的，并具有不同的形状和大小。每个提议区域都将被标注类别和真实边界框；</li>
+<li>选择一个预训练的卷积神经网络，并将其在输出层之前截断。将每个提议区域变形为网络需要的输入尺寸，并通过前向传播输出抽取的提议区域特征；</li>
+<li>将每个提议区域的特征连同其标注的类别作为一个样本。训练多个支持向量机对目标分类，其中每个支持向量机用来判断样本是否属于某一个类别；</li>
+<li>将每个提议区域的特征连同其标注的边界框作为一个样本，训练线性回归模型来预测真实边界框。</li>
+</ol>
+<p>尽管R-CNN模型通过预训练的卷积神经网络有效地抽取了图像特征，但它的速度很慢。
+想象一下，我们可能从一张图像中选出上千个提议区域，这需要上千次的卷积神经网络的前向传播来执行目标检测。
+这种庞大的计算量使得R-CNN在现实世界中难以被广泛应用。</p>
+<p><img src="image-20231224124205480.png" srcset="/img/loading.gif" lazyload alt="image-20231224124205480" style="zoom:67%;"></p>
+<h1 id="fast-rcnn">3 Fast Rcnn</h1>
+<p>R-CNN的主要性能瓶颈在于，对每个提议区域，卷积神经网络的前向传播是独立的，而没有共享计算。
+由于这些区域通常有重叠，独立的特征抽取会导致重复的计算。 <em>Fast
+R-CNN</em> (<a target="_blank" rel="noopener" href="https://zh-v2.d2l.ai/chapter_references/zreferences.html#id42">Girshick,
+2015</a>)对R-CNN的主要改进之一，是仅在整张图象上执行卷积神经网络的前向传播。</p>
+<p><img src="image-20231224124155035.png" srcset="/img/loading.gif" lazyload alt="image-20231224124155035" style="zoom:67%;"></p>
+<ol type="1">
+<li>与R-CNN相比，Fast
+R-CNN用来提取特征的卷积神经网络的输入是整个图像，而不是各个提议区域。此外，这个网络通常会参与训练。设输入为一张图像，将卷积神经网络的输出的形状记为(1
+c h_1 w_1)；</li>
+<li>假设选择性搜索生成了(n)个提议区域。这些形状各异的提议区域在卷积神经网络的输出上分别标出了形状各异的兴趣区域。然后，这些感兴趣的区域需要进一步抽取出形状相同的特征（比如指定高度(h_2)和宽度(w_2)），以便于连结后输出。为了实现这一目标，Fast
+R-CNN引入了<em>兴趣区域汇聚层</em>（RoI
+pooling）：将卷积神经网络的输出和提议区域作为输入，输出连结后的各个提议区域抽取的特征，形状为(n
+c h_2 w_2)；</li>
+<li>通过全连接层将输出形状变换为(n
+d)，其中超参数(d)取决于模型设计；</li>
+<li>预测(n)个提议区域中每个区域的类别和边界框。更具体地说，在预测类别和边界框时，将全连接层的输出分别转换为形状为(n
+q)（(q)是类别的数量）的输出和形状为(n
+)的输出。其中预测类别时使用softmax回归。</li>
+</ol>
+<h1 id="faster-r-cnn">4 Faster R-CNN</h1>
+<p>为了较精确地检测目标结果，Fast
+R-CNN模型通常需要在选择性搜索中生成大量的提议区域。 <em>Faster
+R-CNN</em> (<a target="_blank" rel="noopener" href="https://zh-v2.d2l.ai/chapter_references/zreferences.html#id137">Ren
+<em>et al.</em>,
+2015</a>)提出将选择性搜索替换为<em>区域提议网络</em>（region proposal
+network），从而减少提议区域的生成数量，并保证目标检测的精度。</p>
+<p><img src="image-20231224124317205.png" srcset="/img/loading.gif" lazyload alt="image-20231224124317205" style="zoom:67%;"></p>
+<ol type="1">
+<li>使用填充为1的(3)的卷积层变换卷积神经网络的输出，并将输出通道数记为(c)。这样，卷积神经网络为图像抽取的特征图中的每个单元均得到一个长度为(c)的新特征。</li>
+<li>以特征图的每个像素为中心，生成多个不同大小和宽高比的锚框并标注它们。</li>
+<li>使用锚框中心单元长度为(c)的特征，分别预测该锚框的二元类别（含目标还是背景）和边界框。</li>
+<li>使用非极大值抑制，从预测类别为目标的预测边界框中移除相似的结果。最终输出的预测边界框即是兴趣区域汇聚层所需的提议区域。</li>
+</ol>
+<p>值得一提的是，区域提议网络作为Faster
+R-CNN模型的一部分，是和整个模型一起训练得到的。 换句话说，Faster
+R-CNN的目标函数不仅包括目标检测中的类别和边界框预测，还包括区域提议网络中锚框的二元类别和边界框预测。
+作为端到端训练的结果，区域提议网络能够学习到如何生成高质量的提议区域，从而在减少了从数据中学习的提议区域的数量的情况下，仍保持目标检测的精度。</p>
+<h1 id="mask-r-cnn">5 Mask R-CNN</h1>
+<p><img src="image-20231224124350201.png" srcset="/img/loading.gif" lazyload alt="image-20231224124350201" style="zoom:67%;"></p>
+<p>如果在训练集中还标注了每个目标在图像上的像素级位置，那么<em>Mask
+R-CNN</em> (<a target="_blank" rel="noopener" href="https://zh-v2.d2l.ai/chapter_references/zreferences.html#id57">He
+<em>et al.</em>,
+2017</a>)能够有效地利用这些详尽的标注信息进一步提升目标检测的精度。如 <a target="_blank" rel="noopener" href="https://zh-v2.d2l.ai/chapter_computer-vision/rcnn.html#fig-mask-r-cnn">图13.8.5</a>所示，Mask
+R-CNN是基于Faster R-CNN修改而来的。 具体来说，Mask
+R-CNN将兴趣区域汇聚层替换为了
+<em>兴趣区域对齐</em>层，使用<em>双线性插值</em>（bilinear
+interpolation）来保留特征图上的空间信息，从而更适于像素级预测。
+兴趣区域对齐层的输出包含了所有与兴趣区域的形状相同的特征图。
+它们不仅被用于预测每个兴趣区域的类别和边界框，还通过额外的全卷积网络预测目标的像素级位置。
+本章的后续章节将更详细地介绍如何使用全卷积网络预测图像中像素级的语义。</p>
+<h1 id="yolo">5 YOLO</h1>
+<p><img src="image-20231224124440291.png" srcset="/img/loading.gif" lazyload alt="image-20231224124440291" style="zoom: 33%;"></p>
+<p>比如yolov1就是分成了7*7个锚框，然后预测2个边缘框。只看一次，因为前面的所有方法都有大量的重叠，yolo尽量不重叠，所以它分出来的几乎不重叠。预测两个边缘框是因为有的框可能包含两个物体。</p>
+<h1 id="ssd">6 SSD</h1>
+<p><img src="image-20231224124659975.png" srcset="/img/loading.gif" lazyload alt="image-20231224124659975" style="zoom:50%;"></p>
+<p>我对ssd的理解就是逐层取提特征，提取完特征加锚框，感受野会更大。</p>
+<h1 id="ssd实现">7 SSD实现</h1>
+<p>见李沐的课或者我的仓库，实验是检测出图片中的香蕉，实验结果如图。</p>
+<figure>
+<img src="image-20231224172640653.png" srcset="/img/loading.gif" lazyload alt="image-20231224172640653">
+<figcaption aria-hidden="true">image-20231224172640653</figcaption>
+</figure>
 
                 
               </div>
@@ -463,20 +525,13 @@ fool用于在不依赖数据的情况下生成通用扰动，通过超饱和多�
     
       <span class="category-chain">
         
-  <a href="/categories/%E8%AE%BA%E6%96%87%E8%AF%BB%E5%90%8E%E6%80%BB%E7%BB%93/" class="category-chain-item">论文读后总结</a>
+  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89/" class="category-chain-item">计算机视觉</a>
   
   
     <span>></span>
     
-  <a href="/categories/%E8%AE%BA%E6%96%87%E8%AF%BB%E5%90%8E%E6%80%BB%E7%BB%93/%E5%AF%B9%E6%8A%97%E6%A0%B7%E6%9C%AC/" class="category-chain-item">对抗样本</a>
+  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89/%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B/" class="category-chain-item">目标检测</a>
   
-  
-    <span>></span>
-    
-  <a href="/categories/%E8%AE%BA%E6%96%87%E8%AF%BB%E5%90%8E%E6%80%BB%E7%BB%93/%E5%AF%B9%E6%8A%97%E6%A0%B7%E6%9C%AC/%E7%BB%BC%E8%BF%B0%E7%B3%BB%E5%88%97/" class="category-chain-item">综述系列</a>
-  
-  
-
   
 
   
@@ -492,11 +547,9 @@ fool用于在不依赖数据的情况下生成通用扰动，通过超饱和多�
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/%E8%AE%BA%E6%96%87%E8%AF%BB%E5%90%8E%E6%80%BB%E7%BB%93/" class="print-no-link">#论文读后总结</a>
+        <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89/" class="print-no-link">#计算机视觉</a>
       
-        <a href="/tags/%E5%AF%B9%E6%8A%97%E6%A0%B7%E6%9C%AC/" class="print-no-link">#对抗样本</a>
-      
-        <a href="/tags/%E7%BB%BC%E8%BF%B0%E7%B3%BB%E5%88%97/" class="print-no-link">#综述系列</a>
+        <a href="/tags/%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B/" class="print-no-link">#目标检测</a>
       
     </div>
   
@@ -508,8 +561,8 @@ fool用于在不依赖数据的情况下生成通用扰动，通过超饱和多�
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>2023-3-A-Review-of-Adversarial-Attacks-in-Computer-Vision</div>
-      <div>http://example.com/2023/12/22/2023-3-A-Review-of-Adversarial-Attacks-in-Computer-Vision/</div>
+      <div>目标检测初探</div>
+      <div>http://example.com/2023/12/23/目标检测初探/</div>
     </div>
     <div class="license-meta">
       
@@ -521,7 +574,7 @@ fool用于在不依赖数据的情况下生成通用扰动，通过超饱和多�
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2023年12月22日</div>
+          <div>2023年12月23日</div>
         </div>
       
       
@@ -553,9 +606,9 @@ fool用于在不依赖数据的情况下生成通用扰动，通过超饱和多�
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2023/12/23/%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B%E5%88%9D%E6%8E%A2/" title="目标检测初探">
+                      <a href="/2023/12/23/2023-4-A-Review-of-Adversarial-Attacks-in-Computer-Vision/" title="2023-4-A-Review-of-Adversarial-Attacks-in-Computer-Vision">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">目标检测初探</span>
+                        <span class="hidden-mobile">2023-4-A-Review-of-Adversarial-Attacks-in-Computer-Vision</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -563,8 +616,8 @@ fool用于在不依赖数据的情况下生成通用扰动，通过超饱和多�
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2023/12/21/2023-2-A-Review-of-Adversarial-Attacks-in-Computer-Vision/" title="2023-2-A-Review-of-Adversarial-Attacks-in-Computer-Vision">
-                        <span class="hidden-mobile">2023-2-A-Review-of-Adversarial-Attacks-in-Computer-Vision</span>
+                      <a href="/2023/12/22/2023-3-A-Review-of-Adversarial-Attacks-in-Computer-Vision/" title="2023-3-A-Review-of-Adversarial-Attacks-in-Computer-Vision">
+                        <span class="hidden-mobile">2023-3-A-Review-of-Adversarial-Attacks-in-Computer-Vision</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
