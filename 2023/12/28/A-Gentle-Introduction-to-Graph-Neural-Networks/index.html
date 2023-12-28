@@ -1,0 +1,1002 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Guoxin">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="原文是一篇博客形式的文章，该文章最大的特点：全篇没有公式，完全用可交互的图来对GNN进行说明。 0 图是什么  作者给出图的定义，一般是由顶点、边和全局组成。其中点就是点，边就是点之间的连线，全局又可以理解为全局点，这个全局点和所有点相连，也和所有边相连。这个全局点就是个虚拟点，设置它就是为了更好的掌握全局信息，进行全局的把握，进行信息的传递。 1 常见数据如何表示为图 图片和文字是日常">
+<meta property="og:type" content="article">
+<meta property="og:title" content="A Gentle Introduction to Graph Neural Networks">
+<meta property="og:url" content="http://example.com/2023/12/28/A-Gentle-Introduction-to-Graph-Neural-Networks/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="原文是一篇博客形式的文章，该文章最大的特点：全篇没有公式，完全用可交互的图来对GNN进行说明。 0 图是什么  作者给出图的定义，一般是由顶点、边和全局组成。其中点就是点，边就是点之间的连线，全局又可以理解为全局点，这个全局点和所有点相连，也和所有边相连。这个全局点就是个虚拟点，设置它就是为了更好的掌握全局信息，进行全局的把握，进行信息的传递。 1 常见数据如何表示为图 图片和文字是日常">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2023/12/28/A-Gentle-Introduction-to-Graph-Neural-Networks/image-20231228130404070.png">
+<meta property="og:image" content="http://example.com/2023/12/28/A-Gentle-Introduction-to-Graph-Neural-Networks/image-20231228141122933.png">
+<meta property="og:image" content="http://example.com/2023/12/28/A-Gentle-Introduction-to-Graph-Neural-Networks/image-20231228142003434.png">
+<meta property="og:image" content="http://example.com/2023/12/28/A-Gentle-Introduction-to-Graph-Neural-Networks/image-20231228142118869.png">
+<meta property="og:image" content="http://example.com/2023/12/28/A-Gentle-Introduction-to-Graph-Neural-Networks/image-20231228142202127.png">
+<meta property="og:image" content="http://example.com/2023/12/28/A-Gentle-Introduction-to-Graph-Neural-Networks/image-20231228143350124.png">
+<meta property="og:image" content="http://example.com/2023/12/28/A-Gentle-Introduction-to-Graph-Neural-Networks/image-20231228143932838.png">
+<meta property="og:image" content="http://example.com/2023/12/28/A-Gentle-Introduction-to-Graph-Neural-Networks/image-20231228144030462.png">
+<meta property="og:image" content="http://example.com/2023/12/28/A-Gentle-Introduction-to-Graph-Neural-Networks/image-20231228143958056.png">
+<meta property="og:image" content="http://example.com/2023/12/28/A-Gentle-Introduction-to-Graph-Neural-Networks/image-20231228144502435.png">
+<meta property="og:image" content="http://example.com/2023/12/28/A-Gentle-Introduction-to-Graph-Neural-Networks/image-20231228144604711.png">
+<meta property="og:image" content="http://example.com/2023/12/28/A-Gentle-Introduction-to-Graph-Neural-Networks/image-20231228144840174.png">
+<meta property="og:image" content="http://example.com/2023/12/28/A-Gentle-Introduction-to-Graph-Neural-Networks/image-20231228145921678.png">
+<meta property="og:image" content="http://example.com/2023/12/28/A-Gentle-Introduction-to-Graph-Neural-Networks/image-20231228150100240.png">
+<meta property="og:image" content="http://example.com/2023/12/28/A-Gentle-Introduction-to-Graph-Neural-Networks/image-20231228150021238.png">
+<meta property="og:image" content="http://example.com/2023/12/28/A-Gentle-Introduction-to-Graph-Neural-Networks/image-20231228150131119.png">
+<meta property="og:image" content="http://example.com/2023/12/28/A-Gentle-Introduction-to-Graph-Neural-Networks/image-20231228150441830.png">
+<meta property="og:image" content="http://example.com/2023/12/28/A-Gentle-Introduction-to-Graph-Neural-Networks/image-20231228150457073.png">
+<meta property="og:image" content="http://example.com/2023/12/28/A-Gentle-Introduction-to-Graph-Neural-Networks/image-20231228152044171.png">
+<meta property="og:image" content="http://example.com/2023/12/28/A-Gentle-Introduction-to-Graph-Neural-Networks/image-20231228152259027.png">
+<meta property="og:image" content="http://example.com/2023/12/28/A-Gentle-Introduction-to-Graph-Neural-Networks/image-20231228152733625.png">
+<meta property="og:image" content="http://example.com/2023/12/28/A-Gentle-Introduction-to-Graph-Neural-Networks/image-20231228152820231.png">
+<meta property="og:image" content="http://example.com/2023/12/28/A-Gentle-Introduction-to-Graph-Neural-Networks/image-20231228153325797.png">
+<meta property="og:image" content="http://example.com/2023/12/28/A-Gentle-Introduction-to-Graph-Neural-Networks/image-20231228164742896.png">
+<meta property="article:published_time" content="2023-12-28T03:28:25.000Z">
+<meta property="article:modified_time" content="2023-12-28T09:04:44.167Z">
+<meta property="article:author" content="Guoxin">
+<meta property="article:tag" content="论文读后总结">
+<meta property="article:tag" content="经典模型系列">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/2023/12/28/A-Gentle-Introduction-to-Graph-Neural-Networks/image-20231228130404070.png">
+  
+  
+  
+  <title>A Gentle Introduction to Graph Neural Networks - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.5","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"><style>mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+.MathJax path {
+  stroke-width: 3;
+}
+
+mjx-container[display="true"] {
+  overflow: auto hidden;
+}
+
+mjx-container[display="true"] + br {
+  display: none;
+}
+</style></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Guoxin</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="A Gentle Introduction to Graph Neural Networks"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-12-28 11:28" pubdate>
+          2023年12月28日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          5.5k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          46 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">A Gentle Introduction to Graph Neural Networks</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>原文是一篇博客形式的文章，该文章最大的特点：全篇没有公式，完全用可交互的图来对GNN进行说明。</p>
+<h1 id="图是什么">0 图是什么</h1>
+<p><img src="image-20231228130404070.png" srcset="/img/loading.gif" lazyload alt="image-20231228130404070" style="zoom:67%;"></p>
+<p>作者给出图的定义，一般是由顶点、边和全局组成。其中点就是点，边就是点之间的连线，全局又可以理解为全局点，这个全局点和所有点相连，也和所有边相连。这个全局点就是个虚拟点，设置它就是为了更好的掌握全局信息，进行全局的把握，进行信息的传递。</p>
+<h1 id="常见数据如何表示为图">1 常见数据如何表示为图</h1>
+<p>图片和文字是日常生活中最常遇到的数据类型和格式，图能够广泛应用必须要解决这两个数据所带来的问题。本节作者讲述了<strong>如何将两种（图像和文本）看似与graph不相关的数据表示成我们熟悉的graph数据。</strong></p>
+<h2 id="图片">1.1 图片</h2>
+<p>在CNN中，我们利用PIL包的Image来处理图像数据。</p>
+<p>读入彩色图的时候，读出的是一个二维矩阵，矩阵中每个元素（像素）有RGB三个值。因此，我们通常将图像视为具有图像通道的矩形网格，每个像素代表一个节点，并与周围的像素点相连（8个）。</p>
+<figure>
+<img src="image-20231228141122933.png" srcset="/img/loading.gif" lazyload alt="image-20231228141122933">
+<figcaption aria-hidden="true">image-20231228141122933</figcaption>
+</figure>
+<p>不管你如何变化右边这个图，用鼠标拉拽，但是由于像素之间的连接性没发生变化，因此矩阵也不会发生变化。但是可以看到这个图相对来说集中在中间的线上，所以这样的邻接矩阵比较稀疏。假设图片是1080p的，你的邻接矩阵将是（1920×1080）**2，大约是4,299,816,960,000，10的12次方级别，非常的稀疏，非常的大。</p>
+<h2 id="文本">1.2 文本</h2>
+<p>文本可以被认为是一个序列，其中<strong>每一个词作为一个节点，每一个词和其下一个词之前有一条有向边：</strong></p>
+<p><img src="image-20231228142003434.png" srcset="/img/loading.gif" lazyload alt="image-20231228142003434" style="zoom:67%;"></p>
+<p>说白了还是稀疏，但是相对于图片来说好一点。</p>
+<p>## 1.3 其他数据</p>
+<h3 id="分子">1.3.1 分子</h3>
+<p>分子中原子通过作用力连在一起，因此<strong>每一个原子可以表示为一个点，原子间键表示为边。</strong>
+如下图是一个香料分子：</p>
+<p><img src="image-20231228142118869.png" srcset="/img/loading.gif" lazyload alt="image-20231228142118869" style="zoom:67%;"></p>
+<h3 id="社交网络">1.3.2 社交网络</h3>
+<p>社交网络除了graph外，我们很难再想出其他表示形式。<strong>在社交网络中，我们将个人表示为节点，将他们间的关系表示为边。</strong></p>
+<p>比如戏剧中人物关系图：</p>
+<p><img src="image-20231228142202127.png" srcset="/img/loading.gif" lazyload alt="image-20231228142202127" style="zoom:67%;"></p>
+<h3 id="引文图">1.3.3 引文图</h3>
+<p><strong>将论文抽象为节点，论文A引用了论文B，则有一条有向边A-&gt;B。</strong>该图是有向图。</p>
+<h1 id="图要处理的任务">2 图要处理的任务</h1>
+<p>图里面的任务主要分为三大类：图级、节点级和边级。在图级任务中，我们预测整个图的属性。对于节点级任务，我们预测图中每个节点的一些属性。对于边级任务，我们希望预测图中边的属性或者是否存在这条边。</p>
+<h2 id="图级别的任务">2.1 图级别的任务</h2>
+<p>在图级任务中，我们的目标是<strong>预测整个图的属性。</strong>
+比如对于某一分子，我们可能想要预测该分子的气味，或者它是否会和与疾病有关的受体结合。</p>
+<p>这里的任务是输入一个图看是否有两个环，当然这也可以考普通的编程来解决。</p>
+<p><img src="image-20231228143350124.png" srcset="/img/loading.gif" lazyload alt="image-20231228143350124" style="zoom:67%;"></p>
+<h2 id="节点级别的任务">2.2 节点级别的任务</h2>
+<p>节点级预测问题的一个经典示例是空手道俱乐部数据集，该数据集是一个社交网络图，每个节点都具有一个唯一的label。如果教练和创始人分道扬镳，预测学员会跟谁。因此，节点预测的输入是一个图，输出是节点的标签：</p>
+<figure>
+<img src="image-20231228143932838.png" srcset="/img/loading.gif" lazyload alt="image-20231228143932838">
+<figcaption aria-hidden="true">image-20231228143932838</figcaption>
+</figure>
+<h2 id="边级别的任务">2.3 边级别的任务</h2>
+<p>对于边级任务：给定一些节点，我们希望<strong>预测这些节点中的哪些共享一条边或该边的权值是什么。</strong>想要理解节点或者是主题之间的联系，比如图片理解之类的。</p>
+<p><img src="image-20231228144030462.png" srcset="/img/loading.gif" lazyload alt="image-20231228144030462" style="zoom:67%;"></p>
+<p><img src="image-20231228143958056.png" srcset="/img/loading.gif" lazyload alt="image-20231228143958056" style="zoom:67%;"></p>
+<h1 id="gnngraph-neural-networks">3 GNN（Graph Neural Networks）</h1>
+<h2 id="使用图所面临的挑战">3.1 使用图所面临的挑战</h2>
+<p>在使用神经网络对图进行处理前，我们得先将图表示成神经网络能够处理的数据类型。</p>
+<p>图上的信息有四种：节点属性、边属性、全局属性以及连接性。</p>
+<p>图表示的<strong>难点在于怎么来表示图的连接性。</strong>
+最容易想到的就是邻接矩阵：相连为1否则为0。</p>
+<p>不过，使用邻接矩阵来表示连接性的缺点是显而易见的：对于一些大型网络，其节点数可能上百万，并且每个节点的边数变化可能会很大，比如某些节点连接了几万条边，有些节点只连接了一条边，这样邻接矩阵将会非常稀疏，虽然我们可以利用压缩的办法来对这些稀疏矩阵进行存储，但稀疏矩阵的计算一直都是一个难题。</p>
+<p>此外，还有一个问题：对于同一个图，我们将矩阵中任何行或列之间进行交换：</p>
+<p>虽然两个邻接矩阵看起来不一样，但二者表示的却是同一个图。</p>
+<p>也就是说，不同的邻接矩阵，可以表示相同的连接性！这意味着如果我设计了一个神经网络，在上述两个不同的矩阵输入后我得保证神经网络的输出是一样的。对于上面提到的两个问题，一个有效的解决方式是<strong>邻接表</strong>：</p>
+<p><img src="image-20231228144502435.png" srcset="/img/loading.gif" lazyload alt="image-20231228144502435" style="zoom:67%;"></p>
+<p>使用邻接列表来表示连接性的两个好处： 1.
+对于稀疏矩阵来说，使用邻接列表存储显然更加节省空间。 2.
+<strong>不存在两个不一样的邻接列表表示同一张图。</strong></p>
+<p>但同时邻接表的访问速度远低于邻接矩阵，不容易计算，输入gpu也是很大的问题。</p>
+<h2 id="最简单的gnn">3.2 最简单的GNN</h2>
+<p><img src="image-20231228144604711.png" srcset="/img/loading.gif" lazyload alt="image-20231228144604711" style="zoom:67%;"></p>
+<p>对于顶点状态向量、边状态向量还有全局的状态向量，我们分别构造<strong>一个输入大小等于输出大小</strong>的多层感知机。经过MLP后，我们就得到了更新后的状态向量。</p>
+<p><strong>三个MLP组成了GNN的一层，经过GNN的一层后，原图的节点、边以及全局的状态向量都被更新过，但整个图的结构并没有发生变化。</strong></p>
+<p>GNN可以像一般的神经网络那样将多层进行叠加，以求来对图的状态向量进行多次更新。并没有改变原始输入的连接性，只改变了点和边的值。</p>
+<h2 id="pooling">3.3 pooling</h2>
+<p>对于一个简单的二分类问题，比如上面3.2节提到的空手道俱乐部网络图，我们需要对每个节点进行分类，在我们得到每个节点的状态向量后，我们可以搭建一个输出为2的全连接层，然后再经过一个Softmax，就能进行二分类了。多分类问题类似，只要将全连接层的输出改为n即可。</p>
+<p><img src="image-20231228144840174.png" srcset="/img/loading.gif" lazyload alt="image-20231228144840174" style="zoom:67%;"></p>
+<p>将经过最后一层后输出的节点状态向量与一个全连接层相连，就能进行分类任务了。</p>
+<p><strong>值得一提的是，这里所有节点都是共用一个全连接层，也就是所有节点共享同一个全连接层的参数。</strong></p>
+<p>以上是最简单的一种情况，但我们不得不考虑另外一种情况：<strong>如果我们没有一个节点的向量表示，但我们仍想对该节点进行预测该怎么办？</strong>
+答案是Pooling，Pooling在CNN中已经有过接触。</p>
+<p>具体如下所示：</p>
+<p><img src="image-20231228145921678.png" srcset="/img/loading.gif" lazyload alt="image-20231228145921678" style="zoom:67%;"></p>
+<p>如果我们没有右上角那个节点的向量表示，此时我们就可以把<strong>与该节点相连的四条边的状态向量以及全局状态向量相加，得到这个节点的状态向量，然后再经过全连接层进行预测。</strong>sum类型的pooling。</p>
+<p>类似地，如果没有某条边的状态向量，只有节点的状态向量，如下所示：</p>
+<p><img src="image-20231228150100240.png" srcset="/img/loading.gif" lazyload alt="image-20231228150100240" style="zoom:67%;"></p>
+<p>此时我们就可以<strong>把这条边上的两个节点的向量相加得到该边的向量，然后再进行预测。</strong></p>
+<p>又比如我们只有节点信息，没有全局信息，而我们想对图的全局标签进行预测：</p>
+<p><img src="image-20231228150021238.png" srcset="/img/loading.gif" lazyload alt="image-20231228150021238" style="zoom:67%;"></p>
+<p>此时同样可以<strong>将图中所有顶点的向量加起来，得到一个全局表示，然后再进行预测。</strong></p>
+<p>因此，无论缺少哪一种信息，我们最终都能通过Pooling操作来汇聚已有的信息，进而得到我们想要的信息。</p>
+<p>具体来讲，上面描述的GNN可以通过下图概括：</p>
+<figure>
+<img src="image-20231228150131119.png" srcset="/img/loading.gif" lazyload alt="image-20231228150131119">
+<figcaption aria-hidden="true">image-20231228150131119</figcaption>
+</figure>
+<p>我们将原始graph通过一个个GNN层（每一层都有三个MLP，分别对三种状态进行转换），然后，<strong>无论是顶点、边还是全局，都通过同一个全连接层进行输出预测。</strong></p>
+<p>上述这种最简单的GNN存在着一个很明显的缺陷：我们在GNN层对节点或者边进行更新时，每层内所有节点共用一个MLP，所有边共用一个MLP，此时我们<strong>并没有考虑连接信息</strong>，也就是说我们在对节点更新时没有考虑与该节点相连的其余节点或者边，更新边时没有考虑与该边相连的节点。</p>
+<p>简单来说，<strong>我们在更新时没有将图的结构信息考虑进去。</strong></p>
+<h2 id="消息传递">3.4 消息传递</h2>
+<p>我们在更新每一个节点的向量时，并不只是简单地将该节点的向量通过一个MLP后得到更新后的向量，而是还要考虑<strong>与该节点相连节点的向量</strong>。有的时候只考虑自己的邻居还不行，因为这样的话权重都是一样的。我们还得考虑边的大小，即边在此时就相当于是权重。</p>
+<p>即更新点时考虑边，更新边时考虑点。</p>
+<p>在进行边的更新时，我们可以<strong>将与该边相连的两个顶点的向量加入到该边的向量中（如果维度不同则需要变换），然后再对该边进行更新。同样，对于某一个节点的更新，我们也可以将与该节点相连的边的向量加入到该节点中，然后再对该节点进行更新。</strong></p>
+<p><img src="image-20231228150441830.png" srcset="/img/loading.gif" lazyload alt="image-20231228150441830" style="zoom:67%;"></p>
+<p>我们可以<strong>先把边的信息传递给顶点，顶点更新后，再将更新后的顶点信息传递给边，边再更新，或者相反，或者交叉传递。</strong></p>
+<p><img src="image-20231228150457073.png" srcset="/img/loading.gif" lazyload alt="image-20231228150457073" style="zoom:50%;"></p>
+<p>我们可以同时进行两种操作：<strong>将边的信息给节点，然后节点的信息也给边。此时的节点和边都包含了各自的信息，然后再进行一次传递，将二者的信息互相传递，随后再用两个MLP对节点和边进行更新。</strong></p>
+<h2 id="全局表示">3.5 全局表示</h2>
+<p><strong>对一个large
+graph来讲，即使我们多次进行消息传递，图中相距较远的两个顶点间也可能无法有效地相互传输信息。</strong></p>
+<p>一种解决办法是加入<strong>master
+node</strong>（主节点）或者<strong>context
+vector</strong>（上下文向量）。<strong>主节点是一个虚拟的点，我们假设它与图中所有节点都相连，同时它也跟所有的边都相连。</strong></p>
+<p>因此在进行顶点或者边的更新时，如果我们加上全局表示 U
+，就能保证所有顶点（边）间都能传递信息。</p>
+<p><img src="image-20231228152044171.png" srcset="/img/loading.gif" lazyload alt="image-20231228152044171" style="zoom:67%;"></p>
+<p>说白了就是虚构了一个超节点，这个超节点能捕捉全局的信息。</p>
+<h1 id="实验">4 实验</h1>
+<p>作者在网页上展示了一个实验，可以调整各个超参数，来观察训练的结果。</p>
+<p><img src="image-20231228152259027.png" srcset="/img/loading.gif" lazyload alt="image-20231228152259027" style="zoom:67%;"></p>
+<p>并且对比了各个超参数的影响，相当于做了消融实验。</p>
+<p>一般来讲，层数越深，关联越多，准确率越高。至于embedding的向量长度和pool时的方法（max、sum、aver）都影响不大。</p>
+<h1 id="相关知识">5 相关知识</h1>
+<h2 id="其他图">5.1 其他图</h2>
+<p>这里主要介绍了两种其他类型的图：多重图和嵌套图。</p>
+<p>所谓<strong>多重图</strong>，就是指<strong>图中一对节点间可以有多种不同类型的边。</strong>
+比如在社交网络中，两个节点（用户）之间的边，可以表示这两人是熟人、家人或者情侣。<strong>这种情况下，GNN可以通过为不同类型的边设置不同类型的消息传递方式来进行调整。</strong></p>
+<p>所谓<strong>嵌套图</strong>，就是说<strong>图中的某一个节点可能就表示一个图。</strong>
+比如在一个分子网络中，一个节点代表一个分子，如果一个分子能通过某种反应转换为另一个分子，则两个分子之间有一条边。在这个网络中，节点（分子）本身也是一个图（原子-原子）。<strong>在这种情况下，可以让GNN学习分子级别的表示和另一个反应网络级别的表示，并于训练期间在它们之间进行交替。</strong></p>
+<p>此外，还有<strong>超图</strong>，超图的一条边可以连接到多个节点，而不仅仅是两个。对于这种情况，<strong>可以通过识别节点社区并分配连接到社区中所有节点的超边来构建超图。</strong></p>
+<p><img src="image-20231228152733625.png" srcset="/img/loading.gif" lazyload alt="image-20231228152733625" style="zoom:50%;"></p>
+<h2 id="采样和批处理">5.2 采样和批处理</h2>
+<p>GNN存在<strong>邻居爆炸</strong>的问题，即：<strong>GNN会不断地聚合图中相邻节点的信息，第L层GNN中的每个目标节点都需要聚合原图中L层以前的所有节点信息。邻点爆炸式增长，使得GNN的minibatch训练极具挑战性。</strong></p>
+<p>此外，由于彼此相邻的节点和边的数目不同，我们也不能使用恒定的批量大小。</p>
+<p>解决该问题的办法是<strong>从图中进行采样，得到一个子图，然后对子图进行处理。</strong></p>
+<p>对一张图进行采样的四种方式如下图所示：</p>
+<p><img src="image-20231228152820231.png" srcset="/img/loading.gif" lazyload alt="image-20231228152820231" style="zoom:50%;"></p>
+<ul>
+<li>Random node sampling：先随机采样一些点（Sampled
+nodes），然后再采样它们的邻居。</li>
+<li>Random walk
+sampling：做一些随机游走，从当前点的邻居节点中进行采样。</li>
+<li>Random walk with
+neighborhood：结合前两种：先随机走一定长度，然后再采样它们的邻居。</li>
+<li>Diffusion
+Sampling：取一个根节点，然后对它的一近邻、二近邻一直到K近邻进行采样，类似于一个BFS。</li>
+</ul>
+<h2 id="inductive-biases感应偏差">5.3 Inductive biases（感应偏差）</h2>
+<p>先说一说<strong>CNN的平移不变性</strong>：即使目标的外观发生了某种变化，但是利用CNN依然可以把它识别出来。即图像中的目标无论是被平移，被旋转，还是被缩放，都可以被成功地识别出来。</p>
+<p>而在GNN中，也具有<strong>图对称性</strong>：也就是排列无关性，即使交换了顶点的顺序，GNN对其的作用都保持不变。</p>
+<h2 id="不同的pooling方式">5.4 不同的pooling方式</h2>
+<p>在GNN中，<strong>对节点和边的信息进行Pooling是关键操作</strong>，选择一个最优的Pooling方式是一个比较好的研究方向。</p>
+<p><strong>常见的Pooling方式有max、mean和sum</strong>，作者对三者进行了比较：</p>
+<p><img src="image-20231228153325797.png" srcset="/img/loading.gif" lazyload alt="image-20231228153325797" style="zoom:50%;"></p>
+<p>左边这幅图中，有2-4和4-4两个网络，如果我们采用max，二者结果都是4，没法进行区分，而mean和sum可以对二者进行区分；右边这幅图中，max和mean没法区分两种网络，而sum却可以。同样的，只要构造两个和相同的节点，但是节点各自的值不一样，那么sum也无法区分。</p>
+<p>因此，<strong>没有一个Pooling方式是明显优于其它Pooling方式的。</strong></p>
+<p>小声：建议直接attention。</p>
+<h2 id="gcn-图卷积神经网络">5.5 GCN 图卷积神经网络</h2>
+<p>如果GCN有k个层，每个层都是只看它的一个邻居的话，就等价于在卷积神经网络中有k个3*3的卷积。每个最后一个节点，他看到的就是一个子图，最远的顶点距离我当前的顶点距离是k。可以认为每个点都是以自己为中心的往前走k步子图的信息汇聚。一定程度上，gcn就是来处理n个这样的子图，每个子图都是往前走k步，求这个子图的embedding。</p>
+<p>说实话不是很明白。</p>
+<p><img src="image-20231228164742896.png" srcset="/img/loading.gif" lazyload alt="image-20231228164742896" style="zoom:67%;"></p>
+<h2 id="点和边可以做对偶">5.6 点和边可以做对偶</h2>
+<p>图论中点可以变成边，边也可以变成点，然后邻接关系保持不变。在GNN上同样适用。</p>
+<h2 id="图卷积是矩阵乘法矩阵乘法是图上的行走">5.7
+图卷积是矩阵乘法，矩阵乘法是图上的行走</h2>
+<p>矩阵乘法就可以完成图卷积，但是矩阵在图这一块存储和计算一直是比较矛盾的。</p>
+<h2 id="graph-attention-networks图注意力机制">5.8 Graph Attention
+Networks（图注意力机制）</h2>
+<p>之前做pooling的时候，一般是三种操作，求和平均和最大。为了更好的区分，在图上也可以做加权和，图对于位置是不敏感的。那么有一种做法就是用注意力的那种，你那个权重取决于两个点之间的关系。</p>
+<h2 id="图的可解释性">5.9 图的可解释性</h2>
+<p>抓取一些子图，看看到底学了什么东西。</p>
+<h2 id="生成建模">5.10 生成建模</h2>
+<p>虽然我们不想改变图的结构，即输入是一个图，输出也是一个图，且连接性不变。但是我们也想做生成图。</p>
+<p>使用生成模型，我们可以通过从学习的分布中采样或通过完成给定起点的图来生成新的图。一个相关的应用是在新药的设计中，其中需要具有特定性质的新型分子图作为治疗疾病的候选者。</p>
+<p>还提到了一些方法，但是都是一笔带过了，就是以后研究的方向了。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E8%AE%BA%E6%96%87%E8%AF%BB%E5%90%8E%E6%80%BB%E7%BB%93/" class="category-chain-item">论文读后总结</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E8%AE%BA%E6%96%87%E8%AF%BB%E5%90%8E%E6%80%BB%E7%BB%93/%E7%BB%8F%E5%85%B8%E6%A8%A1%E5%9E%8B%E7%B3%BB%E5%88%97/" class="category-chain-item">经典模型系列</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E8%AE%BA%E6%96%87%E8%AF%BB%E5%90%8E%E6%80%BB%E7%BB%93/" class="print-no-link">#论文读后总结</a>
+      
+        <a href="/tags/%E7%BB%8F%E5%85%B8%E6%A8%A1%E5%9E%8B%E7%B3%BB%E5%88%97/" class="print-no-link">#经典模型系列</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>A Gentle Introduction to Graph Neural Networks</div>
+      <div>http://example.com/2023/12/28/A-Gentle-Introduction-to-Graph-Neural-Networks/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Guoxin</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年12月28日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/12/27/Semi-supervised-Semantics-guided-Adversarial-Training-for-Robust-Trajectory-Prediction/" title="Semi-supervised Semantics-guided Adversarial Training for Robust Trajectory Prediction">
+                        <span class="hidden-mobile">Semi-supervised Semantics-guided Adversarial Training for Robust Trajectory Prediction</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
