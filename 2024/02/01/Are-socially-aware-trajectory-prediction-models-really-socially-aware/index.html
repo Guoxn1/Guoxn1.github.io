@@ -1,0 +1,991 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Guoxin">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="0 摘要 我们的交通领域最近见证了一场基于神经网络的轨迹预测器的军备竞赛。虽然这些预测器是许多应用的核心，如自主导航或行人流模拟，但它们的对抗鲁棒性尚未得到仔细研究。在本文中，我们介绍了一个社会参与的攻击，以评估社会的理解预测模型的碰撞避免。攻击是一种小而精心设计的干扰，以使预测器失败。从技术上讲，我们将碰撞定义为输出的失败模式，并提出硬和软注意机制来指导我们的攻击。由于我们的攻击，我们揭示了当">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Are socially-aware trajectory prediction models really socially-aware">
+<meta property="og:url" content="http://example.com/2024/02/01/Are-socially-aware-trajectory-prediction-models-really-socially-aware/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="0 摘要 我们的交通领域最近见证了一场基于神经网络的轨迹预测器的军备竞赛。虽然这些预测器是许多应用的核心，如自主导航或行人流模拟，但它们的对抗鲁棒性尚未得到仔细研究。在本文中，我们介绍了一个社会参与的攻击，以评估社会的理解预测模型的碰撞避免。攻击是一种小而精心设计的干扰，以使预测器失败。从技术上讲，我们将碰撞定义为输出的失败模式，并提出硬和软注意机制来指导我们的攻击。由于我们的攻击，我们揭示了当">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2024/02/01/Are-socially-aware-trajectory-prediction-models-really-socially-aware/image-20240202134123005.png">
+<meta property="og:image" content="http://example.com/2024/02/01/Are-socially-aware-trajectory-prediction-models-really-socially-aware/image-20240202152928672.png">
+<meta property="og:image" content="http://example.com/2024/02/01/Are-socially-aware-trajectory-prediction-models-really-socially-aware/image-20240209085448219.png">
+<meta property="og:image" content="http://example.com/2024/02/01/Are-socially-aware-trajectory-prediction-models-really-socially-aware/image-20240209094233757.png">
+<meta property="og:image" content="http://example.com/2024/02/01/Are-socially-aware-trajectory-prediction-models-really-socially-aware/image-20240209094559702.png">
+<meta property="og:image" content="http://example.com/2024/02/01/Are-socially-aware-trajectory-prediction-models-really-socially-aware/image-20240209094733255.png">
+<meta property="og:image" content="http://example.com/2024/02/01/Are-socially-aware-trajectory-prediction-models-really-socially-aware/image-20240221144912297.png">
+<meta property="og:image" content="http://example.com/2024/02/01/Are-socially-aware-trajectory-prediction-models-really-socially-aware/image-20240221145530413.png">
+<meta property="og:image" content="http://example.com/2024/02/01/Are-socially-aware-trajectory-prediction-models-really-socially-aware/image-20240221145638676.png">
+<meta property="og:image" content="http://example.com/2024/02/01/Are-socially-aware-trajectory-prediction-models-really-socially-aware/image-20240221145815611.png">
+<meta property="og:image" content="http://example.com/2024/02/01/Are-socially-aware-trajectory-prediction-models-really-socially-aware/image-20240221145908382.png">
+<meta property="og:image" content="http://example.com/2024/02/01/Are-socially-aware-trajectory-prediction-models-really-socially-aware/image-20240221150023732.png">
+<meta property="og:image" content="http://example.com/2024/02/01/Are-socially-aware-trajectory-prediction-models-really-socially-aware/image-20240221150143901.png">
+<meta property="og:image" content="http://example.com/2024/02/01/Are-socially-aware-trajectory-prediction-models-really-socially-aware/image-20240221150226521.png">
+<meta property="og:image" content="http://example.com/2024/02/01/Are-socially-aware-trajectory-prediction-models-really-socially-aware/image-20240221150830375.png">
+<meta property="article:published_time" content="2024-02-01T12:08:28.000Z">
+<meta property="article:modified_time" content="2024-02-21T07:11:25.053Z">
+<meta property="article:author" content="Guoxin">
+<meta property="article:tag" content="论文读后总结">
+<meta property="article:tag" content="对抗样本">
+<meta property="article:tag" content="车辆轨迹预测">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/2024/02/01/Are-socially-aware-trajectory-prediction-models-really-socially-aware/image-20240202134123005.png">
+  
+  
+  
+  <title>Are socially-aware trajectory prediction models really socially-aware - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.5","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"><style>mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+.MathJax path {
+  stroke-width: 3;
+}
+
+mjx-container[display="true"] {
+  overflow: auto hidden;
+}
+
+mjx-container[display="true"] + br {
+  display: none;
+}
+</style></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Guoxin</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Are socially-aware trajectory prediction models really socially-aware"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-02-01 20:08" pubdate>
+          2024年2月1日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          7.8k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          65 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Are socially-aware trajectory prediction models really socially-aware</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="摘要">0 摘要</h1>
+<p>我们的交通领域最近见证了一场基于神经网络的轨迹预测器的军备竞赛。虽然这些预测器是许多应用的核心，如自主导航或行人流模拟，但它们的对抗鲁棒性尚未得到仔细研究。在本文中，我们介绍了一个社会参与的攻击，以评估社会的理解预测模型的碰撞避免。攻击是一种小而精心设计的干扰，以使预测器失败。从技术上讲，我们将碰撞定义为输出的失败模式，并<strong>提出硬和软注意机制来指导我们的攻击</strong>。由于我们的攻击，我们揭示了当前模型在社会理解方面的局限性。我们证明了我们的方法在最近的轨迹预测模型的优势。最后，我们证明了我们的攻击可以用来增加社会对最先进模型的理解。</p>
+<h1 id="结论">1 结论</h1>
+<p>在这项工作中，我们研究了在对抗性攻击下的社会理解方面的轨迹预测模型的鲁棒性。我们引入了我们的社会性攻击（S-ATTack），以在最先进的预测模型中引起具有小扰动的碰撞。使用S-ATTack进行对抗性训练不仅可以使模型对对抗性攻击更具鲁棒性，还可以降低碰撞率，从而提高其社会理解能力。本文揭示了轨迹预测模型的共同弱点，为他们的社会理解打开了一扇窗户。</p>
+<p>我们的工作是第一步，突出了模型中缺乏社会理解。攻击方法可以通过考虑碰撞发生的速度或考虑社会行为的其他概念（如grouping）来扩展。为了接近社会意识的预测，我们认为，该领域缺乏两个主要组成部分。首先，使用更多与社会相关的指标，而不是ADE/FDE进行培训和评估。这是一个研究领域，需要更多地研究碰撞时间度量[24]等度量。其次，在缺乏适当归纳偏差的情况下，监督学习在没有适当的归纳偏见的情况下无法正确学习社会行为，特别是在当前的小规模数据集上。解决这一挑战的一个方向是联合基于物理的模型和神经网络相结合。此外，拥有更具挑战性和大规模的数据集可以帮助模型自己学习偏差。</p>
+<h1 id="介绍">2 介绍</h1>
+<p>理解人类的社会行为是许多运输应用中的核心问题，这些应用的范围从自主导航（例如，社交/交付机器人[10]或自动驾驶车辆[13，5]），微观行人流模拟[42，40]。对于机器人在人群中安全导航或自动驾驶汽车在城市地区无害驾驶，人类行为预测是必不可少的。特别是，与人类打交道使问题的安全至关重要。例如，自动驾驶汽车在人行横道上的错误预测可能会危及行人的生命。作为一个安全关键问题，需要仔细评估轨迹预测方法，以减轻与人类相关的风险。因此，这些方法的鲁棒性，作为一个重要的评估方面，应该仔细研究。</p>
+<p>行人轨迹预测问题是以行人过去的位置作为输入，预测行人未来的位置。这个问题已经得到了解决方案的基础上微观人体模拟模型[12，18]。最近，提出了各种基于神经网络的方法。提出了基于长短期记忆网络[1]，卷积神经网络[36]和生成对抗网络（GAN）[21]的各种模型。这个问题的主要挑战在于学习人与人之间的互动。因此，基于社会感知神经网络的模型被设计为更准确地处理交互[1，47，26，34]。人类的互动涉及不同的社会行为，如避免碰撞，在一个群体中行走，从不同的方向合并到一个特定的点。在所有行为中，碰撞避免，即，人们选择一条避免与他人碰撞的道路，是很少违反的关键行为之一。这就是为什么许多以前的作品认为尊重避碰作为他们的模型是社会的证据[34，26，27]。同样，我们认为避撞作为一个指标的社会行为的模型。</p>
+<p>我们在图1中展示了一个概念上合理的真实场景。给定所观察到的人类在场景中的轨迹，社会预测器合理地预测未来的位置，而不会发生冲突。然而，通过向观察轨迹添加小于5cm的小扰动，出乎意料地，发生了代理预测之间的冲突，这表明预测者的不完整的社会理解。图中的轨迹来自S-LSTM
+[1]。</p>
+<figure>
+<img src="image-20240202134123005.png" srcset="/img/loading.gif" lazyload alt="image-20240202134123005">
+<figcaption aria-hidden="true">image-20240202134123005</figcaption>
+</figure>
+<p>图一：给定场景中智能体的观察轨迹，预测器（这里是S-LSTM
+[1]）合理地预测未来的位置（蓝线）。然而，如果观测轨道（红色）中的扰动小于5厘米，则预测会发生不可接受的碰撞。</p>
+<p>在这项工作中，与为分类器设计的常见对抗性攻击[37，44]相比，我们为轨迹预测问题设计了攻击，这是一个多模态回归任务。我们使用对抗性的例子来研究轨迹预测模型的避碰行为。更具体地说，我们研究了在输入的小扰动下预测模型的最坏情况下的社会行为。本研究有两个主要动机：（1）它是一个评估方法。我们的方法带来了反例，其中模型在具有社会行为方面失败，即，它不能避免碰撞。(2)利用对抗性示例，可以训练具有更好的碰撞避免的模型。此外，我们的研究突出了在现实世界中的应用，采用这种模型的实际问题。此外，我们的研究突出了在现实世界中的应用，采用这种模型的实际问题。值得注意的是，国家的最先进的定位算法给予平均超过0.2米的错误，在每个帧的人体位置检测[17，11]。虽然我们的工作重点是在对抗环境下的模型故障，它激励进一步研究模型的性能时，定位算法的误差分布的关注。</p>
+<p>我们提出了一种对抗性攻击，通过在两个代理的预测轨迹之间造成碰撞来欺骗/失败轨迹预测模型。也就是说，对抗性攻击的目的是找到导致碰撞的小扰动。碰撞可以假设发生在任何两个代理之间，并在任何预测时间步。然而，从攻击算法的角度来看，代理和时间步长的选择影响最终扰动的大小显着。为了解决这个问题，我们引入了一种注意力引导的对抗攻击，称为社交攻击（S-ATTack），它可以学习最佳碰撞点。我们提出了我们的攻击的两种变体：硬注意和软注意。我们的实验表明，我们的新攻击可以找到使最先进的轨迹预测模型生成错误预测的扰动，从而导致小扰动的碰撞。我们表明，实现一个预测的扰动可以转移到其他预测揭示模型之间的共同弱点。此外，我们证明了模型过度依赖于最后的观察点，这使得模型容易受到攻击。最后，我们引入了一个对抗性训练方案，使轨迹预测模型更加鲁棒。特别是，我们展示了我们的方法如何提高模型在避免碰撞方面的社会理解。据我们所知，这是解决轨迹预测模型的对抗脆弱性和鲁棒性的第一项工作。我们的主要贡献总结如下：</p>
+<p>1我们引入S-ATTack来评估社会对最先进的轨迹预测模型的理解。</p>
+<p>2我们的实验从不同方面揭示了预测模型的弱点。</p>
+<p>3我们演示了如何使用我们的SATack来提高预测器的鲁棒性。</p>
+<h1 id="相关工作">3 相关工作</h1>
+<p>人体轨迹预测。社会力模型[22]是一种主要的手工制作方法，用于捕捉人类的社会行为。他们通过由排斥力和吸引力决定的社会场来模拟行人之间的相互作用。社会互动已经从其他角度解决，如离散选择模型[4]和元胞自动机模型[14，48]。虽然所有这些手工制作的方法都具有很好的可解释性，并且不需要大量数据，但事实证明，它们无法有效地对长期依赖关系或复杂的交互进行建模[2]。</p>
+<p>Social-LSTM
+[1]是第一个提出使用数据驱动的神经网络而不是手工制作的函数来学习场景中代理之间的交互动态的工作。在[27，7，23，1]中研究了不同类型的汇集社会特征，以共享代理的特征，从而导致社会一致性的预测。卷积神经网络被研究来处理共用的特征在一个场景的一个代理上。为了更好地检测每个代理的相对重要性，在[47]中使用了注意力网络。最近，许多作品利用图神经网络来建模代理之间的关系[26，29，49，34]。数据的多模态分布是通过使用生成对抗网络来学习的[21，41，3]。虽然所有提到的工作都提高了平均和最终位移误差的性能，但它们偶尔会输出不可接受的解决方案（例如，碰撞）。在这项工作中，我们攻击了最先进的基于深度学习的最新模型，并揭示了它们对挑战其社会行为的小扰动的弱点。</p>
+<p>前面提到的工作试图通过观察人类数据来学习社会行为，其中隐含着避免碰撞。也有明确教导模型避免碰撞的工作。虽然这些工作中的大多数都解决了计划问题[50，16]，但有些采用了反向强化学习框架来引导网络走向无碰撞轨迹[46]。在这项工作中，我们将重点放在基于深度学习的轨迹预测器上，这些预测器完全由数据驱动，不利用人类指导。</p>
+<p>对抗性攻击。对抗性攻击在[44]中首次引入，展示了深度图像分类器对不可感知但精心制作的扰动的脆弱性。形式上，对抗扰动被定义为改变给定分类器f的输出的最小扰动R：</p>
+<figure>
+<img src="image-20240202152928672.png" srcset="/img/loading.gif" lazyload alt="image-20240202152928672">
+<figcaption aria-hidden="true">image-20240202152928672</figcaption>
+</figure>
+<p>添加这些以BFP范数为界的不可感知的扰动可以很容易地欺骗图像分类器[20，35，43]。根据“人类视觉知识”，对图像添加不可感知的扰动不会改变其类别标签。因此，一个好的模型应该在将这些扰动添加到其输入的同时保持其预测。</p>
+<p>对抗性攻击也被推广到评估模型对其他领域（如自然语言处理[51，9]和表格数据[6]）扰动的脆弱性。然而，据我们所知，对抗性攻击尚未在人类轨迹预测的背景下进行探索。人的轨迹是一个时间轨迹，因此可以看作是时间序列数据预测。在[19，25，30]中研究了不同类型的时间序列数据的分类问题。虽然他们的重点是分类任务，但我们的目标是回归任务，这使得错误输出的定义具有挑战性。此外，在人类轨迹序列中，扰动的不可感知性不是主要兴趣，因为在这里，人类知识是尊重所有场景中的社会行为（避免碰撞）。最后，一个具体的挑战，我们的问题是在碰撞点的选择，影响扰动大小的自由。我们通过提出的S-ATTack方法来解决这些挑战。</p>
+<h1 id="方法">4 方法</h1>
+<h2 id="框架">4.1 框架</h2>
+<h3 id="人物轨迹预测">4.1.1 人物轨迹预测</h3>
+<p>行人轨迹预测解决了以序列作为输入和输出的回归任务。在任何时间步t，第i个人/代理由他/她的xy坐标（Xi
+t，yi
+t）表示。我们将每个智能体对Tobs时间步的观察序列表示为Xi，这是一个Tobs ×
+2矩阵，场景中所有n个智能体的观察序列表示为X
+=（X1，...，Xn）。给定X，轨迹预测器f预测所有智能体Y =（Y1，...，Yn）=
+f（X1，...，Xn），其中Yi是Tobs × 2矩阵。</p>
+<h3 id="adversarial-examples-for-trajectory-prediction">4.1.2
+Adversarial examples for trajectory prediction</h3>
+<p>利用3.1.1节中介绍的符号，我们将为轨迹预测提供对抗例子的定义。为了不失一般性，本文假设在agent中任意选择的候选agent中加入扰动R。注意，在实验中，所有的agent都被逐个视为候选agent。Xˆ1
+= X1 +
+R，而其他agent(我们称之为邻居){Xj}j=1的观测值保持不变。因此，R为对抗性扰动Tobs×2矩阵。对抗性实例为ˆX
+= (X1+R,X2，…，Xn)，该实例预测器的输出为ˆY =(ˆY1，…，ˆYn) =
+f(ˆX)。式中，给定一个小常数&gt;
+0，一个碰撞距离阈值γ和一个矩阵·max的所有行范数的最大值，可得一个社会参与对抗的例子:</p>
+<figure>
+<img src="image-20240209085448219.png" srcset="/img/loading.gif" lazyload alt="image-20240209085448219">
+<figcaption aria-hidden="true">image-20240209085448219</figcaption>
+</figure>
+<p><strong>换句话说，这类对抗性例子是基于扰动一个观测轨迹，使f在一个时间步t中预测两个agent
+j和1之间至少有一次碰撞(距离小于γ)。</strong>此外，为了不失去一般性，我们关注候选agent和相邻agent之间的碰撞。显然，它可以直接扩展到任意两个代理之间的碰撞。在下一节中，我们将描述如何使用社会参与攻击获得R。</p>
+<h2 id="社会参与的攻击s-attack">4.2 社会参与的攻击S-attack</h2>
+<p>我们提出了三个基于不同注意机制的优化问题来寻找碰撞的合适扰动。优化问题分别在3.2.1、3.2.2和3.2.3节中进行说明，并采用3.3节中所述的基于投影梯度下降的迭代算法进行求解。</p>
+<p>在介绍这三种优化之前，我们将解释在所有三种优化中使用的距离矩阵。给定扰动R和模型f，我们定义距离矩阵<span class="math inline"><mjx-container class="MathJax" jax="SVG"><svg style="vertical-align: -0.566ex;" xmlns="http://www.w3.org/2000/svg" width="19.745ex" height="2.587ex" role="img" focusable="false" viewbox="0 -893.3 8727.4 1143.3"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><path data-c="1D437" d="M287 628Q287 635 230 637Q207 637 200 638T193 647Q193 655 197 667T204 682Q206 683 403 683Q570 682 590 682T630 676Q702 659 752 597T803 431Q803 275 696 151T444 3L430 1L236 0H125H72Q48 0 41 2T33 11Q33 13 36 25Q40 41 44 43T67 46Q94 46 127 49Q141 52 146 61Q149 65 218 339T287 628ZM703 469Q703 507 692 537T666 584T629 613T590 629T555 636Q553 636 541 636T512 636T479 637H436Q392 637 386 627Q384 623 313 339T242 52Q242 48 253 48T330 47Q335 47 349 47T373 46Q499 46 581 128Q617 164 640 212T683 339T703 469Z"/></g><g data-mml-node="mo" transform="translate(828,0)"><path data-c="28" d="M94 250Q94 319 104 381T127 488T164 576T202 643T244 695T277 729T302 750H315H319Q333 750 333 741Q333 738 316 720T275 667T226 581T184 443T167 250T184 58T225 -81T274 -167T316 -220T333 -241Q333 -250 318 -250H315H302L274 -226Q180 -141 137 -14T94 250Z"/></g><g data-mml-node="mi" transform="translate(1217,0)"><path data-c="1D445" d="M230 637Q203 637 198 638T193 649Q193 676 204 682Q206 683 378 683Q550 682 564 680Q620 672 658 652T712 606T733 563T739 529Q739 484 710 445T643 385T576 351T538 338L545 333Q612 295 612 223Q612 212 607 162T602 80V71Q602 53 603 43T614 25T640 16Q668 16 686 38T712 85Q717 99 720 102T735 105Q755 105 755 93Q755 75 731 36Q693 -21 641 -21H632Q571 -21 531 4T487 82Q487 109 502 166T517 239Q517 290 474 313Q459 320 449 321T378 323H309L277 193Q244 61 244 59Q244 55 245 54T252 50T269 48T302 46H333Q339 38 339 37T336 19Q332 6 326 0H311Q275 2 180 2Q146 2 117 2T71 2T50 1Q33 1 33 10Q33 12 36 24Q41 43 46 45Q50 46 61 46H67Q94 46 127 49Q141 52 146 61Q149 65 218 339T287 628Q287 635 230 637ZM630 554Q630 586 609 608T523 636Q521 636 500 636T462 637H440Q393 637 386 627Q385 624 352 494T319 361Q319 360 388 360Q466 361 492 367Q556 377 592 426Q608 449 619 486T630 554Z"/></g><g data-mml-node="mo" transform="translate(1976,0)"><path data-c="29" d="M60 749L64 750Q69 750 74 750H86L114 726Q208 641 251 514T294 250Q294 182 284 119T261 12T224 -76T186 -143T145 -194T113 -227T90 -246Q87 -249 86 -250H74Q66 -250 63 -250T58 -247T55 -238Q56 -237 66 -225Q221 -64 221 250T66 725Q56 737 55 738Q55 746 60 749Z"/></g><g data-mml-node="mo" transform="translate(2642.8,0)"><path data-c="2208" d="M84 250Q84 372 166 450T360 539Q361 539 377 539T419 540T469 540H568Q583 532 583 520Q583 511 570 501L466 500Q355 499 329 494Q280 482 242 458T183 409T147 354T129 306T124 272V270H568Q583 262 583 250T568 230H124V228Q124 207 134 177T167 112T231 48T328 7Q355 1 466 0H570Q583 -10 583 -20Q583 -32 568 -40H471Q464 -40 446 -40T417 -41Q262 -41 172 45Q84 127 84 250Z"/></g><g data-mml-node="msup" transform="translate(3587.6,0)"><g data-mml-node="mi"><path data-c="1D445" d="M230 637Q203 637 198 638T193 649Q193 676 204 682Q206 683 378 683Q550 682 564 680Q620 672 658 652T712 606T733 563T739 529Q739 484 710 445T643 385T576 351T538 338L545 333Q612 295 612 223Q612 212 607 162T602 80V71Q602 53 603 43T614 25T640 16Q668 16 686 38T712 85Q717 99 720 102T735 105Q755 105 755 93Q755 75 731 36Q693 -21 641 -21H632Q571 -21 531 4T487 82Q487 109 502 166T517 239Q517 290 474 313Q459 320 449 321T378 323H309L277 193Q244 61 244 59Q244 55 245 54T252 50T269 48T302 46H333Q339 38 339 37T336 19Q332 6 326 0H311Q275 2 180 2Q146 2 117 2T71 2T50 1Q33 1 33 10Q33 12 36 24Q41 43 46 45Q50 46 61 46H67Q94 46 127 49Q141 52 146 61Q149 65 218 339T287 628Q287 635 230 637ZM630 554Q630 586 609 608T523 636Q521 636 500 636T462 637H440Q393 637 386 627Q385 624 352 494T319 361Q319 360 388 360Q466 361 492 367Q556 377 592 426Q608 449 619 486T630 554Z"/></g><g data-mml-node="TeXAtom" transform="translate(792,363) scale(0.707)" data-mjx-texclass="ORD"><g data-mml-node="mo"><path data-c="28" d="M94 250Q94 319 104 381T127 488T164 576T202 643T244 695T277 729T302 750H315H319Q333 750 333 741Q333 738 316 720T275 667T226 581T184 443T167 250T184 58T225 -81T274 -167T316 -220T333 -241Q333 -250 318 -250H315H302L274 -226Q180 -141 137 -14T94 250Z"/></g><g data-mml-node="mi" transform="translate(389,0)"><path data-c="1D45B" d="M21 287Q22 293 24 303T36 341T56 388T89 425T135 442Q171 442 195 424T225 390T231 369Q231 367 232 367L243 378Q304 442 382 442Q436 442 469 415T503 336T465 179T427 52Q427 26 444 26Q450 26 453 27Q482 32 505 65T540 145Q542 153 560 153Q580 153 580 145Q580 144 576 130Q568 101 554 73T508 17T439 -10Q392 -10 371 17T350 73Q350 92 386 193T423 345Q423 404 379 404H374Q288 404 229 303L222 291L189 157Q156 26 151 16Q138 -11 108 -11Q95 -11 87 -5T76 7T74 17Q74 30 112 180T152 343Q153 348 153 366Q153 405 129 405Q91 405 66 305Q60 285 60 284Q58 278 41 278H27Q21 284 21 287Z"/></g><g data-mml-node="mo" transform="translate(989,0)"><path data-c="2212" d="M84 237T84 250T98 270H679Q694 262 694 250T679 230H98Q84 237 84 250Z"/></g><g data-mml-node="mn" transform="translate(1767,0)"><path data-c="31" d="M213 578L200 573Q186 568 160 563T102 556H83V602H102Q149 604 189 617T245 641T273 663Q275 666 285 666Q294 666 302 660V361L303 61Q310 54 315 52T339 48T401 46H427V0H416Q395 3 257 3Q121 3 100 0H88V46H114Q136 46 152 46T177 47T193 50T201 52T207 57T213 61V578Z"/></g><g data-mml-node="mo" transform="translate(2267,0)"><path data-c="29" d="M60 749L64 750Q69 750 74 750H86L114 726Q208 641 251 514T294 250Q294 182 284 119T261 12T224 -76T186 -143T145 -194T113 -227T90 -246Q87 -249 86 -250H74Q66 -250 63 -250T58 -247T55 -238Q56 -237 66 -225Q221 -64 221 250T66 725Q56 737 55 738Q55 746 60 749Z"/></g><g data-mml-node="mi" transform="translate(2656,0)"><path data-c="D7" d="M630 29Q630 9 609 9Q604 9 587 25T493 118L389 222L284 117Q178 13 175 11Q171 9 168 9Q160 9 154 15T147 29Q147 36 161 51T255 146L359 250L255 354Q174 435 161 449T147 471Q147 480 153 485T168 490Q173 490 175 489Q178 487 284 383L389 278L493 382Q570 459 587 475T609 491Q630 491 630 471Q630 464 620 453T522 355L418 250L522 145Q606 61 618 48T630 29Z"/></g><g data-mml-node="mi" transform="translate(3434,0)"><path data-c="1D447" d="M40 437Q21 437 21 445Q21 450 37 501T71 602L88 651Q93 669 101 677H569H659Q691 677 697 676T704 667Q704 661 687 553T668 444Q668 437 649 437Q640 437 637 437T631 442L629 445Q629 451 635 490T641 551Q641 586 628 604T573 629Q568 630 515 631Q469 631 457 630T439 622Q438 621 368 343T298 60Q298 48 386 46Q418 46 427 45T436 36Q436 31 433 22Q429 4 424 1L422 0Q419 0 415 0Q410 0 363 1T228 2Q99 2 64 0H49Q43 6 43 9T45 27Q49 40 55 46H83H94Q174 46 189 55Q190 56 191 56Q196 59 201 76T241 233Q258 301 269 344Q339 619 339 625Q339 630 310 630H279Q212 630 191 624Q146 614 121 583T67 467Q60 445 57 441T43 437H40Z"/></g><g data-mml-node="mi" transform="translate(4138,0)"><path data-c="1D45D" d="M23 287Q24 290 25 295T30 317T40 348T55 381T75 411T101 433T134 442Q209 442 230 378L240 387Q302 442 358 442Q423 442 460 395T497 281Q497 173 421 82T249 -10Q227 -10 210 -4Q199 1 187 11T168 28L161 36Q160 35 139 -51T118 -138Q118 -144 126 -145T163 -148H188Q194 -155 194 -157T191 -175Q188 -187 185 -190T172 -194Q170 -194 161 -194T127 -193T65 -192Q-5 -192 -24 -194H-32Q-39 -187 -39 -183Q-37 -156 -26 -148H-6Q28 -147 33 -136Q36 -130 94 103T155 350Q156 355 156 364Q156 405 131 405Q109 405 94 377T71 316T59 280Q57 278 43 278H29Q23 284 23 287ZM178 102Q200 26 252 26Q282 26 310 49T356 107Q374 141 392 215T411 325V331Q411 405 350 405Q339 405 328 402T306 393T286 380T269 365T254 350T243 336T235 326L232 322Q232 321 229 308T218 264T204 212Q178 106 178 102Z"/></g><g data-mml-node="mi" transform="translate(4641,0)"><path data-c="1D45F" d="M21 287Q22 290 23 295T28 317T38 348T53 381T73 411T99 433T132 442Q161 442 183 430T214 408T225 388Q227 382 228 382T236 389Q284 441 347 441H350Q398 441 422 400Q430 381 430 363Q430 333 417 315T391 292T366 288Q346 288 334 299T322 328Q322 376 378 392Q356 405 342 405Q286 405 239 331Q229 315 224 298T190 165Q156 25 151 16Q138 -11 108 -11Q95 -11 87 -5T76 7T74 17Q74 30 114 189T154 366Q154 405 128 405Q107 405 92 377T68 316T57 280Q55 278 41 278H27Q21 284 21 287Z"/></g><g data-mml-node="mi" transform="translate(5092,0)"><path data-c="1D452" d="M39 168Q39 225 58 272T107 350T174 402T244 433T307 442H310Q355 442 388 420T421 355Q421 265 310 237Q261 224 176 223Q139 223 138 221Q138 219 132 186T125 128Q125 81 146 54T209 26T302 45T394 111Q403 121 406 121Q410 121 419 112T429 98T420 82T390 55T344 24T281 -1T205 -11Q126 -11 83 42T39 168ZM373 353Q367 405 305 405Q272 405 244 391T199 357T170 316T154 280T149 261Q149 260 169 260Q282 260 327 284T373 353Z"/></g><g data-mml-node="mi" transform="translate(5558,0)"><path data-c="1D451" d="M366 683Q367 683 438 688T511 694Q523 694 523 686Q523 679 450 384T375 83T374 68Q374 26 402 26Q411 27 422 35Q443 55 463 131Q469 151 473 152Q475 153 483 153H487H491Q506 153 506 145Q506 140 503 129Q490 79 473 48T445 8T417 -8Q409 -10 393 -10Q359 -10 336 5T306 36L300 51Q299 52 296 50Q294 48 292 46Q233 -10 172 -10Q117 -10 75 30T33 157Q33 205 53 255T101 341Q148 398 195 420T280 442Q336 442 364 400Q369 394 369 396Q370 400 396 505T424 616Q424 629 417 632T378 637H357Q351 643 351 645T353 664Q358 683 366 683ZM352 326Q329 405 277 405Q242 405 210 374T160 293Q131 214 119 129Q119 126 119 118T118 106Q118 61 136 44T179 26Q233 26 290 98L298 109L352 326Z"/></g></g></g></g></g></svg></mjx-container></span>为输入扰动R的函数。它包括所有预测时间步内所有候选agent与其邻居之间的成对距离。设dj,t表示D(R)的第j行t列元素，即预测时间步长t时agent
+j与候选agent的距离:</p>
+<figure>
+<img src="image-20240209094233757.png" srcset="/img/loading.gif" lazyload alt="image-20240209094233757">
+<figcaption aria-hidden="true">image-20240209094233757</figcaption>
+</figure>
+<p>因此，对于特定的R，可以利用距离矩阵D(R)来指示是否发生了碰撞。我们现在解释三种方法来找到这样的扰动，通过优化不同的代价函数依赖于D(R)。</p>
+<h3 id="no-attention-loss">4.2.1 no-attention loss</h3>
+<p>我们的第一个尝试是引入一个简单的社会损失，以发现在轨迹预测序列中造成碰撞的扰动。为了实现这一目标，我们在预测模型中发现了使人类预测之间发生碰撞的扰动。一种简单的解决方案是最小化候选代理与其邻居在所有预测时间步中的距离和:</p>
+<figure>
+<img src="image-20240209094559702.png" srcset="/img/loading.gif" lazyload alt="image-20240209094559702">
+<figcaption aria-hidden="true">image-20240209094559702</figcaption>
+</figure>
+<p>这种朴素方案对所有主体给予同样的关注，这可能无法有效地获得小扰动。例如，远端代理可能不是碰撞的潜在候选对象，因此应该较少关注。</p>
+<p>所以有了hard，只关注离自己最近的。</p>
+<h3 id="hard-attention-loss">4.2.2 hard-attention loss</h3>
+<p>造成冲突的更好方法是在特定的时间步中针对特定的代理，而不是对所有相邻代理取平均。然后，攻击模型的方式是在相应的时间步长内减小被选择agent与候选agent之间的距离，直到发生碰撞。硬注意攻击的方程如下:</p>
+<figure>
+<img src="image-20240209094733255.png" srcset="/img/loading.gif" lazyload alt="image-20240209094733255">
+<figcaption aria-hidden="true">image-20240209094733255</figcaption>
+</figure>
+<p>这个就是添加了WT，说白了就是寻找最近的人（代理）进行碰撞。</p>
+<p>其中δ是克罗内克δ函数（异或函数）。此外，W是注意力权重矩阵，并且wj，t是在预测时间步的时间步t处代理j的注意力权重。实际上，作为<strong>最接近的代理时间步长就是目标代理</strong>wk，m的关联权重是1，而其他权重是0。社会关注损失是D（R）乘以W的转置加上具有平衡系数λr的扰动的正则化的迹（Tr），该平衡系数λr鼓励找到小扰动序列以进行碰撞。</p>
+<h3 id="soft-attention-loss">4.2.3 soft-attention loss</h3>
+<p>EQ的主要缺点。(5)碰撞的目标点（k，m）是基于攻击最近的代理时间步长需要足够小的扰动的假设来选择的。这限制了目标点的选择，并且可能找不到最佳目标点。请注意，模型是非线性的，与最近的代理时间步长的碰撞可能不需要最小的扰动。为了解决这个问题，我们让攻击自己关注最佳目标。我们引入了一个软注意力机制，在该机制中，与每个代理时间步相关联的权重由攻击分配，以实现更小的扰动。软注意力攻击的公式如下：</p>
+<p>soft不是寻找最近的，而是最有可能的。</p>
+<figure>
+<img src="image-20240221144912297.png" srcset="/img/loading.gif" lazyload alt="image-20240221144912297">
+<figcaption aria-hidden="true">image-20240221144912297</figcaption>
+</figure>
+<p>去除了异或函数，并且添加了tanh函数，减少对远处的agent的attention。</p>
+<p>我们通过减去W乘以标量λw的Frobenius范数（矩阵元素的平方和的平方根）来阻止权重的一致性。W初始化为均匀分布。它是逐步更新的，并把更多的权重给更可能的目标，使碰撞。在收敛点附近，最佳目标代理接收接近1的权重值，而其余代理接收0。注意，W和R是针对每个输入样本联合优化的。我们在补充材料中展示了W在训练中如何变化的一个例子。我们将比较我们的社会对抗攻击（硬注意力eq。(5)和软注意力EQ。(6))第4.3节。为了简洁起见，在本文的其余部分，我们用S-ATTack来指代软注意力攻击。</p>
+<h2 id="s-attack-算法">4.3 S-attack 算法</h2>
+<p>eq4 5 6 分别对应no hard soft attention的公式。</p>
+<p>eq3计算距离。</p>
+<p><img src="image-20240221145530413.png" srcset="/img/loading.gif" lazyload alt="image-20240221145530413" style="zoom:80%;"></p>
+<h1 id="实验">5 实验</h1>
+<h2 id="实验设置">5.1 实验设置</h2>
+<figure>
+<img src="image-20240221145638676.png" srcset="/img/loading.gif" lazyload alt="image-20240221145638676">
+<figcaption aria-hidden="true">image-20240221145638676</figcaption>
+</figure>
+<p>ETH [38]，UCY [28]和WildTrack
+[15]：这些都是在世界坐标中具有人类位置的完善数据集。我们使用这些数据集的两种变体进行实验：（1）对于S-LSTM，S-Att，S-GAN和D-Pool基线，我们使用Trajnet++
+[27]基准测试，它提供相同的数据分割和数据预处理。观测和预测长度分别被认为是9和12。(2)由于S-STGCNN官方代码包含其在ETH和UCY上的特定预处理和数据分割，因此我们使用发布的代码与其官方实现保持一致。这里，观察和预测长度分别被认为是8和12。SDD
+[39]：斯坦福大学无人机数据集是鸟瞰图中的人类轨迹预测数据集。PECNet是最先进的方法之一，在这个数据集上有官方发布的代码。因此，我们在此数据集上报告PECNet性能。观测和预测长度分别被认为是8和12。</p>
+<p>我们将最大迭代次数设置为100。受引言中提到的定位算法误差的启发，每个点的扰动的最大大小被认为是0.2
+m。此外，我们在等式中设置λr和λw。(5)和等式(6)分别等于0.1和0.5。超参数的完整列表将在补充材料中提供。</p>
+<p>在实验中，我们根据以下指标报告性能：碰撞率（CR）：该指标衡量模型预测轨迹中是否存在碰撞。实际上，它计算候选代理与其邻居之间的预测轨迹中至少发生一次碰撞的样本的百分比。该指标评估模型是否学习了避免碰撞的概念。注意，我们在等式中设置了用于指示碰撞γ的距离阈值。(2)等于0.2米。·扰动平均值（P-avg）：在每个时间步长处的扰动大小的平均值，其被添加到输入观测。数字以米为单位。平均/最终位移误差（ADE/FDE）：模型预测值与地面实况值之间的平均/最终位移误差。该指标通常用于报告轨迹预测模型的性能，并以米为单位进行报告。</p>
+<h2 id="攻击结果">5.2 攻击结果</h2>
+<figure>
+<img src="image-20240221145815611.png" srcset="/img/loading.gif" lazyload alt="image-20240221145815611">
+<figcaption aria-hidden="true">image-20240221145815611</figcaption>
+</figure>
+<p>table
+1比较攻击前（原始）和攻击后（攻击）不同基线的性能。水平线分隔具有不同数据集的模型。</p>
+<p>图2显示了在我们的攻击下，使用相同输入的基线S-LSTM，S-Att，D-Pool，S-GAN和SSTGCNN的性能。请注意，所有基线都是在4.1.2中的第一组数据集上训练的。S-LSTM在添加扰动后不会改变其预测，但SAtt和D-Pool会抵消以避免冲突。这表明，在一些预测模型中存在一些避碰行为的理解，但它们不足以避免碰撞。</p>
+<p><img src="image-20240221145908382.png" srcset="/img/loading.gif" lazyload alt="image-20240221145908382" style="zoom:80%;"></p>
+<p>由于D-pool在攻击前的碰撞避免方面比其他算法有更好的性能，在本文的其余部分，我们对它进行了主要的实验。</p>
+<h2 id="不同注意力方法的比较">5.3 不同注意力方法的比较</h2>
+<p>软注意力方法的自由度使其能够在一些样本中巧妙地找到更好的碰撞点，从而导致更高的碰撞率。</p>
+<figure>
+<img src="image-20240221150023732.png" srcset="/img/loading.gif" lazyload alt="image-20240221150023732">
+<figcaption aria-hidden="true">image-20240221150023732</figcaption>
+</figure>
+<p>表2：比较针对D-Pool提出的不同攻击方法。</p>
+<h2 id="可转移性">5.4 可转移性</h2>
+<p>我们仅对使用Trajnet++数据的模型进行本研究。</p>
+<figure>
+<img src="image-20240221150143901.png" srcset="/img/loading.gif" lazyload alt="image-20240221150143901">
+<figcaption aria-hidden="true">image-20240221150143901</figcaption>
+</figure>
+<p>表3：研究对抗性示例的可转移性。针对源模型学习对抗性示例，并将其转移到目标模型进行评估。报告的数字是碰撞率（CR）值。</p>
+<h2 id="加强社会理解提升鲁棒性">5.5 加强社会理解（提升鲁棒性）</h2>
+<p>我们利用我们的S-ATTACK来提高模型的避碰能力。为此，我们采用类似的方法[32]。我们使用原始训练数据和我们的S-ATTack方法生成的对抗性示例的组合来微调模型。在这个实验中，我们将最大扰动大小设置为等于0.03。</p>
+<figure>
+<img src="image-20240221150226521.png" srcset="/img/loading.gif" lazyload alt="image-20240221150226521">
+<figcaption aria-hidden="true">image-20240221150226521</figcaption>
+</figure>
+<p>at后的性能。</p>
+<h2 id="讨论">5.6 讨论</h2>
+<figure>
+<img src="image-20240221150830375.png" srcset="/img/loading.gif" lazyload alt="image-20240221150830375">
+<figcaption aria-hidden="true">image-20240221150830375</figcaption>
+</figure>
+<p>图8显示了预测因子过度依赖于最后一个观察点。这与我们的研究结果一致，即S-ATTack产生的扰动往往在尝试使用此功能的最后时间步上具有更大的分量。</p>
+<p>不同的预测时间步是否同样容易受到碰撞的影响？</p>
+<p>，每个模型对于时间步长具有不同的敏感性模式。初始时间步具有较高的碰撞率，因为在第一时间步中更难改变机动。虽然对于较晚的时间步长预期较小的碰撞率，但在两个模型中，碰撞率并不单调下降。这表明模型在中间时间步更脆弱。这可能是由于数据或模型结构中的偏差。</p>
+<h1 id="想法">8 想法</h1>
+<h2 id="可以做些什么">8.1 可以做些什么</h2>
+<ol type="1">
+<li><p>结论中提到，可以提出更多社会意识的预测指标，接近社会预测的方法等。</p></li>
+<li><p>监督学习无法学习未知的，所以探索出半监督或者无监督学习是很重要的，或者提出一些监督学习它的效果更好也可以。然后可以考虑结合物理实际和深度网络的模型。</p></li>
+<li><p>在相关工作最后一处，可以考虑之后生成更符合物理场景的对抗轨迹或者对抗场景。</p></li>
+<li><p>同时干扰AB，来进行碰撞。</p></li>
+<li><p>作者说还没有找到利用攻击的手法，就是C做对抗轨迹，影响A，B碰撞。</p></li>
+</ol>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E8%AE%BA%E6%96%87%E8%AF%BB%E5%90%8E%E6%80%BB%E7%BB%93/" class="category-chain-item">论文读后总结</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E8%AE%BA%E6%96%87%E8%AF%BB%E5%90%8E%E6%80%BB%E7%BB%93/%E5%AF%B9%E6%8A%97%E6%A0%B7%E6%9C%AC/" class="category-chain-item">对抗样本</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E8%AE%BA%E6%96%87%E8%AF%BB%E5%90%8E%E6%80%BB%E7%BB%93/%E5%AF%B9%E6%8A%97%E6%A0%B7%E6%9C%AC/%E8%BD%A6%E8%BE%86%E8%BD%A8%E8%BF%B9%E9%A2%84%E6%B5%8B/" class="category-chain-item">车辆轨迹预测</a>
+  
+  
+
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E8%AE%BA%E6%96%87%E8%AF%BB%E5%90%8E%E6%80%BB%E7%BB%93/" class="print-no-link">#论文读后总结</a>
+      
+        <a href="/tags/%E5%AF%B9%E6%8A%97%E6%A0%B7%E6%9C%AC/" class="print-no-link">#对抗样本</a>
+      
+        <a href="/tags/%E8%BD%A6%E8%BE%86%E8%BD%A8%E8%BF%B9%E9%A2%84%E6%B5%8B/" class="print-no-link">#车辆轨迹预测</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Are socially-aware trajectory prediction models really socially-aware</div>
+      <div>http://example.com/2024/02/01/Are-socially-aware-trajectory-prediction-models-really-socially-aware/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Guoxin</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年2月1日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/01/30/AdvDO%20Realistic%20Adversarial%20Attacks%20for%20Trajectory%20Prediction/" title="AdvDO Realistic Adversarial Attacks for Trajectory Prediction">
+                        <span class="hidden-mobile">AdvDO Realistic Adversarial Attacks for Trajectory Prediction</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
